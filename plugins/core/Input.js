@@ -2,15 +2,16 @@
  * Custom module used to import data
  */
 
-var _        = require('lodash'),
-    babel    = require('babel-polyfill');
-    jsonfile = require('jsonfile'),
+//Require for ES6 support, but no reference needed
+require('babel-polyfill');
+
+var jsonfile = require('jsonfile'),
     fs       = require('fs'),
     csv      = require('csv');
 
 function readJsonFile(filePath) {
   return new Promise(function (resolve, reject) {
-    jsonfile.readFile(file, function(err, result) {
+    jsonfile.readFile(filePath, function(err, result) {
       if (err) {
         reject(err);
       } else {

@@ -1,9 +1,8 @@
 /**
- * Example: Filter and group data
+ * Example: Filter and group data...
  */
 
-var _          = require('lodash'),
-    path       = require('path'),
+var path       = require('path'),
     Nextract   = require(path.resolve(__dirname, '../nextract'));
 
 var ETL = new Nextract();
