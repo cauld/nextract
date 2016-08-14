@@ -18,7 +18,8 @@
     "pg-hstore": "^2.3.2",
     "pg-native": "^1.10.0",
     "request": "^2.74.0",
-    "sequelize": "^3.24.0"
+    "sequelize": "^3.24.0",
+    "winston": "^2.2.0"
   },
   "author": "Brilaps, LLC",
   "devDependencies": {

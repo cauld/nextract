@@ -7,12 +7,14 @@ require('babel-polyfill');
 
 var jsonfile = require('jsonfile'),
     fs       = require('fs'),
-    csv      = require('csv');
+    csv      = require('csv'),
+    pluginBase  = require('../pluginBase');
 
 function readJsonFile(filePath) {
   return new Promise(function (resolve, reject) {
     jsonfile.readFile(filePath, function(err, result) {
       if (err) {
+        pluginBase.logger.error("readJsonFile", err);
         reject(err);
       } else {
         resolve(result);
@@ -26,6 +28,7 @@ function readTextFile(filePath) {
     //Read the contents of the file into memory
     fs.readFile(filePath, function (err, fileData) {
       if (err) {
+        pluginBase.logger.error("readTextFile", err);
         reject(err);
       }
 
@@ -34,6 +37,7 @@ function readTextFile(filePath) {
 
       csv.parse(input, { delimiter: ',', columns: true }, function(err, output) {
         if (err) {
+          pluginBase.logger.error("readTextFile csv parse", err);
           reject(err);
         } else {
           resolve(output);
