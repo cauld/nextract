@@ -1,3 +1,7 @@
+/**
+ * Example: Query and sort
+ */
+
 var _          = require('lodash'),
     path       = require('path'),
     Nextract   = require(path.resolve(__dirname, '../nextract'));

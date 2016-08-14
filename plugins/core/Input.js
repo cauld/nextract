@@ -1,5 +1,5 @@
 /**
- * Custom module used to ...
+ * Custom module used to import data
  */
 
 var _        = require('lodash'),

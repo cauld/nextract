@@ -1,5 +1,5 @@
 /**
- * Custom module used to ...
+ * Custom module used to perform grouping operations on data
  */
 
 var _       = require('lodash'),
