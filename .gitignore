@@ -3,5 +3,4 @@
 *.sql
 *.log
 node_modules
-config/default.json
-
+plugins/config/default.json
