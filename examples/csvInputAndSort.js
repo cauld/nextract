@@ -7,7 +7,7 @@ var path       = require('path'),
 
 var ETL = new Nextract();
 
-ETL.mixin('core', ['Input', 'Sort'])
+ETL.mixin('core', ['Input', 'Sort', 'Logger'])
     .then(function() {
       var sampleUsersFilePath = path.resolve(process.cwd(), 'data/users.csv');
       return ETL.Input.readFile('csv', sampleUsersFilePath);
@@ -16,8 +16,8 @@ ETL.mixin('core', ['Input', 'Sort'])
       return ETL.Sort.by(data, ['last_name'], ['asc']);
     })
     .then(function(data) {
-      console.log("Sorted queryResults", data);
+      ETL.Logger.info("Sorted queryResults", data);
     })
     .catch(function(err) {
-      console.log("ETL process failed: ", err);
+      ETL.Logger.log("ETL process failed: ", err);
     });
