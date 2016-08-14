@@ -1,3 +1,7 @@
+/**
+ * Example: Filter and group data
+ */
+
 var _          = require('lodash'),
     path       = require('path'),
     Nextract   = require(path.resolve(__dirname, '../nextract'));
