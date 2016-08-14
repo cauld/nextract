@@ -1,9 +1,8 @@
 /**
- * Example: Query and sort
+ * Example: Query and sort...
  */
 
-var _          = require('lodash'),
-    path       = require('path'),
+var path       = require('path'),
     Nextract   = require(path.resolve(__dirname, '../nextract'));
 
 var ETL = new Nextract();

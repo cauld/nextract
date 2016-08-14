@@ -1,9 +1,11 @@
 /**
- * Custom module used to sort data
+ * Custom module used to sort data...
  */
 
-var _       = require('lodash'),
-    babel   = require("babel-polyfill");
+//Require for ES6 support, but no reference needed
+require('babel-polyfill');
+
+var _ = require('lodash');
 
 module.exports = {
 

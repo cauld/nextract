@@ -1,6 +1,9 @@
 /**
- * Custom module used to operate on databases
+ * Custom module used to operate on databases...
  */
+
+//Require for ES6 support, but no reference needed
+require('babel-polyfill');
 
 var _            = require('lodash'),
     path         = require('path'),

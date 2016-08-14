@@ -1,9 +1,11 @@
 /**
- * Custom module used to filter data
+ * Custom module used to filter data...
  */
 
-var _       = require('lodash'),
-    babel   = require("babel-polyfill");
+//Require for ES6 support, but no reference needed
+require('babel-polyfill');
+
+var _ = require('lodash');
 
 module.exports = {
 
@@ -13,7 +15,7 @@ module.exports = {
     _.uniq
   */
 
-  equals: function(data, propertyToTest) {
+  equals: function(data, propertyToTest, testValue) {
     return new Promise(function (resolve, reject) {
       var result = _.filter(data, function(v) {
         return v[propertyToTest] == testValue;
