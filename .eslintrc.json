@@ -1,0 +1,16 @@
+{
+  "parser": "babel-eslint",
+  "extends": "eslint:recommended",
+  "rules" : {
+    "no-console": 0,
+    "no-unused-vars": [2, {"args": "none"}],
+      "comma-dangle": [2, "only-multiline"]
+  },
+  "globals": {
+    "_": true
+  },
+  "env": {
+    "node": true,
+    "es6" : true
+  }
+}
