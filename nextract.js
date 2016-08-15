@@ -1,5 +1,6 @@
 /**
- * Nextract
+ * Nextract module
+ * @module nextract
  */
 
 //Require for ES6 support, but no reference needed
@@ -17,7 +18,7 @@ var Nextract = function() {
 
 };
 
-//Accepts plugin type (core or vendor) and a {string|array} of plugin names to import
+/** Accepts plugin type (core or vendor) and a {string|array} of plugin names to import */
 Nextract.prototype.mixin = function(pluginType, pluginNames) {
   var that = this;
 
