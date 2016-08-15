@@ -113,126 +113,140 @@
         },
         "nextract.js": {
             "name": "nextract.js",
-            "modules": {
-                "nextract": 1
+            "modules": {},
+            "classes": {
+                "Nextract": 1
             },
-            "classes": {},
             "fors": {},
             "namespaces": {}
         }
     },
-    "modules": {
-        "nextract": {
-            "name": "nextract",
-            "submodules": {},
-            "elements": {},
-            "classes": {},
-            "fors": {},
-            "namespaces": {},
-            "tag": "module",
+    "modules": {},
+    "classes": {
+        "Nextract": {
+            "name": "Nextract",
+            "shortname": "Nextract",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
             "file": "nextract.js",
             "line": 1,
-            "description": "Nextract module...."
+            "description": "ETL class that all programs start from"
         }
     },
-    "classes": {},
     "elements": {},
     "classitems": [
         {
             "file": "examples/csvAndSort.js",
             "line": 1,
             "description": "Example: CSV input and sort...",
-            "class": ""
+            "class": "Nextract"
         },
         {
             "file": "examples/filterAndGroup.js",
             "line": 1,
             "description": "Example: Filter and group data...",
-            "class": ""
+            "class": "Nextract"
         },
         {
             "file": "examples/jsonAndSort.js",
             "line": 1,
             "description": "Example: JSON input and sort...",
-            "class": ""
+            "class": "Nextract"
         },
         {
             "file": "examples/queryAndSort.js",
             "line": 1,
             "description": "Example: Query and sort...",
-            "class": ""
+            "class": "Nextract"
         },
         {
             "file": "plugins/core/Calculator.js",
             "line": 1,
             "description": "Custom module used to ...",
-            "class": ""
+            "class": "Nextract"
         },
         {
             "file": "plugins/core/Db.js",
             "line": 1,
             "description": "Custom module used to operate on databases...",
-            "class": ""
+            "class": "Nextract"
         },
         {
             "file": "plugins/core/Filter.js",
             "line": 1,
             "description": "Custom module used to filter data...",
-            "class": ""
+            "class": "Nextract"
         },
         {
             "file": "plugins/core/GroupBy.js",
             "line": 1,
             "description": "Custom module used to perform grouping operations on data...",
-            "class": ""
+            "class": "Nextract"
         },
         {
             "file": "plugins/core/Http.js",
             "line": 1,
             "description": "Custom module used to ...",
-            "class": ""
+            "class": "Nextract"
         },
         {
             "file": "plugins/core/Input.js",
             "line": 1,
             "description": "Custom module used to import data",
-            "class": ""
+            "class": "Nextract"
         },
         {
             "file": "plugins/core/Logger.js",
             "line": 1,
             "description": "Winston logging config\nReferences:\n- https://github.com/winstonjs/winston\n- http://stackoverflow.com/a/23330037\n- http://stackoverflow.com/a/25233851",
-            "class": ""
+            "class": "Nextract"
         },
         {
             "file": "plugins/core/Output.js",
             "line": 1,
             "description": "Custom module used to export files",
-            "class": ""
+            "class": "Nextract"
         },
         {
             "file": "plugins/core/Sort.js",
             "line": 1,
             "description": "Custom module used to sort data...",
-            "class": ""
+            "class": "Nextract"
         },
         {
             "file": "plugins/core/Validator.js",
             "line": 1,
             "description": "Custom module used to validate data",
-            "class": ""
+            "class": "Nextract"
         },
         {
             "file": "plugins/pluginBase.js",
             "line": 1,
             "description": "Nextract Plugin Base",
-            "class": ""
+            "class": "Nextract"
         },
         {
             "file": "nextract.js",
-            "line": 21,
-            "class": "",
-            "module": "nextract"
+            "line": 18,
+            "description": "Used to mixin the functionality of a core or 3rd party vendor ETL plugin. These\nplugins are located in plugins/core & plugins/vendor.",
+            "itemtype": "method",
+            "name": "mixin",
+            "params": [
+                {
+                    "name": "pluginTypes",
+                    "description": "Type of plugin being imported (core or vendor)",
+                    "type": "String"
+                },
+                {
+                    "name": "pluginNames",
+                    "description": "Plugin(s) to import",
+                    "type": "String | Array"
+                }
+            ],
+            "class": "Nextract"
         }
     ],
     "warnings": [
@@ -295,10 +309,6 @@
         {
             "message": "Missing item type\nNextract Plugin Base",
             "line": " plugins/pluginBase.js:1"
-        },
-        {
-            "message": "Missing item type",
-            "line": " nextract.js:21"
         }
     ]
 }

@@ -1,16 +1,10 @@
 YUI.add("yuidoc-meta", function(Y) {
    Y.YUIDoc = { meta: {
-    "classes": [],
-    "modules": [
-        "nextract"
+    "classes": [
+        "Nextract"
     ],
-    "allModules": [
-        {
-            "displayName": "nextract",
-            "name": "nextract",
-            "description": "Nextract module...."
-        }
-    ],
+    "modules": [],
+    "allModules": [],
     "elements": []
 } };
 });
