@@ -5,8 +5,9 @@
 //Require for ES6 support, but no reference needed
 require('babel-polyfill');
 
-var _    = require('lodash'),
-    path = require('path');
+var _      = require('lodash'),
+    path   = require('path'),
+    logger = require('./plugins/core/Logger');
 
 var Nextract = function() {
 
@@ -31,7 +32,7 @@ Nextract.prototype.mixin = function(pluginType, pluginNames) {
            that[pluginName] = require(path.resolve(__dirname, 'plugins/vendor/' + pluginName));
         }
       } catch(err) {
-        console.log(err);
+        logger.error('Nextract mixin: ', err);
         reject(err);
       }
     });

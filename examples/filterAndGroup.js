@@ -7,7 +7,7 @@ var path       = require('path'),
 
 var ETL = new Nextract();
 
-ETL.mixin('core', ['Db', 'Filter', 'GroupBy'])
+ETL.mixin('core', ['Db', 'Filter', 'GroupBy', 'Logger'])
     .then(function() {
       return ETL.Db.query('nextract', 'select first_name, last_name, age, salary from users');
     })
@@ -18,8 +18,8 @@ ETL.mixin('core', ['Db', 'Filter', 'GroupBy'])
       return ETL.GroupBy.sumBy(data, 'salary');
     })
     .then(function(data) {
-      console.log('Together they make ', data);
+      ETL.Logger.info('Together they make: ', data);
     })
     .catch(function(err) {
-      console.log("ETL process failed: ", err);
+      ETL.Logger.info('ETL process failed: ', err);
     });

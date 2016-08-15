@@ -7,7 +7,7 @@ var path       = require('path'),
 
 var ETL = new Nextract();
 
-ETL.mixin('core', ['Db', 'Sort'])
+ETL.mixin('core', ['Db', 'Sort', 'Logger'])
     .then(function() {
       return ETL.Db.query('nextract', 'select first_name, last_name from users');
     })
@@ -15,8 +15,8 @@ ETL.mixin('core', ['Db', 'Sort'])
       return ETL.Sort.by(data, ['first_name', 'last_name'], ['desc', 'desc']);
     })
     .then(function(data) {
-      console.log("Sorted queryResults", data);
+      ETL.Logger.info('Sorted queryResults: ', data);
     })
     .catch(function(err) {
-      console.log("ETL process failed: ", err);
+      ETL.Logger.error('ETL process failed: ', err);
     });

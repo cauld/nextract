@@ -4,3 +4,5 @@
 *.log
 node_modules
 plugins/config/default.json
+examples/data/users_output.csv
+examples/data/users_output.json
