@@ -1,5 +1,5 @@
 /**
- * Nextract module
+ * Nextract module....
  * @module nextract
  */
 

@@ -1,0 +1,304 @@
+{
+    "project": {
+        "name": "nextract",
+        "description": "",
+        "version": "0.0.1",
+        "url": ""
+    },
+    "files": {
+        "examples/csvAndSort.js": {
+            "name": "examples/csvAndSort.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "examples/filterAndGroup.js": {
+            "name": "examples/filterAndGroup.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "examples/jsonAndSort.js": {
+            "name": "examples/jsonAndSort.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "examples/queryAndSort.js": {
+            "name": "examples/queryAndSort.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "plugins/core/Calculator.js": {
+            "name": "plugins/core/Calculator.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "plugins/core/Db.js": {
+            "name": "plugins/core/Db.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "plugins/core/Filter.js": {
+            "name": "plugins/core/Filter.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "plugins/core/GroupBy.js": {
+            "name": "plugins/core/GroupBy.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "plugins/core/Http.js": {
+            "name": "plugins/core/Http.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "plugins/core/Input.js": {
+            "name": "plugins/core/Input.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "plugins/core/Logger.js": {
+            "name": "plugins/core/Logger.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "plugins/core/Output.js": {
+            "name": "plugins/core/Output.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "plugins/core/Sort.js": {
+            "name": "plugins/core/Sort.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "plugins/core/Validator.js": {
+            "name": "plugins/core/Validator.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "plugins/pluginBase.js": {
+            "name": "plugins/pluginBase.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "nextract.js": {
+            "name": "nextract.js",
+            "modules": {
+                "nextract": 1
+            },
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        }
+    },
+    "modules": {
+        "nextract": {
+            "name": "nextract",
+            "submodules": {},
+            "elements": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {},
+            "tag": "module",
+            "file": "nextract.js",
+            "line": 1,
+            "description": "Nextract module...."
+        }
+    },
+    "classes": {},
+    "elements": {},
+    "classitems": [
+        {
+            "file": "examples/csvAndSort.js",
+            "line": 1,
+            "description": "Example: CSV input and sort...",
+            "class": ""
+        },
+        {
+            "file": "examples/filterAndGroup.js",
+            "line": 1,
+            "description": "Example: Filter and group data...",
+            "class": ""
+        },
+        {
+            "file": "examples/jsonAndSort.js",
+            "line": 1,
+            "description": "Example: JSON input and sort...",
+            "class": ""
+        },
+        {
+            "file": "examples/queryAndSort.js",
+            "line": 1,
+            "description": "Example: Query and sort...",
+            "class": ""
+        },
+        {
+            "file": "plugins/core/Calculator.js",
+            "line": 1,
+            "description": "Custom module used to ...",
+            "class": ""
+        },
+        {
+            "file": "plugins/core/Db.js",
+            "line": 1,
+            "description": "Custom module used to operate on databases...",
+            "class": ""
+        },
+        {
+            "file": "plugins/core/Filter.js",
+            "line": 1,
+            "description": "Custom module used to filter data...",
+            "class": ""
+        },
+        {
+            "file": "plugins/core/GroupBy.js",
+            "line": 1,
+            "description": "Custom module used to perform grouping operations on data...",
+            "class": ""
+        },
+        {
+            "file": "plugins/core/Http.js",
+            "line": 1,
+            "description": "Custom module used to ...",
+            "class": ""
+        },
+        {
+            "file": "plugins/core/Input.js",
+            "line": 1,
+            "description": "Custom module used to import data",
+            "class": ""
+        },
+        {
+            "file": "plugins/core/Logger.js",
+            "line": 1,
+            "description": "Winston logging config\nReferences:\n- https://github.com/winstonjs/winston\n- http://stackoverflow.com/a/23330037\n- http://stackoverflow.com/a/25233851",
+            "class": ""
+        },
+        {
+            "file": "plugins/core/Output.js",
+            "line": 1,
+            "description": "Custom module used to export files",
+            "class": ""
+        },
+        {
+            "file": "plugins/core/Sort.js",
+            "line": 1,
+            "description": "Custom module used to sort data...",
+            "class": ""
+        },
+        {
+            "file": "plugins/core/Validator.js",
+            "line": 1,
+            "description": "Custom module used to validate data",
+            "class": ""
+        },
+        {
+            "file": "plugins/pluginBase.js",
+            "line": 1,
+            "description": "Nextract Plugin Base",
+            "class": ""
+        },
+        {
+            "file": "nextract.js",
+            "line": 21,
+            "class": "",
+            "module": "nextract"
+        }
+    ],
+    "warnings": [
+        {
+            "message": "Missing item type\nExample: CSV input and sort...",
+            "line": " examples/csvAndSort.js:1"
+        },
+        {
+            "message": "Missing item type\nExample: Filter and group data...",
+            "line": " examples/filterAndGroup.js:1"
+        },
+        {
+            "message": "Missing item type\nExample: JSON input and sort...",
+            "line": " examples/jsonAndSort.js:1"
+        },
+        {
+            "message": "Missing item type\nExample: Query and sort...",
+            "line": " examples/queryAndSort.js:1"
+        },
+        {
+            "message": "Missing item type\nCustom module used to ...",
+            "line": " plugins/core/Calculator.js:1"
+        },
+        {
+            "message": "Missing item type\nCustom module used to operate on databases...",
+            "line": " plugins/core/Db.js:1"
+        },
+        {
+            "message": "Missing item type\nCustom module used to filter data...",
+            "line": " plugins/core/Filter.js:1"
+        },
+        {
+            "message": "Missing item type\nCustom module used to perform grouping operations on data...",
+            "line": " plugins/core/GroupBy.js:1"
+        },
+        {
+            "message": "Missing item type\nCustom module used to ...",
+            "line": " plugins/core/Http.js:1"
+        },
+        {
+            "message": "Missing item type\nCustom module used to import data",
+            "line": " plugins/core/Input.js:1"
+        },
+        {
+            "message": "Missing item type\nWinston logging config\nReferences:\n- https://github.com/winstonjs/winston\n- http://stackoverflow.com/a/23330037\n- http://stackoverflow.com/a/25233851",
+            "line": " plugins/core/Logger.js:1"
+        },
+        {
+            "message": "Missing item type\nCustom module used to export files",
+            "line": " plugins/core/Output.js:1"
+        },
+        {
+            "message": "Missing item type\nCustom module used to sort data...",
+            "line": " plugins/core/Sort.js:1"
+        },
+        {
+            "message": "Missing item type\nCustom module used to validate data",
+            "line": " plugins/core/Validator.js:1"
+        },
+        {
+            "message": "Missing item type\nNextract Plugin Base",
+            "line": " plugins/pluginBase.js:1"
+        },
+        {
+            "message": "Missing item type",
+            "line": " nextract.js:21"
+        }
+    ]
+}
