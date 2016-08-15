@@ -1,6 +1,7 @@
 /**
- * Nextract module....
- * @module nextract
+ * ETL class that all programs start from
+ *
+ * @class Nextract
  */
 
 //Require for ES6 support, but no reference needed
@@ -13,12 +14,21 @@ var _      = require('lodash'),
 var Nextract = function() {
 
   return {
+
+    /**
+     * Used to mixin the functionality of a core or 3rd party vendor ETL plugin. These
+     * plugins are located in plugins/core & plugins/vendor.
+     *
+     * @method mixin
+     * @param {String} pluginTypes Type of plugin being imported (core or vendor)
+     * @param {String | Array} pluginNames Plugin(s) to import
+     */
     mixin: this.mixin
+
   }
 
 };
 
-/** Accepts plugin type (core or vendor) and a {string|array} of plugin names to import */
 Nextract.prototype.mixin = function(pluginType, pluginNames) {
   var that = this;
 

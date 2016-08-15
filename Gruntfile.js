@@ -28,7 +28,7 @@ module.exports = function(grunt) {
         url: '<%= pkg.homepage %>',
         options: {
           paths: '.',
-          //themedir: 'path/to/custom/theme/',
+          themedir: 'apidocs_theme/default/',
           outdir: 'apidocs'
         }
       }
@@ -41,5 +41,8 @@ module.exports = function(grunt) {
 
   //Default task(s)
   grunt.registerTask('default', ['eslint', 'yuidoc']);
+
+  //Task for just generating docs
+  grunt.registerTask('docs', ['yuidoc']);
 
 };
