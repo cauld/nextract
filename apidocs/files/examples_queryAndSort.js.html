@@ -39,6 +39,8 @@
                         <div id="api-tabview-panel">
                             <ul id="api-classes" class="apis classes">
                                 <li><a href="../classes/Nextract.html">Nextract</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Calculator.html">Nextract.Plugins.Core.Calculator</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Database.html">Nextract.Plugins.Core.Database</a></li>
                             </ul>
                 
                 
@@ -89,18 +91,18 @@
                       
                       var ETL = new Nextract();
                       
-                      ETL.mixin(&#x27;core&#x27;, [&#x27;Db&#x27;, &#x27;Sort&#x27;, &#x27;Logger&#x27;])
+                      ETL.loadPlugin(&#x27;Core&#x27;, [&#x27;Database&#x27;, &#x27;Sort&#x27;, &#x27;Logger&#x27;])
                           .then(function() {
-                            return ETL.Db.query(&#x27;nextract&#x27;, &#x27;select first_name, last_name from users&#x27;);
+                            return ETL.Plugins.Core.Database.select(&#x27;nextract&#x27;, &#x27;select first_name, last_name from users&#x27;);
                           })
                           .then(function(data) {
-                            return ETL.Sort.by(data, [&#x27;first_name&#x27;, &#x27;last_name&#x27;], [&#x27;desc&#x27;, &#x27;desc&#x27;]);
+                            return ETL.Plugins.Core.Sort.by(data, [&#x27;first_name&#x27;, &#x27;last_name&#x27;], [&#x27;desc&#x27;, &#x27;desc&#x27;]);
                           })
                           .then(function(data) {
-                            ETL.Logger.info(&#x27;Sorted queryResults: &#x27;, data);
+                            ETL.Plugins.Core.Logger.info(&#x27;Sorted queryResults: &#x27;, data);
                           })
                           .catch(function(err) {
-                            ETL.Logger.error(&#x27;ETL process failed: &#x27;, err);
+                            ETL.Plugins.Core.Logger.error(&#x27;ETL process failed: &#x27;, err);
                           });
                       
                           </pre>

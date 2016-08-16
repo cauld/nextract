@@ -39,6 +39,8 @@
                         <div id="api-tabview-panel">
                             <ul id="api-classes" class="apis classes">
                                 <li><a href="../classes/Nextract.html">Nextract</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Calculator.html">Nextract.Plugins.Core.Calculator</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Database.html">Nextract.Plugins.Core.Database</a></li>
                             </ul>
                 
                 
@@ -84,6 +86,7 @@
                        * ETL class that all programs start from
                        *
                        * @class Nextract
+                       * @constructor
                        */
                       
                       //Require for ES6 support, but no reference needed
@@ -95,17 +98,39 @@
                       
                       var Nextract = function() {
                       
+                        this.Plugins = {
+                          /**
+                           * Object containing references to core plugins that have loaded in the current program
+                           *
+                           * @property Plugins.Core
+                           * @for Nextract
+                           * @type Object
+                           */
+                          Core: {},
+                      
+                          /**
+                           * Object containing references to vendor plugins that have loaded in the current program
+                           *
+                           * @property Plugins.Vendor
+                           * @for Nextract
+                           * @type Object
+                           */
+                          Vendor: {}
+                        };
+                      
                         return {
+                      
+                          Plugins: this.Plugins,
                       
                           /**
                            * Used to mixin the functionality of a core or 3rd party vendor ETL plugin. These
                            * plugins are located in plugins/core &amp; plugins/vendor.
                            *
-                           * @method mixin
-                           * @param {String} pluginTypes Type of plugin being imported (core or vendor)
+                           * @method loadPlugin
+                           * @param {String} pluginTypes Type of plugin being imported (Core or Vendor)
                            * @param {String | Array} pluginNames Plugin(s) to import
                            */
-                          mixin: this.mixin
+                          loadPlugin: this.mixin
                       
                         }
                       
@@ -119,10 +144,10 @@
                       
                           pluginNames.forEach(function(pluginName) {
                             try {
-                              if (pluginType === &#x27;core&#x27;) {
-                                that[pluginName] = require(path.resolve(__dirname, &#x27;plugins/core/&#x27; + pluginName));
+                              if (pluginType === &#x27;Core&#x27;) {
+                                that.Plugins.Core[pluginName] = require(path.resolve(__dirname, &#x27;plugins/core/&#x27; + pluginName));
                               } else {
-                                 that[pluginName] = require(path.resolve(__dirname, &#x27;plugins/vendor/&#x27; + pluginName));
+                                 that.Plugins.Vendor[pluginName] = require(path.resolve(__dirname, &#x27;plugins/vendor/&#x27; + pluginName));
                               }
                             } catch(err) {
                               logger.error(&#x27;Nextract mixin: &#x27;, err);

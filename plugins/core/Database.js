@@ -1,5 +1,7 @@
 /**
- * Custom module used to operate on databases...
+ * Mixes in methods used to work with a database
+ *
+ * @class Nextract.Plugins.Core.Database
  */
 
 //Require for ES6 support, but no reference needed
@@ -53,10 +55,21 @@ function getInstance(dbName) {
 
 module.exports = {
 
-  //Executes a SQL statement.  Can be a fully formed SQL statement or
-  //a parameterized one with "?" placeholders.  If the later, then sqlParams
-  //should be an array of values tp be replaced in order.
-  query: function(dbName, sql, sqlParams) {
+  /**
+   * Raw query interface for select statements
+   *
+   * @method select
+   * @example
+   *     ETL.Plugins.Core.Database.select('dbname', 'select * from tablename');
+   *
+   * @param {String} dbName A database name that matches a object key defined in your Nextract config file
+   * @param {String} sql SQL statement to execute. Can be a fully formed SQL statement or
+   * a parameterized one with "?" placeholders. If the later, then sqlParams
+   * must be an array of values to be replaced in order.
+   * @param {Array} sqlParams (optional) List of params to be subbed as a parameterized query
+   * @return {Promise} Promise resolved with an array of database rows that match the given select statement
+   */
+  select: function(dbName, sql, sqlParams) {
     if (!_.isArray(sqlParams)) {
       sqlParams = [];
     }

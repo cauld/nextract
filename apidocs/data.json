@@ -37,14 +37,18 @@
         "plugins/core/Calculator.js": {
             "name": "plugins/core/Calculator.js",
             "modules": {},
-            "classes": {},
+            "classes": {
+                "Nextract.Plugins.Core.Calculator": 1
+            },
             "fors": {},
             "namespaces": {}
         },
-        "plugins/core/Db.js": {
-            "name": "plugins/core/Db.js",
+        "plugins/core/Database.js": {
+            "name": "plugins/core/Database.js",
             "modules": {},
-            "classes": {},
+            "classes": {
+                "Nextract.Plugins.Core.Database": 1
+            },
             "fors": {},
             "namespaces": {}
         },
@@ -117,12 +121,38 @@
             "classes": {
                 "Nextract": 1
             },
-            "fors": {},
+            "fors": {
+                "Nextract": 1
+            },
             "namespaces": {}
         }
     },
     "modules": {},
     "classes": {
+        "Nextract.Plugins.Core.Calculator": {
+            "name": "Nextract.Plugins.Core.Calculator",
+            "shortname": "Nextract.Plugins.Core.Calculator",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "plugins/core/Calculator.js",
+            "line": 1,
+            "description": "Mixes in a series of common mathematical calculations"
+        },
+        "Nextract.Plugins.Core.Database": {
+            "name": "Nextract.Plugins.Core.Database",
+            "shortname": "Nextract.Plugins.Core.Database",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "plugins/core/Database.js",
+            "line": 1,
+            "description": "Mixes in methods used to work with a database"
+        },
         "Nextract": {
             "name": "Nextract",
             "shortname": "Nextract",
@@ -133,7 +163,8 @@
             "extension_for": [],
             "file": "nextract.js",
             "line": 1,
-            "description": "ETL class that all programs start from"
+            "description": "ETL class that all programs start from",
+            "is_constructor": 1
         }
     },
     "elements": {},
@@ -142,37 +173,65 @@
             "file": "examples/csvAndSort.js",
             "line": 1,
             "description": "Example: CSV input and sort...",
-            "class": "Nextract"
+            "class": "Nextract.Plugins.Core.Calculator"
         },
         {
             "file": "examples/filterAndGroup.js",
             "line": 1,
             "description": "Example: Filter and group data...",
-            "class": "Nextract"
+            "class": "Nextract.Plugins.Core.Calculator"
         },
         {
             "file": "examples/jsonAndSort.js",
             "line": 1,
             "description": "Example: JSON input and sort...",
-            "class": "Nextract"
+            "class": "Nextract.Plugins.Core.Calculator"
         },
         {
             "file": "examples/queryAndSort.js",
             "line": 1,
             "description": "Example: Query and sort...",
-            "class": "Nextract"
+            "class": "Nextract.Plugins.Core.Calculator"
         },
         {
             "file": "plugins/core/Calculator.js",
-            "line": 1,
-            "description": "Custom module used to ...",
-            "class": "Nextract"
+            "line": 14,
+            "description": "Adds numbers",
+            "itemtype": "method",
+            "name": "add",
+            "class": "Nextract.Plugins.Core.Calculator"
         },
         {
-            "file": "plugins/core/Db.js",
-            "line": 1,
-            "description": "Custom module used to operate on databases...",
-            "class": "Nextract"
+            "file": "plugins/core/Database.js",
+            "line": 58,
+            "description": "Raw query interface for select statements",
+            "itemtype": "method",
+            "name": "select",
+            "example": [
+                "\n    ETL.Plugins.Core.Database.select('dbname', 'select * from tablename');"
+            ],
+            "params": [
+                {
+                    "name": "dbName",
+                    "description": "A database name that matches a object key defined in your Nextract config file",
+                    "type": "String"
+                },
+                {
+                    "name": "sql",
+                    "description": "SQL statement to execute. Can be a fully formed SQL statement or\na parameterized one with \"?\" placeholders. If the later, then sqlParams\nmust be an array of values to be replaced in order.",
+                    "type": "String"
+                },
+                {
+                    "name": "sqlParams",
+                    "description": "(optional) List of params to be subbed as a parameterized query",
+                    "type": "Array"
+                }
+            ],
+            "return": {
+                "description": "Promise resolved with an array of database rows that match the given select statement",
+                "type": "Promise"
+            },
+            "class": "Nextract.Plugins.Core.Database"
         },
         {
             "file": "plugins/core/Filter.js",
@@ -231,13 +290,31 @@
         {
             "file": "nextract.js",
             "line": 18,
+            "description": "Object containing references to core plugins that have loaded in the current program",
+            "itemtype": "property",
+            "name": "Plugins.Core",
+            "type": "Object",
+            "class": "Nextract"
+        },
+        {
+            "file": "nextract.js",
+            "line": 27,
+            "description": "Object containing references to vendor plugins that have loaded in the current program",
+            "itemtype": "property",
+            "name": "Plugins.Vendor",
+            "type": "Object",
+            "class": "Nextract"
+        },
+        {
+            "file": "nextract.js",
+            "line": 41,
             "description": "Used to mixin the functionality of a core or 3rd party vendor ETL plugin. These\nplugins are located in plugins/core & plugins/vendor.",
             "itemtype": "method",
-            "name": "mixin",
+            "name": "loadPlugin",
             "params": [
                 {
                     "name": "pluginTypes",
-                    "description": "Type of plugin being imported (core or vendor)",
+                    "description": "Type of plugin being imported (Core or Vendor)",
                     "type": "String"
                 },
                 {
@@ -265,14 +342,6 @@
         {
             "message": "Missing item type\nExample: Query and sort...",
             "line": " examples/queryAndSort.js:1"
-        },
-        {
-            "message": "Missing item type\nCustom module used to ...",
-            "line": " plugins/core/Calculator.js:1"
-        },
-        {
-            "message": "Missing item type\nCustom module used to operate on databases...",
-            "line": " plugins/core/Db.js:1"
         },
         {
             "message": "Missing item type\nCustom module used to filter data...",

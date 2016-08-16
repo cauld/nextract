@@ -39,6 +39,8 @@
                         <div id="api-tabview-panel">
                             <ul id="api-classes" class="apis classes">
                                 <li><a href="../classes/Nextract.html">Nextract</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Calculator.html">Nextract.Plugins.Core.Calculator</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Database.html">Nextract.Plugins.Core.Database</a></li>
                             </ul>
                 
                 
@@ -92,23 +94,23 @@
                       var sampleUsersInputFilePath = path.resolve(process.cwd(), &#x27;data/users.json&#x27;),
                           sampleUsersOutputFilePath = path.resolve(process.cwd(), &#x27;data/users_output.json&#x27;);
                       
-                      ETL.mixin(&#x27;core&#x27;, [&#x27;Input&#x27;, &#x27;Output&#x27;, &#x27;Sort&#x27;, &#x27;Logger&#x27;])
+                      ETL.loadPlugin(&#x27;Core&#x27;, [&#x27;Input&#x27;, &#x27;Output&#x27;, &#x27;Sort&#x27;, &#x27;Logger&#x27;])
                           .then(function() {
-                            return ETL.Input.readFile(&#x27;json&#x27;, sampleUsersInputFilePath);
+                            return ETL.Plugins.Core.Input.readFile(&#x27;json&#x27;, sampleUsersInputFilePath);
                           })
                           .then(function(jsonData) {
                             var userData = jsonData.data.users;
-                            return ETL.Sort.by(userData, [&#x27;last_name&#x27;], [&#x27;asc&#x27;]);
+                            return ETL.Plugins.Core.Sort.by(userData, [&#x27;last_name&#x27;], [&#x27;asc&#x27;]);
                           })
                           .then(function(data) {
-                            ETL.Logger.info(&#x27;Sorted queryResults: &#x27;, data);
-                            return ETL.Output.writeFile(&#x27;json&#x27;, sampleUsersOutputFilePath, data, { spaces: 4 });
+                            ETL.Plugins.Core.Logger.info(&#x27;Sorted queryResults: &#x27;, data);
+                            return ETL.Plugins.Core.Output.writeFile(&#x27;json&#x27;, sampleUsersOutputFilePath, data, { spaces: 4 });
                           })
                           .then(function() {
-                            ETL.Logger.info(sampleUsersOutputFilePath, &#x27;has been written&#x27;);
+                            ETL.Plugins.Core.Logger.info(sampleUsersOutputFilePath, &#x27;has been written&#x27;);
                           })
                           .catch(function(err) {
-                            ETL.Logger.error(&#x27;ETL process failed: &#x27;, err);
+                            ETL.Plugins.Core.Logger.error(&#x27;ETL process failed: &#x27;, err);
                           });
                       
                           </pre>
