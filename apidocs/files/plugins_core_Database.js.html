@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>plugins/core/Db.js - nextract</title>
+    <title>plugins/core/Database.js - nextract</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -39,6 +39,8 @@
                         <div id="api-tabview-panel">
                             <ul id="api-classes" class="apis classes">
                                 <li><a href="../classes/Nextract.html">Nextract</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Calculator.html">Nextract.Plugins.Core.Calculator</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Database.html">Nextract.Plugins.Core.Database</a></li>
                             </ul>
                 
                 
@@ -76,12 +78,14 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                      <h1 class="file-heading">File: plugins/core/Db.js</h1>
+                      <h1 class="file-heading">File: plugins/core/Database.js</h1>
                       
                       <div class="file">
                           <pre class="code prettyprint linenums">
                       /**
-                       * Custom module used to operate on databases...
+                       * Mixes in methods used to work with a database
+                       *
+                       * @class Nextract.Plugins.Core.Database
                        */
                       
                       //Require for ES6 support, but no reference needed
@@ -135,10 +139,21 @@
                       
                       module.exports = {
                       
-                        //Executes a SQL statement.  Can be a fully formed SQL statement or
-                        //a parameterized one with &quot;?&quot; placeholders.  If the later, then sqlParams
-                        //should be an array of values tp be replaced in order.
-                        query: function(dbName, sql, sqlParams) {
+                        /**
+                         * Raw query interface for select statements
+                         *
+                         * @method select
+                         * @example
+                         *     ETL.Plugins.Core.Database.select(&#x27;dbname&#x27;, &#x27;select * from tablename&#x27;);
+                         *
+                         * @param {String} dbName A database name that matches a object key defined in your Nextract config file
+                         * @param {String} sql SQL statement to execute. Can be a fully formed SQL statement or
+                         * a parameterized one with &quot;?&quot; placeholders. If the later, then sqlParams
+                         * must be an array of values to be replaced in order.
+                         * @param {Array} sqlParams (optional) List of params to be subbed as a parameterized query
+                         * @return {Promise} Promise resolved with an array of database rows that match the given select statement
+                         */
+                        select: function(dbName, sql, sqlParams) {
                           if (!_.isArray(sqlParams)) {
                             sqlParams = [];
                           }

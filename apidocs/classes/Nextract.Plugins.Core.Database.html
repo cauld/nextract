@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Nextract - nextract</title>
+    <title>Nextract.Plugins.Core.Database - nextract</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -78,12 +78,12 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                      <h1>Nextract Class</h1>
+                      <h1>Nextract.Plugins.Core.Database Class</h1>
                       <div class="box meta">
                       
                       
                               <div class="foundat">
-                                  Defined in: <a href="../files/nextract.js.html#l1"><code>nextract.js:1</code></a>
+                                  Defined in: <a href="../files/plugins_core_Database.js.html#l1"><code>plugins&#x2F;core&#x2F;Database.js:1</code></a>
                               </div>
                       
                       
@@ -91,50 +91,16 @@
                       
                       
                       <div class="box intro">
-                          <p>ETL class that all programs start from</p>
+                          <p>Mixes in methods used to work with a database</p>
                       
                       </div>
                       
-                          <div class="constructor">
-                              <h2>Constructor</h2>
-                      <div id="method_Nextract" class="method item">
-                          <h3 class="name"><code>Nextract</code></h3>
-                      
-                              <span class="paren">()</span>
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                          <div class="meta">
-                                      <p>
-                                      Defined in
-                              <a href="../files/nextract.js.html#l1"><code>nextract.js:1</code></a>
-                              </p>
-                      
-                      
-                      
-                          </div>
-                      
-                          <div class="description">
-                              
-                          </div>
-                      
-                      
-                      
-                      
-                      </div>
-                          </div>
                       
                       <div id="classdocs" class="tabview">
                           <ul class="api-class-tabs">
                               <li class="api-class-tab index"><a href="#index">Index</a></li>
                       
                                   <li class="api-class-tab methods"><a href="#methods">Methods</a></li>
-                                  <li class="api-class-tab properties"><a href="#properties">Properties</a></li>
                           </ul>
                       
                           <div>
@@ -146,26 +112,12 @@
                       
                                           <ul class="index-list methods">
                                                   <li class="index-item method">
-                                                      <a href="#method_loadPlugin">loadPlugin</a>
+                                                      <a href="#method_select">select</a>
                       
                                                   </li>
                                           </ul>
                                       </div>
                       
-                                      <div class="index-section properties">
-                                          <h3>Properties</h3>
-                      
-                                          <ul class="index-list properties">
-                                                  <li class="index-item property">
-                                                      <a href="#property_Plugins.Core">Plugins.Core</a>
-                      
-                                                  </li>
-                                                  <li class="index-item property">
-                                                      <a href="#property_Plugins.Vendor">Plugins.Vendor</a>
-                      
-                                                  </li>
-                                          </ul>
-                                      </div>
                       
                       
                               </div>
@@ -173,20 +125,26 @@
                                   <div id="methods" class="api-class-tabpanel">
                                       <h2 class="off-left">Methods</h2>
                       
-                      <div id="method_loadPlugin" class="method item">
-                          <h3 class="name"><code>loadPlugin</code></h3>
+                      <div id="method_select" class="method item">
+                          <h3 class="name"><code>select</code></h3>
                       
                               <div class="args">
                                   <span class="paren">(</span><ul class="args-list inline commas">
                                       <li class="arg">
-                                              <code>pluginTypes</code>
+                                              <code>dbName</code>
                                       </li>
                                       <li class="arg">
-                                              <code>pluginNames</code>
+                                              <code>sql</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>sqlParams</code>
                                       </li>
                                   </ul><span class="paren">)</span>
                               </div>
                       
+                              <span class="returns-inline">
+                                  <span class="type">Promise</span>
+                              </span>
                       
                       
                       
@@ -197,7 +155,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/nextract.js.html#l41"><code>nextract.js:41</code></a>
+                              <a href="../files/plugins_core_Database.js.html#l58"><code>plugins&#x2F;core&#x2F;Database.js:58</code></a>
                               </p>
                       
                       
@@ -205,8 +163,7 @@
                           </div>
                       
                           <div class="description">
-                              <p>Used to mixin the functionality of a core or 3rd party vendor ETL plugin. These
-                      plugins are located in plugins/core &amp; plugins/vendor.</p>
+                              <p>Raw query interface for select statements</p>
                       
                           </div>
                       
@@ -215,23 +172,36 @@
                       
                                   <ul class="params-list">
                                       <li class="param">
-                                              <code class="param-name">pluginTypes</code>
+                                              <code class="param-name">dbName</code>
                                               <span class="type">String</span>
                       
                       
                                           <div class="param-description">
-                                              <p>Type of plugin being imported (Core or Vendor)</p>
+                                              <p>A database name that matches a object key defined in your Nextract config file</p>
                       
                                           </div>
                       
                                       </li>
                                       <li class="param">
-                                              <code class="param-name">pluginNames</code>
-                                              <span class="type">String | Array</span>
+                                              <code class="param-name">sql</code>
+                                              <span class="type">String</span>
                       
                       
                                           <div class="param-description">
-                                              <p>Plugin(s) to import</p>
+                                              <p>SQL statement to execute. Can be a fully formed SQL statement or
+                      a parameterized one with &quot;?&quot; placeholders. If the later, then sqlParams
+                      must be an array of values to be replaced in order.</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">sqlParams</code>
+                                              <span class="type">Array</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>(optional) List of params to be subbed as a parameterized query</p>
                       
                                           </div>
                       
@@ -239,65 +209,28 @@
                                   </ul>
                               </div>
                       
+                              <div class="returns">
+                                  <h4>Returns:</h4>
+                      
+                                  <div class="returns-description">
+                                              <span class="type">Promise</span>:
+                                          <p>Promise resolved with an array of database rows that match the given select statement</p>
+                      
+                                  </div>
+                              </div>
                       
                       
+                              <div class="example">
+                                  <h4>Example:</h4>
+                      
+                                  <div class="example-content">
+                                      <pre class="code prettyprint"><code>ETL.Plugins.Core.Database.select('dbname', 'select * from tablename');</code></pre>
+                      
+                                  </div>
+                              </div>
                       </div>
                                   </div>
                       
-                                  <div id="properties" class="api-class-tabpanel">
-                                      <h2 class="off-left">Properties</h2>
-                      
-                      <div id="property_Plugins.Core" class="property item">
-                          <h3 class="name"><code>Plugins.Core</code></h3>
-                          <span class="type">Object</span>
-                      
-                      
-                      
-                      
-                      
-                          <div class="meta">
-                                      <p>
-                                      Defined in
-                              <a href="../files/nextract.js.html#l18"><code>nextract.js:18</code></a>
-                              </p>
-                      
-                      
-                          </div>
-                      
-                          <div class="description">
-                              <p>Object containing references to core plugins that have loaded in the current program</p>
-                      
-                          </div>
-                      
-                      
-                      
-                      </div>
-                      <div id="property_Plugins.Vendor" class="property item">
-                          <h3 class="name"><code>Plugins.Vendor</code></h3>
-                          <span class="type">Object</span>
-                      
-                      
-                      
-                      
-                      
-                          <div class="meta">
-                                      <p>
-                                      Defined in
-                              <a href="../files/nextract.js.html#l27"><code>nextract.js:27</code></a>
-                              </p>
-                      
-                      
-                          </div>
-                      
-                          <div class="description">
-                              <p>Object containing references to vendor plugins that have loaded in the current program</p>
-                      
-                          </div>
-                      
-                      
-                      
-                      </div>
-                                  </div>
                       
                       
                           </div>

@@ -1,5 +1,7 @@
 /**
- * Custom module used to ...
+ * Mixes in a series of common mathematical calculations
+ *
+ * @class Nextract.Plugins.Core.Calculator
  */
 
 //Require for ES6 support, but no reference needed
@@ -8,6 +10,15 @@ require('babel-polyfill');
 //var _ = require('lodash');
 
 module.exports = {
+
+  /**
+   * Adds numbers
+   *
+   * @method add
+   */
+  add: function() {
+
+  }
 
   //TODO: Implement...
   /*

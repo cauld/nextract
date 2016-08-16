@@ -7,19 +7,19 @@ var path       = require('path'),
 
 var ETL = new Nextract();
 
-ETL.mixin('core', ['Db', 'Filter', 'GroupBy', 'Logger'])
+ETL.loadPlugin('Core', ['Database', 'Filter', 'GroupBy', 'Logger'])
     .then(function() {
-      return ETL.Db.query('nextract', 'select first_name, last_name, age, salary from users');
+      return ETL.Plugins.Core.Database.select('nextract', 'select first_name, last_name, age, salary from users');
     })
     .then(function(data) {
-      return ETL.Filter.greaterThan(data, 'age', 30);
+      return ETL.Plugins.Core.Filter.greaterThan(data, 'age', 30);
     })
     .then(function(data) {
-      return ETL.GroupBy.sumBy(data, 'salary');
+      return ETL.Plugins.Core.GroupBy.sumBy(data, 'salary');
     })
     .then(function(data) {
-      ETL.Logger.info('Together they make: ', data);
+      ETL.Plugins.Core.Logger.info('Together they make: ', data);
     })
     .catch(function(err) {
-      ETL.Logger.info('ETL process failed: ', err);
+      ETL.Plugins.Core.Logger.info('ETL process failed: ', err);
     });

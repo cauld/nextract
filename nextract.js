@@ -2,6 +2,7 @@
  * ETL class that all programs start from
  *
  * @class Nextract
+ * @constructor
  */
 
 //Require for ES6 support, but no reference needed
@@ -13,17 +14,39 @@ var _      = require('lodash'),
 
 var Nextract = function() {
 
+  this.Plugins = {
+    /**
+     * Object containing references to core plugins that have loaded in the current program
+     *
+     * @property Plugins.Core
+     * @for Nextract
+     * @type Object
+     */
+    Core: {},
+
+    /**
+     * Object containing references to vendor plugins that have loaded in the current program
+     *
+     * @property Plugins.Vendor
+     * @for Nextract
+     * @type Object
+     */
+    Vendor: {}
+  };
+
   return {
+
+    Plugins: this.Plugins,
 
     /**
      * Used to mixin the functionality of a core or 3rd party vendor ETL plugin. These
      * plugins are located in plugins/core & plugins/vendor.
      *
-     * @method mixin
-     * @param {String} pluginTypes Type of plugin being imported (core or vendor)
+     * @method loadPlugin
+     * @param {String} pluginTypes Type of plugin being imported (Core or Vendor)
      * @param {String | Array} pluginNames Plugin(s) to import
      */
-    mixin: this.mixin
+    loadPlugin: this.mixin
 
   }
 
@@ -37,10 +60,10 @@ Nextract.prototype.mixin = function(pluginType, pluginNames) {
 
     pluginNames.forEach(function(pluginName) {
       try {
-        if (pluginType === 'core') {
-          that[pluginName] = require(path.resolve(__dirname, 'plugins/core/' + pluginName));
+        if (pluginType === 'Core') {
+          that.Plugins.Core[pluginName] = require(path.resolve(__dirname, 'plugins/core/' + pluginName));
         } else {
-           that[pluginName] = require(path.resolve(__dirname, 'plugins/vendor/' + pluginName));
+           that.Plugins.Vendor[pluginName] = require(path.resolve(__dirname, 'plugins/vendor/' + pluginName));
         }
       } catch(err) {
         logger.error('Nextract mixin: ', err);
