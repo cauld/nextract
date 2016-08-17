@@ -3,8 +3,8 @@
 *.sql
 *.log
 node_modules
-#src/plugins/config/default.json
-#build/plugins/config/default.json
+src/plugins/config/default.json
+build/plugins/config/default.json
 src/examples/data/users_output.csv
 src/examples/data/users_output.json
 build/examples/data/users_output.csv
