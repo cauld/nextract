@@ -3,10 +3,13 @@
 *.sql
 *.log
 node_modules
+
+#Sample output files
 src/examples/data/users_output.csv
 src/examples/data/users_output.json
 build/examples/data/users_output.csv
 build/examples/data/users_output.json
 
-build/plugins/config/default.json
-src/plugins/config/default.json
+#Config files
+src/plugins/config/*
+build/plugins/config/*
