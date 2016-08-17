@@ -4,23 +4,13 @@
   },
 
   "databases": {
-<<<<<<< HEAD
-    "sample": {
+    "nextract_sample": {
       "dialect": "mysql",
       "host": "127.0.0.1",
       "port": 3306,
       "name": "sample",
       "user": "root",
       "password": ""
-=======
-    "nextract": {
-      "dialect": "mysql",
-      "host": "127.0.0.1",
-      "port": 3306,
-      "name": "nextract",
-      "user": "root",
-      "password": "Redwings77"
->>>>>>> 7314b7af61e3e73281ac9356469b447e6c300fcd
     }
   }
 }
