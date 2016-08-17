@@ -10,6 +10,6 @@ src/examples/data/users_output.json
 build/examples/data/users_output.csv
 build/examples/data/users_output.json
 
-#Config files
+#Config files (probably have sensitive data)
 src/plugins/config/*
 build/plugins/config/*
