@@ -1,10 +1,8 @@
 # Overview
+Nextract is a Extract Transform Load (ETL) platform build on top of Node.js. 
 
 ## Setup
 - npm install
 - git rm --cached plugins/config/default.json
-- To make sure we don't introduce syntax errors enable JavaScript linting via ESlint. This is a githook that should be enabled in your env so that failed a failed lint stops the commit. Run the following:
-```
-cp {path/to/nextract}/githooks/pre-commit.warn.sh {path/to/nextract}/.git/hooks/pre-commit
-chmod +x {path/to/nextract}/.git/hooks/pre-commit
-```
+- When changes are made we have a series of build tasks that must be run. To automate this we use grunt. When developing open a separate terminal window and run the following command:
+```grunt dev```
