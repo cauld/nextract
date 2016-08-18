@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Nextract.Plugins.Core.Calculator - nextract</title>
+    <title>build/plugins/core/Utils.js - nextract</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -82,89 +82,37 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                      <h1>Nextract.Plugins.Core.Calculator Class</h1>
-                      <div class="box meta">
+                      <h1 class="file-heading">File: build/plugins/core/Utils.js</h1>
                       
+                      <div class="file">
+                          <pre class="code prettyprint linenums">
+                      &quot;use strict&quot;;
                       
-                              <div class="foundat">
-                                  Defined in: <a href="../files/build_plugins_core_Calculator.js.html#l3"><code>build&#x2F;plugins&#x2F;core&#x2F;Calculator.js:3</code></a>
-                              </div>
+                      /**
+                       * Mixes in methods used to work with a database
+                       *
+                       * @class Nextract.Plugins.Core.Utils
+                       */
                       
+                      module.exports = {
                       
-                      </div>
+                        /**
+                         * Utility which runs all passed Promises and returns only once all have been fufilled
+                         *
+                         * @method runAll
+                         * @example
+                         *     ETL.Plugins.Core.Utils.runAll([p1, p2]);
+                         *
+                         * @param {Array} promisesToRunAn array of Promises
+                         * @return {Promise} Promise resolved with an array of Promise resolutions
+                         */
+                        runAll: function runAll(promisesToRun) {
+                          return Promise.all(promisesToRun);
+                        }
                       
+                      };
                       
-                      <div class="box intro">
-                          <p>Mixes in a series of common mathematical calculations</p>
-                      
-                      </div>
-                      
-                      
-                      <div id="classdocs" class="tabview">
-                          <ul class="api-class-tabs">
-                              <li class="api-class-tab index"><a href="#index">Index</a></li>
-                      
-                                  <li class="api-class-tab methods"><a href="#methods">Methods</a></li>
-                          </ul>
-                      
-                          <div>
-                              <div id="index" class="api-class-tabpanel index">
-                                  <h2 class="off-left">Item Index</h2>
-                      
-                                      <div class="index-section methods">
-                                          <h3>Methods</h3>
-                      
-                                          <ul class="index-list methods">
-                                                  <li class="index-item method">
-                                                      <a href="#method_add">add</a>
-                      
-                                                  </li>
-                                          </ul>
-                                      </div>
-                      
-                      
-                      
-                              </div>
-                      
-                                  <div id="methods" class="api-class-tabpanel">
-                                      <h2 class="off-left">Methods</h2>
-                      
-                      <div id="method_add" class="method item">
-                          <h3 class="name"><code>add</code></h3>
-                      
-                              <span class="paren">()</span>
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                          <div class="meta">
-                                      <p>
-                                      Defined in
-                              <a href="../files/build_plugins_core_Calculator.js.html#l13"><code>build&#x2F;plugins&#x2F;core&#x2F;Calculator.js:13</code></a>
-                              </p>
-                      
-                      
-                      
-                          </div>
-                      
-                          <div class="description">
-                              <p>Adds numbers</p>
-                      
-                          </div>
-                      
-                      
-                      
-                      
-                      </div>
-                                  </div>
-                      
-                      
-                      
-                          </div>
+                          </pre>
                       </div>
                     </div>
                 </div>

@@ -27,6 +27,13 @@
             "fors": {},
             "namespaces": {}
         },
+        "build/examples/parallelTasks.js": {
+            "name": "build/examples/parallelTasks.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
         "build/examples/queryAndSort.js": {
             "name": "build/examples/queryAndSort.js",
             "modules": {},
@@ -101,7 +108,18 @@
         "build/plugins/core/Sort.js": {
             "name": "build/plugins/core/Sort.js",
             "modules": {},
-            "classes": {},
+            "classes": {
+                "Nextract.Plugins.Core.Sort": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "build/plugins/core/Utils.js": {
+            "name": "build/plugins/core/Utils.js",
+            "modules": {},
+            "classes": {
+                "Nextract.Plugins.Core.Utils": 1
+            },
             "fors": {},
             "namespaces": {}
         },
@@ -181,6 +199,30 @@
             "line": 3,
             "description": "Mixes in methods used to export files"
         },
+        "Nextract.Plugins.Core.Sort": {
+            "name": "Nextract.Plugins.Core.Sort",
+            "shortname": "Nextract.Plugins.Core.Sort",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "build/plugins/core/Sort.js",
+            "line": 3,
+            "description": "Mixes in methods used to sort data"
+        },
+        "Nextract.Plugins.Core.Utils": {
+            "name": "Nextract.Plugins.Core.Utils",
+            "shortname": "Nextract.Plugins.Core.Utils",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "build/plugins/core/Utils.js",
+            "line": 3,
+            "description": "Mixes in methods used to work with a database"
+        },
         "Nextract": {
             "name": "Nextract",
             "shortname": "Nextract",
@@ -213,6 +255,12 @@
             "file": "build/examples/jsonAndSort.js",
             "line": 3,
             "description": "Example: JSON input and sort...",
+            "class": "Nextract.Plugins.Core.Calculator"
+        },
+        {
+            "file": "build/examples/parallelTasks.js",
+            "line": 3,
+            "description": "Example: Running some ETL tasks in parallel",
             "class": "Nextract.Plugins.Core.Calculator"
         },
         {
@@ -343,9 +391,47 @@
         },
         {
             "file": "build/plugins/core/Sort.js",
-            "line": 3,
-            "description": "Custom module used to sort data...",
-            "class": "Nextract"
+            "line": 21,
+            "description": "TBD...",
+            "itemtype": "method",
+            "name": "by",
+            "example": [
+                "\n    ETL.Plugins.Core.Utils.runAll([p1, p2]);"
+            ],
+            "params": [
+                {
+                    "name": "promisesToRunAn",
+                    "description": "array of Promises",
+                    "type": "Array"
+                }
+            ],
+            "return": {
+                "description": "Promise resolved with an array of Promise resolutions",
+                "type": "Promise"
+            },
+            "class": "Nextract.Plugins.Core.Sort"
+        },
+        {
+            "file": "build/plugins/core/Utils.js",
+            "line": 11,
+            "description": "Utility which runs all passed Promises and returns only once all have been fufilled",
+            "itemtype": "method",
+            "name": "runAll",
+            "example": [
+                "\n    ETL.Plugins.Core.Utils.runAll([p1, p2]);"
+            ],
+            "params": [
+                {
+                    "name": "promisesToRunAn",
+                    "description": "array of Promises",
+                    "type": "Array"
+                }
+            ],
+            "return": {
+                "description": "Promise resolved with an array of Promise resolutions",
+                "type": "Promise"
+            },
+            "class": "Nextract.Plugins.Core.Utils"
         },
         {
             "file": "build/plugins/core/Validator.js",
@@ -412,6 +498,10 @@
             "line": " build/examples/jsonAndSort.js:3"
         },
         {
+            "message": "Missing item type\nExample: Running some ETL tasks in parallel",
+            "line": " build/examples/parallelTasks.js:3"
+        },
+        {
             "message": "Missing item type\nExample: Query and sort...",
             "line": " build/examples/queryAndSort.js:3"
         },
@@ -430,10 +520,6 @@
         {
             "message": "Missing item type\nWinston logging config\nReferences:\n- https://github.com/winstonjs/winston\n- http://stackoverflow.com/a/23330037\n- http://stackoverflow.com/a/25233851",
             "line": " build/plugins/core/Logger.js:3"
-        },
-        {
-            "message": "Missing item type\nCustom module used to sort data...",
-            "line": " build/plugins/core/Sort.js:3"
         },
         {
             "message": "Missing item type\nCustom module used to validate data",

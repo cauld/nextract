@@ -43,6 +43,8 @@
                                 <li><a href="../classes/Nextract.Plugins.Core.Database.html">Nextract.Plugins.Core.Database</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Input.html">Nextract.Plugins.Core.Input</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Output.html">Nextract.Plugins.Core.Output</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Sort.html">Nextract.Plugins.Core.Sort</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Utils.html">Nextract.Plugins.Core.Utils</a></li>
                             </ul>
                 
                 
@@ -87,7 +89,9 @@
                       &quot;use strict&quot;;
                       
                       /**
-                       * Custom module used to sort data...
+                       * Mixes in methods used to sort data
+                       *
+                       * @class Nextract.Plugins.Core.Sort
                        */
                       
                       var _ = require(&#x27;lodash&#x27;);
@@ -101,6 +105,17 @@
                           [orders] (string[]): The sort orders of iteratees.
                           (e.g.) by(users, [&#x27;user&#x27;, &#x27;age&#x27;], [&#x27;asc&#x27;, &#x27;desc&#x27;]);
                         */
+                      
+                        /**
+                         * TBD...
+                         *
+                         * @method by
+                         * @example
+                         *     ETL.Plugins.Core.Utils.runAll([p1, p2]);
+                         *
+                         * @param {Array} promisesToRunAn array of Promises
+                         * @return {Promise} Promise resolved with an array of Promise resolutions
+                         */
                         by: function by(dataToSort, propertiesToSortBy, propertiesSortDirection) {
                           propertiesToSortBy = _.isArray(propertiesToSortBy) ? propertiesToSortBy : [propertiesToSortBy];
                           propertiesSortDirection = _.isArray(propertiesSortDirection) ? propertiesSortDirection : [propertiesSortDirection];

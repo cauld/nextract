@@ -1,5 +1,7 @@
 /**
- * Custom module used to sort data...
+ * Mixes in methods used to sort data
+ *
+ * @class Nextract.Plugins.Core.Sort
  */
 
 var _ = require('lodash');
@@ -13,6 +15,17 @@ module.exports = {
     [orders] (string[]): The sort orders of iteratees.
     (e.g.) by(users, ['user', 'age'], ['asc', 'desc']);
   */
+
+  /**
+   * TBD...
+   *
+   * @method by
+   * @example
+   *     ETL.Plugins.Core.Utils.runAll([p1, p2]);
+   *
+   * @param {Array} promisesToRunAn array of Promises
+   * @return {Promise} Promise resolved with an array of Promise resolutions
+   */
   by: function(dataToSort, propertiesToSortBy, propertiesSortDirection) {
     propertiesToSortBy = _.isArray(propertiesToSortBy) ? propertiesToSortBy : [propertiesToSortBy];
     propertiesSortDirection = _.isArray(propertiesSortDirection) ? propertiesSortDirection : [propertiesSortDirection];
