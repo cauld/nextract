@@ -37,6 +37,7 @@ module.exports = function(grunt) {
     babel: {
       options: {
         //sourceMap: true,
+        plugins: ['lodash'],
         presets: ['es2015']
       },
       dist: {

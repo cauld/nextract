@@ -40,7 +40,8 @@
                             <ul id="api-classes" class="apis classes">
                                 <li><a href="../classes/Nextract.html">Nextract</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Calculator.html">Nextract.Plugins.Core.Calculator</a></li>
-                                <li><a href="../classes/Nextract.Plugins.Core.Database.html">Nextract.Plugins.Core.Database</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Filter.html">Nextract.Plugins.Core.Filter</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.GroupBy.html">Nextract.Plugins.Core.GroupBy</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Input.html">Nextract.Plugins.Core.Input</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Output.html">Nextract.Plugins.Core.Output</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Sort.html">Nextract.Plugins.Core.Sort</a></li>
@@ -88,20 +89,35 @@
                           <pre class="code prettyprint linenums">
                       &#x27;use strict&#x27;;
                       
-                      /**
-                       * Mixes in methods used to work with a database
-                       *
-                       * @class Nextract.Plugins.Core.Database
-                       */
+                      var _isArray2 = require(&#x27;lodash/isArray&#x27;);
                       
-                      var _ = require(&#x27;lodash&#x27;),
-                          path = require(&#x27;path&#x27;),
-                          pluginConfig = require(path.resolve(__dirname, &#x27;../config/default&#x27;)),
-                          Sequelize = require(&#x27;sequelize&#x27;);
+                      var _isArray3 = _interopRequireDefault(_isArray2);
+                      
+                      var _has2 = require(&#x27;lodash/has&#x27;);
+                      
+                      var _has3 = _interopRequireDefault(_has2);
+                      
+                      var _path = require(&#x27;path&#x27;);
+                      
+                      var _path2 = _interopRequireDefault(_path);
+                      
+                      var _default = require(&#x27;../config/default&#x27;);
+                      
+                      var _default2 = _interopRequireDefault(_default);
+                      
+                      var _sequelize = require(&#x27;sequelize&#x27;);
+                      
+                      var _sequelize2 = _interopRequireDefault(_sequelize);
+                      
+                      function _interopRequireDefault(obj) { return obj &amp;&amp; obj.__esModule ? obj : { default: obj }; }
                       
                       var connectionInstances = {},
                           queryLogging,
-                          enableQueryLogging = true;
+                          enableQueryLogging = true; /**
+                                                      * Mixes in methods used to work with a database
+                                                      *
+                                                      * @class Nextract.Plugins.Core.Database
+                                                      */
                       
                       queryLogging = enableQueryLogging === false ? false : sequelizeQueryLogging;
                       
@@ -112,9 +128,9 @@
                       
                       function buildNewConnection(dbName) {
                         //TODO: add error handling if db does not exist in pluginConfig
-                        var dbpluginConfig = pluginConfig.databases[dbName];
+                        var dbpluginConfig = _default2.default.databases[dbName];
                       
-                        connectionInstances[dbName] = new Sequelize(dbpluginConfig.name, dbpluginConfig.user, dbpluginConfig.password, {
+                        connectionInstances[dbName] = new _sequelize2.default(dbpluginConfig.name, dbpluginConfig.user, dbpluginConfig.password, {
                           host: dbpluginConfig.host,
                           dialect: dbpluginConfig.dialect,
                           //searchPath: &quot;&quot;,
@@ -133,7 +149,7 @@
                       //Database singleton mgmt
                       //Sequelize will setup a connection pool on initialization so you should ideally only ever create one instance per database.
                       function getInstance(dbName) {
-                        if (_.has(connectionInstances, dbName) === false) {
+                        if ((0, _has3.default)(connectionInstances, dbName) === false) {
                           buildNewConnection(dbName);
                         }
                       
@@ -157,7 +173,7 @@
                          * @return {Promise} Promise resolved with an array of database rows that match the given select statement
                          */
                         select: function select(dbName, sql, sqlParams) {
-                          if (!_.isArray(sqlParams)) {
+                          if (!(0, _isArray3.default)(sqlParams)) {
                             sqlParams = [];
                           }
                       

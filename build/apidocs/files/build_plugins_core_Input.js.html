@@ -40,7 +40,8 @@
                             <ul id="api-classes" class="apis classes">
                                 <li><a href="../classes/Nextract.html">Nextract</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Calculator.html">Nextract.Plugins.Core.Calculator</a></li>
-                                <li><a href="../classes/Nextract.Plugins.Core.Database.html">Nextract.Plugins.Core.Database</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Filter.html">Nextract.Plugins.Core.Filter</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.GroupBy.html">Nextract.Plugins.Core.GroupBy</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Input.html">Nextract.Plugins.Core.Input</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Output.html">Nextract.Plugins.Core.Output</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Sort.html">Nextract.Plugins.Core.Sort</a></li>
@@ -123,6 +124,8 @@
                       }
                       
                       function readCsvFile(filePath) {
+                        var parserConfig = arguments.length &lt;= 1 || arguments[1] === undefined ? { delimiter: &#x27;,&#x27;, columns: true } : arguments[1];
+                      
                         return new Promise(function (resolve, reject) {
                           //Read the contents of the file into memory
                           fs.readFile(filePath, function (err, fileData) {
@@ -135,7 +138,7 @@
                             var input = fileData.toString();
                       
                             //Ref: http://csv.adaltas.com/parse/
-                            csv.parse(input, { delimiter: &#x27;,&#x27;, columns: true }, function (err, output) {
+                            csv.parse(input, parserConfig, function (err, output) {
                               if (err) {
                                 pluginUtils.logger.error(&#x27;readTextFile csv parse&#x27;, err);
                                 reject(err);
@@ -158,11 +161,17 @@
                          *
                          * @param {String} fileType Type of file to write; json, csv, or excel
                          * @param {String} filePath Full path of file to read (include filename and extension)
+                         * @param {Object} parserConfig If fileType is &quot;csv&quot; then you can also pass a
+                         * parsing definition to handle the specific needs of your csv. If noe custom parserConfig
+                         * is given then a default config of { delimiter: &#x27;,&#x27;, columns: true } is used. The parserConfig
+                         * object allow all paser options supported by cvs-parse (http://csv.adaltas.com/parse/).
                          */
                         readFile: function readFile(fileType, filePath) {
+                          var parserConfig = arguments.length &lt;= 2 || arguments[2] === undefined ? null : arguments[2];
+                      
                           switch (fileType) {
                             case &#x27;csv&#x27;:
-                              return readCsvFile(filePath);
+                              return readCsvFile(filePath, parserConfig);
                             case &#x27;json&#x27;:
                               return readJsonFile(filePath);
                             case &#x27;excel&#x27;:

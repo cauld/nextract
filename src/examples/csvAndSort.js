@@ -15,7 +15,7 @@ ETL.loadPlugin('Core', ['Input', 'Output', 'Sort', 'Logger'])
       return ETL.Plugins.Core.Input.readFile('csv', sampleUsersInputFilePath);
     })
     .then(function(data) {
-      return ETL.Plugins.Core.Sort.by(data, ['last_name'], ['asc']);
+      return ETL.Plugins.Core.Sort.orderBy(data, ['last_name'], ['asc']);
     })
     .then(function(data) {
       ETL.Plugins.Core.Logger.info('Sorted queryResults: ', data);

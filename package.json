@@ -25,6 +25,7 @@
   "author": "Brilaps, LLC",
   "devDependencies": {
     "babel-eslint": "^6.1.2",
+    "babel-plugin-lodash": "^3.2.8",
     "eslint": "^3.3.0",
     "eslint-config-standard": "^5.3.5",
     "eslint-plugin-json": "^1.2.0",

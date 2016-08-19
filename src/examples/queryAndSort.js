@@ -12,7 +12,7 @@ ETL.loadPlugin('Core', ['Database', 'Sort', 'Logger'])
       return ETL.Plugins.Core.Database.select('nextract_sample', 'select first_name, last_name from users');
     })
     .then(function(data) {
-      return ETL.Plugins.Core.Sort.by(data, ['first_name', 'last_name'], ['desc', 'desc']);
+      return ETL.Plugins.Core.Sort.orderBy(data, ['first_name', 'last_name'], ['desc', 'desc']);
     })
     .then(function(data) {
       ETL.Plugins.Core.Logger.info('Sorted queryResults: ', data);

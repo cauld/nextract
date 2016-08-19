@@ -4,10 +4,12 @@
  * @class Nextract.Plugins.Core.Database
  */
 
-var _            = require('lodash'),
-    path         = require('path'),
-    pluginConfig = require(path.resolve(__dirname, '../config/default')),
-    Sequelize    = require('sequelize');
+import _ from 'lodash';
+import { has, isArray } from 'lodash/fp';
+import path from 'path';
+import pluginConfig from '../config/default';
+import Sequelize from 'sequelize';
+
 
 var connectionInstances = {},
     queryLogging,

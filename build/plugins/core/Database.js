@@ -1,19 +1,34 @@
 'use strict';
 
-/**
- * Mixes in methods used to work with a database
- *
- * @class Nextract.Plugins.Core.Database
- */
+var _isArray2 = require('lodash/isArray');
 
-var _ = require('lodash'),
-    path = require('path'),
-    pluginConfig = require(path.resolve(__dirname, '../config/default')),
-    Sequelize = require('sequelize');
+var _isArray3 = _interopRequireDefault(_isArray2);
+
+var _has2 = require('lodash/has');
+
+var _has3 = _interopRequireDefault(_has2);
+
+var _path = require('path');
+
+var _path2 = _interopRequireDefault(_path);
+
+var _default = require('../config/default');
+
+var _default2 = _interopRequireDefault(_default);
+
+var _sequelize = require('sequelize');
+
+var _sequelize2 = _interopRequireDefault(_sequelize);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var connectionInstances = {},
     queryLogging,
-    enableQueryLogging = true;
+    enableQueryLogging = true; /**
+                                * Mixes in methods used to work with a database
+                                *
+                                * @class Nextract.Plugins.Core.Database
+                                */
 
 queryLogging = enableQueryLogging === false ? false : sequelizeQueryLogging;
 
@@ -24,9 +39,9 @@ function sequelizeQueryLogging(sql) {
 
 function buildNewConnection(dbName) {
   //TODO: add error handling if db does not exist in pluginConfig
-  var dbpluginConfig = pluginConfig.databases[dbName];
+  var dbpluginConfig = _default2.default.databases[dbName];
 
-  connectionInstances[dbName] = new Sequelize(dbpluginConfig.name, dbpluginConfig.user, dbpluginConfig.password, {
+  connectionInstances[dbName] = new _sequelize2.default(dbpluginConfig.name, dbpluginConfig.user, dbpluginConfig.password, {
     host: dbpluginConfig.host,
     dialect: dbpluginConfig.dialect,
     //searchPath: "",
@@ -45,7 +60,7 @@ function buildNewConnection(dbName) {
 //Database singleton mgmt
 //Sequelize will setup a connection pool on initialization so you should ideally only ever create one instance per database.
 function getInstance(dbName) {
-  if (_.has(connectionInstances, dbName) === false) {
+  if ((0, _has3.default)(connectionInstances, dbName) === false) {
     buildNewConnection(dbName);
   }
 
@@ -69,7 +84,7 @@ module.exports = {
    * @return {Promise} Promise resolved with an array of database rows that match the given select statement
    */
   select: function select(dbName, sql, sqlParams) {
-    if (!_.isArray(sqlParams)) {
+    if (!(0, _isArray3.default)(sqlParams)) {
       sqlParams = [];
     }
 

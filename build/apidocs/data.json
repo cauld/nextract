@@ -53,23 +53,25 @@
         "build/plugins/core/Database.js": {
             "name": "build/plugins/core/Database.js",
             "modules": {},
-            "classes": {
-                "Nextract.Plugins.Core.Database": 1
-            },
+            "classes": {},
             "fors": {},
             "namespaces": {}
         },
         "build/plugins/core/Filter.js": {
             "name": "build/plugins/core/Filter.js",
             "modules": {},
-            "classes": {},
+            "classes": {
+                "Nextract.Plugins.Core.Filter": 1
+            },
             "fors": {},
             "namespaces": {}
         },
         "build/plugins/core/GroupBy.js": {
             "name": "build/plugins/core/GroupBy.js",
             "modules": {},
-            "classes": {},
+            "classes": {
+                "Nextract.Plugins.Core.GroupBy": 1
+            },
             "fors": {},
             "namespaces": {}
         },
@@ -160,20 +162,32 @@
             "plugin_for": [],
             "extension_for": [],
             "file": "build/plugins/core/Calculator.js",
-            "line": 3,
+            "line": 41,
             "description": "Mixes in a series of common mathematical calculations"
         },
-        "Nextract.Plugins.Core.Database": {
-            "name": "Nextract.Plugins.Core.Database",
-            "shortname": "Nextract.Plugins.Core.Database",
+        "Nextract.Plugins.Core.Filter": {
+            "name": "Nextract.Plugins.Core.Filter",
+            "shortname": "Nextract.Plugins.Core.Filter",
             "classitems": [],
             "plugins": [],
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
-            "file": "build/plugins/core/Database.js",
-            "line": 3,
-            "description": "Mixes in methods used to work with a database"
+            "file": "build/plugins/core/Filter.js",
+            "line": 17,
+            "description": "Mixes in methods used to filter sets of data"
+        },
+        "Nextract.Plugins.Core.GroupBy": {
+            "name": "Nextract.Plugins.Core.GroupBy",
+            "shortname": "Nextract.Plugins.Core.GroupBy",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "build/plugins/core/GroupBy.js",
+            "line": 21,
+            "description": "Mixes in methods used to perform grouping operations on data"
         },
         "Nextract.Plugins.Core.Input": {
             "name": "Nextract.Plugins.Core.Input",
@@ -208,7 +222,7 @@
             "plugin_for": [],
             "extension_for": [],
             "file": "build/plugins/core/Sort.js",
-            "line": 3,
+            "line": 21,
             "description": "Mixes in methods used to sort data"
         },
         "Nextract.Plugins.Core.Utils": {
@@ -271,15 +285,79 @@
         },
         {
             "file": "build/plugins/core/Calculator.js",
-            "line": 13,
+            "line": 49,
             "description": "Adds numbers",
             "itemtype": "method",
             "name": "add",
             "class": "Nextract.Plugins.Core.Calculator"
         },
         {
+            "file": "build/plugins/core/Calculator.js",
+            "line": 58,
+            "description": "Adds numbers",
+            "itemtype": "method",
+            "name": "subtract",
+            "class": "Nextract.Plugins.Core.Calculator"
+        },
+        {
+            "file": "build/plugins/core/Calculator.js",
+            "line": 67,
+            "description": "Adds numbers",
+            "itemtype": "method",
+            "name": "ceil",
+            "class": "Nextract.Plugins.Core.Calculator"
+        },
+        {
+            "file": "build/plugins/core/Calculator.js",
+            "line": 76,
+            "description": "Adds numbers",
+            "itemtype": "method",
+            "name": "divide",
+            "class": "Nextract.Plugins.Core.Calculator"
+        },
+        {
+            "file": "build/plugins/core/Calculator.js",
+            "line": 85,
+            "description": "Adds numbers",
+            "itemtype": "method",
+            "name": "floor",
+            "class": "Nextract.Plugins.Core.Calculator"
+        },
+        {
+            "file": "build/plugins/core/Calculator.js",
+            "line": 94,
+            "description": "Adds numbers",
+            "itemtype": "method",
+            "name": "mean",
+            "class": "Nextract.Plugins.Core.Calculator"
+        },
+        {
+            "file": "build/plugins/core/Calculator.js",
+            "line": 103,
+            "description": "Adds numbers",
+            "itemtype": "method",
+            "name": "multiply",
+            "class": "Nextract.Plugins.Core.Calculator"
+        },
+        {
+            "file": "build/plugins/core/Calculator.js",
+            "line": 112,
+            "description": "Adds numbers",
+            "itemtype": "method",
+            "name": "round",
+            "class": "Nextract.Plugins.Core.Calculator"
+        },
+        {
+            "file": "build/plugins/core/Calculator.js",
+            "line": 121,
+            "description": "Adds numbers",
+            "itemtype": "method",
+            "name": "concat",
+            "class": "Nextract.Plugins.Core.Calculator"
+        },
+        {
             "file": "build/plugins/core/Database.js",
-            "line": 57,
+            "line": 72,
             "description": "Raw query interface for select statements",
             "itemtype": "method",
             "name": "select",
@@ -307,19 +385,196 @@
                 "description": "Promise resolved with an array of database rows that match the given select statement",
                 "type": "Promise"
             },
-            "class": "Nextract.Plugins.Core.Database"
+            "class": "Nextract.Plugins.Core.Filter"
         },
         {
             "file": "build/plugins/core/Filter.js",
-            "line": 3,
+            "line": 13,
             "description": "Custom module used to filter data...",
-            "class": "Nextract.Plugins.Core.Input"
+            "class": "Nextract.Plugins.Core.Filter"
+        },
+        {
+            "file": "build/plugins/core/Filter.js",
+            "line": 25,
+            "description": "Iterates over elements of collection, returning an array of all elements\nthat equal the given testValue.",
+            "itemtype": "method",
+            "name": "equals",
+            "example": [
+                "\n    ETL.Plugins.Core.Filter.equals(collection, 'foo', 'name');"
+            ],
+            "params": [
+                {
+                    "name": "collection",
+                    "description": "The collection to iterate over",
+                    "type": "Array|Object"
+                },
+                {
+                    "name": "valueToTest",
+                    "description": "The value being against during each iteration",
+                    "type": "String|Number"
+                },
+                {
+                    "name": "propertyToTest",
+                    "description": "The object property name being tested against during each iteration",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "Promise resolved with an array of all elements that equal the testValue",
+                "type": "Promise"
+            },
+            "class": "Nextract.Plugins.Core.Filter"
+        },
+        {
+            "file": "build/plugins/core/Filter.js",
+            "line": 48,
+            "description": "Iterates over elements of collection, returning an array of all elements\nthat are greater than the given number.",
+            "itemtype": "method",
+            "name": "greaterThan",
+            "example": [
+                "\n    ETL.Plugins.Core.Filter.greaterThan(collection, 10);"
+            ],
+            "params": [
+                {
+                    "name": "collection",
+                    "description": "The collection to iterate over",
+                    "type": "Array|Object"
+                },
+                {
+                    "name": "valueToTest",
+                    "description": "The value being against during each iteration",
+                    "type": "String|Number"
+                },
+                {
+                    "name": "propertyToTest",
+                    "description": "The object property name being tested against during each iteration",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "Promise resolved with an array of all elements that are greater than the testValue",
+                "type": "Promise"
+            },
+            "class": "Nextract.Plugins.Core.Filter"
+        },
+        {
+            "file": "build/plugins/core/Filter.js",
+            "line": 71,
+            "description": "Iterates over elements of collection, returning an array of all elements\nthat are less than the given number.",
+            "itemtype": "method",
+            "name": "lessThan",
+            "example": [
+                "\n    ETL.Plugins.Core.Filter.lessThan(collection, 10);"
+            ],
+            "params": [
+                {
+                    "name": "collection",
+                    "description": "The collection to iterate over",
+                    "type": "Array|Object"
+                },
+                {
+                    "name": "valueToTest",
+                    "description": "The value being against during each iteration",
+                    "type": "String|Number"
+                },
+                {
+                    "name": "propertyToTest",
+                    "description": "The object property name being tested against during each iteration",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "Promise resolved with an array of all elements that are less than the testValue",
+                "type": "Promise"
+            },
+            "class": "Nextract.Plugins.Core.Filter"
+        },
+        {
+            "file": "build/plugins/core/Filter.js",
+            "line": 94,
+            "description": "Creates a duplicate-free version of a collection, using SameValueZero for equality comparisons, in which\nonly the first occurrence of each element is kept.\n\nFor usage reference - https://lodash.com/docs#uniqBy",
+            "itemtype": "method",
+            "name": "uniqBy",
+            "example": [
+                "\n    ETL.Plugins.Core.Filter.uniqBy(collection, 'last_name');"
+            ],
+            "params": [
+                {
+                    "name": "collection",
+                    "description": "The collection to iterate over",
+                    "type": "Array|Object"
+                },
+                {
+                    "name": "propertyToTest",
+                    "description": "The object property name being tested against during each iteration",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "Promise resolved with the new duplicate free array",
+                "type": "Promise"
+            },
+            "class": "Nextract.Plugins.Core.Filter"
         },
         {
             "file": "build/plugins/core/GroupBy.js",
-            "line": 3,
-            "description": "Custom module used to perform grouping operations on data...",
-            "class": "Nextract.Plugins.Core.Input"
+            "line": 29,
+            "description": "Computes the maximum value of array. It accepts iteratee which is invoked for each element in\narray to generate the criterion by which the value is ranked. The iteratee is invoked with\none argument: (value).\n\nFor usage reference - https://lodash.com/docs#maxBy",
+            "itemtype": "method",
+            "name": "maxBy",
+            "example": [
+                "\n    ETL.Plugins.Core.GroupBy.maxBy(objects, 'n');"
+            ],
+            "return": {
+                "description": "Promise resolved with the maximum value",
+                "type": "Promise"
+            },
+            "class": "Nextract.Plugins.Core.GroupBy"
+        },
+        {
+            "file": "build/plugins/core/GroupBy.js",
+            "line": 46,
+            "description": "Computes the minimum value of array. It accepts iteratee which is invoked for each element in\narray to generate the criterion by which the value is ranked. The iteratee is invoked with\none argument: (value).\n\nFor usage reference - https://lodash.com/docs#minBy",
+            "itemtype": "method",
+            "name": "minBy",
+            "example": [
+                "\n    ETL.Plugins.Core.GroupBy.minBy(objects, 'n');"
+            ],
+            "return": {
+                "description": "Promise resolved with the maximum value",
+                "type": "Promise"
+            },
+            "class": "Nextract.Plugins.Core.GroupBy"
+        },
+        {
+            "file": "build/plugins/core/GroupBy.js",
+            "line": 63,
+            "description": "Computes the mean of the values in array. It accepts iteratee which is invoked for each element in\narray to generate the criterion by which the value is ranked. The iteratee is invoked with\none argument: (value).\n\nFor usage reference - https://lodash.com/docs#maxBy",
+            "itemtype": "method",
+            "name": "meanBy",
+            "example": [
+                "\n    ETL.Plugins.Core.GroupBy.meanBy(objects, 'n');"
+            ],
+            "return": {
+                "description": "Promise resolved with the maximum value",
+                "type": "Promise"
+            },
+            "class": "Nextract.Plugins.Core.GroupBy"
+        },
+        {
+            "file": "build/plugins/core/GroupBy.js",
+            "line": 80,
+            "description": "Computes the sum of the values in array. It accepts iteratee which is invoked for each element\nin array to generate the value to be summed. The iteratee is invoked with one argument: (value).\n\nFor usage reference - https://lodash.com/docs#maxBy",
+            "itemtype": "method",
+            "name": "sumBy",
+            "example": [
+                "\n    ETL.Plugins.Core.GroupBy.sumBy(objects, 'n');"
+            ],
+            "return": {
+                "description": "Promise resolved with the sum",
+                "type": "Promise"
+            },
+            "class": "Nextract.Plugins.Core.GroupBy"
         },
         {
             "file": "build/plugins/core/Http.js",
@@ -329,7 +584,7 @@
         },
         {
             "file": "build/plugins/core/Input.js",
-            "line": 64,
+            "line": 66,
             "description": "Used to read files",
             "itemtype": "method",
             "name": "readFile",
@@ -346,6 +601,11 @@
                     "name": "filePath",
                     "description": "Full path of file to read (include filename and extension)",
                     "type": "String"
+                },
+                {
+                    "name": "parserConfig",
+                    "description": "If fileType is \"csv\" then you can also pass a\nparsing definition to handle the specific needs of your csv. If noe custom parserConfig\nis given then a default config of { delimiter: ',', columns: true } is used. The parserConfig\nobject allow all paser options supported by cvs-parse (http://csv.adaltas.com/parse/).",
+                    "type": "Object"
                 }
             ],
             "class": "Nextract.Plugins.Core.Input"
@@ -391,22 +651,57 @@
         },
         {
             "file": "build/plugins/core/Sort.js",
-            "line": 21,
-            "description": "TBD...",
+            "line": 29,
+            "description": "This method is like _.sortBy except that it allows specifying the sort orders of the iteratees to sort by.\nIf orders is unspecified, all values are sorted in ascending order. Otherwise, specify an order of \"desc\"\nfor descending or \"asc\" for ascending sort order of corresponding values.\n\nFor usage reference - https://lodash.com/docs#orderBy",
             "itemtype": "method",
-            "name": "by",
+            "name": "orderBy",
             "example": [
-                "\n    ETL.Plugins.Core.Utils.runAll([p1, p2]);"
+                "\n    ETL.Plugins.Core.Sort.orderBy(users, ['user', 'age'], ['asc', 'desc']);"
+            ],
+            "return": {
+                "description": "Promise resolved with the new sorted array",
+                "type": "Promise"
+            },
+            "class": "Nextract.Plugins.Core.Sort"
+        },
+        {
+            "file": "build/plugins/core/Sort.js",
+            "line": 49,
+            "description": "Creates an array of elements, sorted in ascending order by the results of running each element in a collection thru each iteratee.\nThis method performs a stable sort, that is, it preserves the original sort order of equal elements.\nThe iteratees are invoked with one argument: (value).\n\nFor usage reference - https://lodash.com/docs#sortBy",
+            "itemtype": "method",
+            "name": "sortBy",
+            "example": [
+                "\n    ETL.Plugins.Core.Sort.sortBy(users, ['user', 'age']);"
+            ],
+            "return": {
+                "description": "Promise resolved with the new sorted array",
+                "type": "Promise"
+            },
+            "class": "Nextract.Plugins.Core.Sort"
+        },
+        {
+            "file": "build/plugins/core/Sort.js",
+            "line": 68,
+            "description": "Sorts the elements of an array in place via a custom compare function\n\nFor usage reference - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort",
+            "itemtype": "method",
+            "name": "customCompare",
+            "example": [
+                "\n    ETL.Plugins.Core.Sort.customCompare(users, compareFunction);"
             ],
             "params": [
                 {
-                    "name": "promisesToRunAn",
-                    "description": "array of Promises",
-                    "type": "Array"
+                    "name": "collection",
+                    "description": "The collection to iterate over",
+                    "type": "Array|Object"
+                },
+                {
+                    "name": "Specifies",
+                    "description": "a function that defines the sort order",
+                    "type": "Function"
                 }
             ],
             "return": {
-                "description": "Promise resolved with an array of Promise resolutions",
+                "description": "Promise resolved with the new sorted array",
                 "type": "Promise"
             },
             "class": "Nextract.Plugins.Core.Sort"
@@ -507,11 +802,7 @@
         },
         {
             "message": "Missing item type\nCustom module used to filter data...",
-            "line": " build/plugins/core/Filter.js:3"
-        },
-        {
-            "message": "Missing item type\nCustom module used to perform grouping operations on data...",
-            "line": " build/plugins/core/GroupBy.js:3"
+            "line": " build/plugins/core/Filter.js:13"
         },
         {
             "message": "Missing item type\nCustom module used to ...",

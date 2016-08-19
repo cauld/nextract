@@ -40,7 +40,8 @@
                             <ul id="api-classes" class="apis classes">
                                 <li><a href="../classes/Nextract.html">Nextract</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Calculator.html">Nextract.Plugins.Core.Calculator</a></li>
-                                <li><a href="../classes/Nextract.Plugins.Core.Database.html">Nextract.Plugins.Core.Database</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Filter.html">Nextract.Plugins.Core.Filter</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.GroupBy.html">Nextract.Plugins.Core.GroupBy</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Input.html">Nextract.Plugins.Core.Input</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Output.html">Nextract.Plugins.Core.Output</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Sort.html">Nextract.Plugins.Core.Sort</a></li>
@@ -140,6 +141,9 @@
                                       <li class="arg">
                                               <code>filePath</code>
                                       </li>
+                                      <li class="arg">
+                                              <code>parserConfig</code>
+                                      </li>
                                   </ul><span class="paren">)</span>
                               </div>
                       
@@ -153,7 +157,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_core_Input.js.html#l64"><code>build&#x2F;plugins&#x2F;core&#x2F;Input.js:64</code></a>
+                              <a href="../files/build_plugins_core_Input.js.html#l66"><code>build&#x2F;plugins&#x2F;core&#x2F;Input.js:66</code></a>
                               </p>
                       
                       
@@ -187,6 +191,20 @@
                       
                                           <div class="param-description">
                                               <p>Full path of file to read (include filename and extension)</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">parserConfig</code>
+                                              <span class="type">Object</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>If fileType is &quot;csv&quot; then you can also pass a
+                      parsing definition to handle the specific needs of your csv. If noe custom parserConfig
+                      is given then a default config of { delimiter: ',', columns: true } is used. The parserConfig
+                      object allow all paser options supported by cvs-parse (<a href="http://csv.adaltas.com/parse/">http://csv.adaltas.com/parse/</a>).</p>
                       
                                           </div>
                       

@@ -40,7 +40,8 @@
                             <ul id="api-classes" class="apis classes">
                                 <li><a href="../classes/Nextract.html">Nextract</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Calculator.html">Nextract.Plugins.Core.Calculator</a></li>
-                                <li><a href="../classes/Nextract.Plugins.Core.Database.html">Nextract.Plugins.Core.Database</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Filter.html">Nextract.Plugins.Core.Filter</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.GroupBy.html">Nextract.Plugins.Core.GroupBy</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Input.html">Nextract.Plugins.Core.Input</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Output.html">Nextract.Plugins.Core.Output</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Sort.html">Nextract.Plugins.Core.Sort</a></li>
@@ -88,48 +89,113 @@
                           <pre class="code prettyprint linenums">
                       &#x27;use strict&#x27;;
                       
+                      var _uniqBy2 = require(&#x27;lodash/uniqBy&#x27;);
+                      
+                      var _uniqBy3 = _interopRequireDefault(_uniqBy2);
+                      
+                      var _filter2 = require(&#x27;lodash/filter&#x27;);
+                      
+                      var _filter3 = _interopRequireDefault(_filter2);
+                      
+                      function _interopRequireDefault(obj) { return obj &amp;&amp; obj.__esModule ? obj : { default: obj }; }
+                      
                       /**
                        * Custom module used to filter data...
                        */
                       
-                      var _ = require(&#x27;lodash&#x27;);
+                      /**
+                       * Mixes in methods used to filter sets of data
+                       *
+                       * @class Nextract.Plugins.Core.Filter
+                       */
                       
                       module.exports = {
                       
-                        //TODO: Implement...
-                        /*
-                          _.find
-                          _.uniq
-                        */
-                      
-                        equals: function equals(data, propertyToTest, testValue) {
+                        /**
+                         * Iterates over elements of collection, returning an array of all elements
+                         * that equal the given testValue.
+                         *
+                         * @method equals
+                         * @example
+                         *     ETL.Plugins.Core.Filter.equals(collection, &#x27;foo&#x27;, &#x27;name&#x27;);
+                          * @param {Array|Object} collection The collection to iterate over
+                         * @param {String|Number} valueToTest The value being against during each iteration
+                         * @param {String} propertyToTest The object property name being tested against during each iteration
+                         *
+                         * @return {Promise} Promise resolved with an array of all elements that equal the testValue
+                         */
+                        equals: function equals(collection, propertyToTest, valueToTest) {
                           return new Promise(function (resolve, reject) {
-                            var result = _.filter(data, function (v) {
-                              return v[propertyToTest] == testValue;
+                            var result = (0, _filter3.default)(collection, function (v) {
+                              return v[propertyToTest] == valueToTest;
                             });
                       
                             resolve(result);
                           });
                         },
                       
-                        greaterThan: function greaterThan(data, propertyToTest, testValue) {
+                        /**
+                         * Iterates over elements of collection, returning an array of all elements
+                         * that are greater than the given number.
+                         *
+                         * @method greaterThan
+                         * @example
+                         *     ETL.Plugins.Core.Filter.greaterThan(collection, 10);
+                          * @param {Array|Object} collection The collection to iterate over
+                         * @param {String|Number} valueToTest The value being against during each iteration
+                         * @param {String} propertyToTest The object property name being tested against during each iteration
+                         *
+                         * @return {Promise} Promise resolved with an array of all elements that are greater than the testValue
+                         */
+                        greaterThan: function greaterThan(collection, propertyToTest, valueToTest) {
                           return new Promise(function (resolve, reject) {
-                            var result = _.filter(data, function (v) {
-                              return v[propertyToTest] &gt; testValue;
+                            var result = (0, _filter3.default)(collection, function (v) {
+                              return v[propertyToTest] &gt; valueToTest;
                             });
                       
                             resolve(result);
                           });
                         },
                       
-                        lessThan: function lessThan(data, propertyToTest, testValue) {
+                        /**
+                         * Iterates over elements of collection, returning an array of all elements
+                         * that are less than the given number.
+                         *
+                         * @method lessThan
+                         * @example
+                         *     ETL.Plugins.Core.Filter.lessThan(collection, 10);
+                          * @param {Array|Object} collection The collection to iterate over
+                         * @param {String|Number} valueToTest The value being against during each iteration
+                         * @param {String} propertyToTest The object property name being tested against during each iteration
+                         *
+                         * @return {Promise} Promise resolved with an array of all elements that are less than the testValue
+                         */
+                        lessThan: function lessThan(collection, propertyToTest, valueToTest) {
                           return new Promise(function (resolve, reject) {
-                            var result = _.filter(data, function (v) {
-                              return v[propertyToTest] &lt; testValue;
+                            var result = (0, _filter3.default)(collection, function (v) {
+                              return v[propertyToTest] &lt; valueToTest;
                             });
                       
                             resolve(result);
                           });
+                        },
+                      
+                        /**
+                         * Creates a duplicate-free version of a collection, using SameValueZero for equality comparisons, in which
+                         * only the first occurrence of each element is kept.
+                         *
+                         * For usage reference - https://lodash.com/docs#uniqBy
+                         *
+                         * @method uniqBy
+                         * @example
+                         *     ETL.Plugins.Core.Filter.uniqBy(collection, &#x27;last_name&#x27;);
+                          * @param {Array|Object} collection The collection to iterate over
+                         * @param {String} propertyToTest The object property name being tested against during each iteration
+                         *
+                         * @return {Promise} Promise resolved with the new duplicate free array
+                         */
+                        uniqBy: function uniqBy(collection, propertyToTest) {
+                          return Promise.resolve((0, _uniqBy3.default)(collection, propertyToTest));
                         }
                       
                       };

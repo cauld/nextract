@@ -33,7 +33,7 @@ function readExcelFile(filePath) {
   });
 }
 
-function readCsvFile(filePath) {
+function readCsvFile(filePath, parserConfig = { delimiter: ',', columns: true }) {
   return new Promise(function (resolve, reject) {
     //Read the contents of the file into memory
     fs.readFile(filePath, function (err, fileData) {
@@ -46,7 +46,7 @@ function readCsvFile(filePath) {
       var input = fileData.toString();
 
       //Ref: http://csv.adaltas.com/parse/
-      csv.parse(input, { delimiter: ',', columns: true }, function(err, output) {
+      csv.parse(input, parserConfig, function(err, output) {
         if (err) {
           pluginUtils.logger.error('readTextFile csv parse', err);
           reject(err);
@@ -69,11 +69,15 @@ module.exports = {
    *
    * @param {String} fileType Type of file to write; json, csv, or excel
    * @param {String} filePath Full path of file to read (include filename and extension)
+   * @param {Object} parserConfig If fileType is "csv" then you can also pass a
+   * parsing definition to handle the specific needs of your csv. If noe custom parserConfig
+   * is given then a default config of { delimiter: ',', columns: true } is used. The parserConfig
+   * object allow all paser options supported by cvs-parse (http://csv.adaltas.com/parse/).
    */
-  readFile: function(fileType, filePath) {
+  readFile: function(fileType, filePath, parserConfig = null) {
     switch (fileType) {
       case 'csv':
-        return readCsvFile(filePath);
+        return readCsvFile(filePath, parserConfig);
       case 'json':
         return readJsonFile(filePath);
       case 'excel':

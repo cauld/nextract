@@ -3,11 +3,11 @@
   "extends": "eslint:recommended",
   "rules" : {
     "no-console": 0,
-    "no-unused-vars": [2, {"args": "none"}],
+    "no-unused-vars": [2, {"args": "none", "varsIgnorePattern": "^_"}],
     "comma-dangle": [2, "only-multiline"]
   },
   "globals": {
-    "_": true
+    "_path2": true
   },
   "env": {
     "node": true,

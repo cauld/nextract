@@ -40,7 +40,8 @@
                             <ul id="api-classes" class="apis classes">
                                 <li><a href="../classes/Nextract.html">Nextract</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Calculator.html">Nextract.Plugins.Core.Calculator</a></li>
-                                <li><a href="../classes/Nextract.Plugins.Core.Database.html">Nextract.Plugins.Core.Database</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Filter.html">Nextract.Plugins.Core.Filter</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.GroupBy.html">Nextract.Plugins.Core.GroupBy</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Input.html">Nextract.Plugins.Core.Input</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Output.html">Nextract.Plugins.Core.Output</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Sort.html">Nextract.Plugins.Core.Sort</a></li>
@@ -86,7 +87,25 @@
                       
                       <div class="file">
                           <pre class="code prettyprint linenums">
-                      &quot;use strict&quot;;
+                      &#x27;use strict&#x27;;
+                      
+                      var _isArray2 = require(&#x27;lodash/isArray&#x27;);
+                      
+                      var _isArray3 = _interopRequireDefault(_isArray2);
+                      
+                      var _isFunction2 = require(&#x27;lodash/isFunction&#x27;);
+                      
+                      var _isFunction3 = _interopRequireDefault(_isFunction2);
+                      
+                      var _sortBy2 = require(&#x27;lodash/sortBy&#x27;);
+                      
+                      var _sortBy3 = _interopRequireDefault(_sortBy2);
+                      
+                      var _orderBy2 = require(&#x27;lodash/orderBy&#x27;);
+                      
+                      var _orderBy3 = _interopRequireDefault(_orderBy2);
+                      
+                      function _interopRequireDefault(obj) { return obj &amp;&amp; obj.__esModule ? obj : { default: obj }; }
                       
                       /**
                        * Mixes in methods used to sort data
@@ -94,46 +113,68 @@
                        * @class Nextract.Plugins.Core.Sort
                        */
                       
-                      var _ = require(&#x27;lodash&#x27;);
-                      
                       module.exports = {
                       
-                        /*
-                          Arguments:
-                          collection (Array|Object): The collection to iterate over.
-                          [iteratees=[_.identity]] (Array[]|Function[]|Object[]|string[]): The iteratees to sort by.
-                          [orders] (string[]): The sort orders of iteratees.
-                          (e.g.) by(users, [&#x27;user&#x27;, &#x27;age&#x27;], [&#x27;asc&#x27;, &#x27;desc&#x27;]);
-                        */
-                      
                         /**
-                         * TBD...
+                         * This method is like _.sortBy except that it allows specifying the sort orders of the iteratees to sort by.
+                         * If orders is unspecified, all values are sorted in ascending order. Otherwise, specify an order of &quot;desc&quot;
+                         * for descending or &quot;asc&quot; for ascending sort order of corresponding values.
                          *
-                         * @method by
+                         * For usage reference - https://lodash.com/docs#orderBy
+                         *
+                         * @method orderBy
                          * @example
-                         *     ETL.Plugins.Core.Utils.runAll([p1, p2]);
+                         *     ETL.Plugins.Core.Sort.orderBy(users, [&#x27;user&#x27;, &#x27;age&#x27;], [&#x27;asc&#x27;, &#x27;desc&#x27;]);
                          *
-                         * @param {Array} promisesToRunAn array of Promises
-                         * @return {Promise} Promise resolved with an array of Promise resolutions
+                         * @return {Promise} Promise resolved with the new sorted array
                          */
-                        by: function by(dataToSort, propertiesToSortBy, propertiesSortDirection) {
-                          propertiesToSortBy = _.isArray(propertiesToSortBy) ? propertiesToSortBy : [propertiesToSortBy];
-                          propertiesSortDirection = _.isArray(propertiesSortDirection) ? propertiesSortDirection : [propertiesSortDirection];
+                        orderBy: function orderBy(collection) {
+                          var iteratees = arguments.length &lt;= 1 || arguments[1] === undefined ? [] : arguments[1];
+                          var orders = arguments.length &lt;= 2 || arguments[2] === undefined ? [] : arguments[2];
                       
-                          return new Promise(function (resolve, reject) {
-                            var ordered = _.orderBy(dataToSort, propertiesToSortBy, propertiesSortDirection);
-                            resolve(ordered);
-                          });
+                          return Promise.resolve((0, _orderBy3.default)(collection, iteratees, orders));
                         },
                       
-                        custom: function custom(dataToSort, customSortFunction) {
+                        /**
+                         * Creates an array of elements, sorted in ascending order by the results of running each element in a collection thru each iteratee.
+                         * This method performs a stable sort, that is, it preserves the original sort order of equal elements.
+                         * The iteratees are invoked with one argument: (value).
+                         *
+                         * For usage reference - https://lodash.com/docs#sortBy
+                         *
+                         * @method sortBy
+                         * @example
+                         *     ETL.Plugins.Core.Sort.sortBy(users, [&#x27;user&#x27;, &#x27;age&#x27;]);
+                         *
+                         * @return {Promise} Promise resolved with the new sorted array
+                         */
+                        sortBy: function sortBy(collection) {
+                          var iteratees = arguments.length &lt;= 1 || arguments[1] === undefined ? [] : arguments[1];
+                      
+                          return Promise.resolve((0, _sortBy3.default)(collection, iteratees));
+                        },
+                      
+                        /**
+                         * Sorts the elements of an array in place via a custom compare function
+                         *
+                         * For usage reference - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+                         *
+                         * @method customCompare
+                         * @example
+                         *     ETL.Plugins.Core.Sort.customCompare(users, compareFunction);
+                         *
+                         * @param {Array|Object} collection The collection to iterate over
+                         * @param {Function} Specifies a function that defines the sort order
+                         * @return {Promise} Promise resolved with the new sorted array
+                         */
+                        customCompare: function customCompare(collection, compareFunction) {
                           return new Promise(function (resolve, reject) {
-                            if (_.isFunction(customSortFunction) === false) {
+                            if ((0, _isFunction3.default)(compareFunction) === false) {
                               reject(&quot;A custom sorting function must be passed!&quot;);
-                            } else if (_.isArray(dataToSort) === false) {
+                            } else if ((0, _isArray3.default)(collection) === false) {
                               reject(&quot;The custom method expects an array of data to sort!&quot;);
                             } else {
-                              var ordered = dataToSort.sort(customSortFunction);
+                              var ordered = collection.sort(compareFunction);
                               resolve(ordered);
                             }
                           });
