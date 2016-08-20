@@ -4,11 +4,12 @@
  * @class Nextract.Plugins.Core.Output
  */
 
-var _           = require('lodash'),
-    jsonfile    = require('jsonfile'),
-    fs          = require('fs'),
-    csv         = require('csv'),
-    pluginUtils = require('../pluginUtils');
+import _ from 'lodash';
+import { isEmpty } from 'lodash/fp';
+import jsonfile from 'jsonfile';
+import fs from 'fs';
+import csv from 'csv';
+import pluginUtils from '../pluginUtils';
 
 function writeCsvFile(filePath, data, formattingConfig = {}) {
   return new Promise(function (resolve, reject) {

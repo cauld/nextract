@@ -1,23 +1,36 @@
 'use strict';
 
+var _jsonfile = require('jsonfile');
+
+var _jsonfile2 = _interopRequireDefault(_jsonfile);
+
+var _fs = require('fs');
+
+var _fs2 = _interopRequireDefault(_fs);
+
+var _csv = require('csv');
+
+var _csv2 = _interopRequireDefault(_csv);
+
+var _pluginUtils = require('../pluginUtils');
+
+var _pluginUtils2 = _interopRequireDefault(_pluginUtils);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 /**
  * Mixes in methods used to read files
  *
  * @class Nextract.Plugins.Core.Input
  */
 
-var jsonfile = require('jsonfile'),
-    fs = require('fs'),
-    csv = require('csv'),
-    pluginUtils = require('../pluginUtils');
-
 function readJsonFile(filePath) {
   return new Promise(function (resolve, reject) {
-    jsonfile.readFile(filePath, function (err, fileData) {
+    _jsonfile2.default.readFile(filePath, function (err, fileData) {
       console.log("fileData", fileData);
 
       if (err) {
-        pluginUtils.logger.error('readJsonFile', err);
+        _pluginUtils2.default.logger.error('readJsonFile', err);
         reject(err);
       } else {
         resolve(fileData);
@@ -39,9 +52,9 @@ function readCsvFile(filePath) {
 
   return new Promise(function (resolve, reject) {
     //Read the contents of the file into memory
-    fs.readFile(filePath, function (err, fileData) {
+    _fs2.default.readFile(filePath, function (err, fileData) {
       if (err) {
-        pluginUtils.logger.error('readTextFile', err);
+        _pluginUtils2.default.logger.error('readTextFile', err);
         reject(err);
       }
 
@@ -49,9 +62,9 @@ function readCsvFile(filePath) {
       var input = fileData.toString();
 
       //Ref: http://csv.adaltas.com/parse/
-      csv.parse(input, parserConfig, function (err, output) {
+      _csv2.default.parse(input, parserConfig, function (err, output) {
         if (err) {
-          pluginUtils.logger.error('readTextFile csv parse', err);
+          _pluginUtils2.default.logger.error('readTextFile csv parse', err);
           reject(err);
         } else {
           resolve(output);

@@ -1,32 +1,48 @@
 'use strict';
 
+var _isEmpty2 = require('lodash/isEmpty');
+
+var _isEmpty3 = _interopRequireDefault(_isEmpty2);
+
+var _jsonfile = require('jsonfile');
+
+var _jsonfile2 = _interopRequireDefault(_jsonfile);
+
+var _fs = require('fs');
+
+var _fs2 = _interopRequireDefault(_fs);
+
+var _csv = require('csv');
+
+var _csv2 = _interopRequireDefault(_csv);
+
+var _pluginUtils = require('../pluginUtils');
+
+var _pluginUtils2 = _interopRequireDefault(_pluginUtils);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 /**
  * Mixes in methods used to export files
  *
  * @class Nextract.Plugins.Core.Output
  */
 
-var _ = require('lodash'),
-    jsonfile = require('jsonfile'),
-    fs = require('fs'),
-    csv = require('csv'),
-    pluginUtils = require('../pluginUtils');
-
 function writeCsvFile(filePath, data) {
   var formattingConfig = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
 
   return new Promise(function (resolve, reject) {
-    if (!_.isEmpty(data)) {
+    if (!(0, _isEmpty3.default)(data)) {
       //Ref: http://csv.adaltas.com/stringify/
-      csv.stringify(data, formattingConfig, function (err, output) {
+      _csv2.default.stringify(data, formattingConfig, function (err, output) {
         if (err) {
-          pluginUtils.logger.error('writeTextFile', err);
+          _pluginUtils2.default.logger.error('writeTextFile', err);
           reject(err);
         }
 
-        fs.writeFile(filePath, output, function (err) {
+        _fs2.default.writeFile(filePath, output, function (err) {
           if (err) {
-            pluginUtils.logger.error('writeTextFile', err);
+            _pluginUtils2.default.logger.error('writeTextFile', err);
             reject(err);
           } else {
             resolve();
@@ -34,7 +50,7 @@ function writeCsvFile(filePath, data) {
         });
       });
     } else {
-      pluginUtils.logger.error('writeCsvFile', 'Input data is empty!');
+      _pluginUtils2.default.logger.error('writeCsvFile', 'Input data is empty!');
       reject('Input data is empty!');
     }
   });
@@ -58,17 +74,17 @@ function writeJsonFile(filePath, data) {
   var formattingConfig = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
 
   return new Promise(function (resolve, reject) {
-    if (!_.isEmpty(data)) {
-      jsonfile.writeFile(filePath, { "data": data }, formattingConfig, function (err) {
+    if (!(0, _isEmpty3.default)(data)) {
+      _jsonfile2.default.writeFile(filePath, { "data": data }, formattingConfig, function (err) {
         if (err) {
-          pluginUtils.logger.error('writeJsonFile', err);
+          _pluginUtils2.default.logger.error('writeJsonFile', err);
           reject(err);
         } else {
           resolve();
         }
       });
     } else {
-      pluginUtils.logger.error('writeJsonFile', 'Input data is empty!');
+      _pluginUtils2.default.logger.error('writeJsonFile', 'Input data is empty!');
       reject('Input data is empty!');
     }
   });

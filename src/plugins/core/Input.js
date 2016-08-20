@@ -4,10 +4,10 @@
  * @class Nextract.Plugins.Core.Input
  */
 
-var jsonfile    = require('jsonfile'),
-    fs          = require('fs'),
-    csv         = require('csv'),
-    pluginUtils = require('../pluginUtils');
+import jsonfile from 'jsonfile';
+import fs from 'fs';
+import csv from 'csv';
+import pluginUtils from '../pluginUtils';
 
 function readJsonFile(filePath) {
   return new Promise(function (resolve, reject) {

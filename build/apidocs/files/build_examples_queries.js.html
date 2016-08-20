@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>build/plugins/core/Logger.js - nextract</title>
+    <title>build/examples/queries.js - nextract</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -83,51 +83,32 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                      <h1 class="file-heading">File: build/plugins/core/Logger.js</h1>
+                      <h1 class="file-heading">File: build/examples/queries.js</h1>
                       
                       <div class="file">
                           <pre class="code prettyprint linenums">
                       &#x27;use strict&#x27;;
                       
-                      var _default = require(&#x27;../config/default&#x27;);
-                      
-                      var _default2 = _interopRequireDefault(_default);
-                      
-                      var _winston = require(&#x27;winston&#x27;);
-                      
-                      var logger = _interopRequireWildcard(_winston);
-                      
-                      function _interopRequireWildcard(obj) { if (obj &amp;&amp; obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-                      
-                      function _interopRequireDefault(obj) { return obj &amp;&amp; obj.__esModule ? obj : { default: obj }; }
-                      
                       /**
-                       * Winston logging config
-                       * References:
-                       * - https://github.com/winstonjs/winston
-                       * - http://stackoverflow.com/a/23330037
-                       * - http://stackoverflow.com/a/25233851
+                       * Example: Query and sort...
                        */
                       
-                      logger.setLevels({ debug: 0, info: 1, silly: 2, warn: 3, error: 4 });
-                      logger.addColors({ debug: &#x27;green&#x27;, info: &#x27;cyan&#x27;, silly: &#x27;magenta&#x27;, warn: &#x27;yellow&#x27;, error: &#x27;red&#x27; });
+                      var path = require(&#x27;path&#x27;),
+                          Nextract = require(path.resolve(__dirname, &#x27;../nextract&#x27;));
                       
-                      //Customize the console output
-                      logger.remove(logger.transports.Console);
-                      logger.add(logger.transports.Console, { level: &#x27;error&#x27;, colorize: true });
+                      var ETL = new Nextract();
                       
-                      //Only the Console transport is set on the default logger by default
-                      //We want to capture errors in a log file as well.
-                      logger.add(logger.transports.File, { filename: _default2.default.logging.logFilePath, level: &#x27;error&#x27; });
+                      ETL.loadPlugin(&#x27;Core&#x27;, [&#x27;Database&#x27;, &#x27;Calculator&#x27;, &#x27;Logger&#x27;]).then(function () {
+                        return ETL.Plugins.Core.Database.selectQuery(&#x27;nextract_sample&#x27;, &#x27;select first_name, last_name from users&#x27;);
+                      }).then(function (userData) {
+                        var deleteCriteria = [{ tableColumn: &#x27;first_name&#x27;, comparator: &#x27;=&#x27;, collectionField: &#x27;first_name&#x27; }, { tableColumn: &#x27;last_name&#x27;, comparator: &#x27;=&#x27;, collectionField: &#x27;last_name&#x27; }];
                       
-                      module.exports = {
-                      
-                        info: logger.info,
-                        warn: logger.warn,
-                        debug: logger.debug,
-                        error: logger.error
-                      
-                      };
+                        return ETL.Plugins.Core.Database.deleteQuery(&#x27;nextract_sample&#x27;, &#x27;users_copy&#x27;, userData, deleteCriteria);
+                      }).then(function (data) {
+                        ETL.Plugins.Core.Logger.debug(&#x27;Manipulated queryResults:&#x27;, data);
+                      }).catch(function (err) {
+                        ETL.Plugins.Core.Logger.error(&#x27;ETL process failed:&#x27;, err);
+                      });
                       
                           </pre>
                       </div>

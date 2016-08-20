@@ -89,24 +89,37 @@
                           <pre class="code prettyprint linenums">
                       &#x27;use strict&#x27;;
                       
+                      var _jsonfile = require(&#x27;jsonfile&#x27;);
+                      
+                      var _jsonfile2 = _interopRequireDefault(_jsonfile);
+                      
+                      var _fs = require(&#x27;fs&#x27;);
+                      
+                      var _fs2 = _interopRequireDefault(_fs);
+                      
+                      var _csv = require(&#x27;csv&#x27;);
+                      
+                      var _csv2 = _interopRequireDefault(_csv);
+                      
+                      var _pluginUtils = require(&#x27;../pluginUtils&#x27;);
+                      
+                      var _pluginUtils2 = _interopRequireDefault(_pluginUtils);
+                      
+                      function _interopRequireDefault(obj) { return obj &amp;&amp; obj.__esModule ? obj : { default: obj }; }
+                      
                       /**
                        * Mixes in methods used to read files
                        *
                        * @class Nextract.Plugins.Core.Input
                        */
                       
-                      var jsonfile = require(&#x27;jsonfile&#x27;),
-                          fs = require(&#x27;fs&#x27;),
-                          csv = require(&#x27;csv&#x27;),
-                          pluginUtils = require(&#x27;../pluginUtils&#x27;);
-                      
                       function readJsonFile(filePath) {
                         return new Promise(function (resolve, reject) {
-                          jsonfile.readFile(filePath, function (err, fileData) {
+                          _jsonfile2.default.readFile(filePath, function (err, fileData) {
                             console.log(&quot;fileData&quot;, fileData);
                       
                             if (err) {
-                              pluginUtils.logger.error(&#x27;readJsonFile&#x27;, err);
+                              _pluginUtils2.default.logger.error(&#x27;readJsonFile&#x27;, err);
                               reject(err);
                             } else {
                               resolve(fileData);
@@ -128,9 +141,9 @@
                       
                         return new Promise(function (resolve, reject) {
                           //Read the contents of the file into memory
-                          fs.readFile(filePath, function (err, fileData) {
+                          _fs2.default.readFile(filePath, function (err, fileData) {
                             if (err) {
-                              pluginUtils.logger.error(&#x27;readTextFile&#x27;, err);
+                              _pluginUtils2.default.logger.error(&#x27;readTextFile&#x27;, err);
                               reject(err);
                             }
                       
@@ -138,9 +151,9 @@
                             var input = fileData.toString();
                       
                             //Ref: http://csv.adaltas.com/parse/
-                            csv.parse(input, parserConfig, function (err, output) {
+                            _csv2.default.parse(input, parserConfig, function (err, output) {
                               if (err) {
-                                pluginUtils.logger.error(&#x27;readTextFile csv parse&#x27;, err);
+                                _pluginUtils2.default.logger.error(&#x27;readTextFile csv parse&#x27;, err);
                                 reject(err);
                               } else {
                                 resolve(output);

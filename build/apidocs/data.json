@@ -41,6 +41,13 @@
             "fors": {},
             "namespaces": {}
         },
+        "build/examples/queries.js": {
+            "name": "build/examples/queries.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
         "build/examples/queryAndCalc.js": {
             "name": "build/examples/queryAndCalc.js",
             "modules": {},
@@ -212,7 +219,7 @@
             "plugin_for": [],
             "extension_for": [],
             "file": "build/plugins/core/Input.js",
-            "line": 3,
+            "line": 21,
             "description": "Mixes in methods used to read files"
         },
         "Nextract.Plugins.Core.Output": {
@@ -224,7 +231,7 @@
             "plugin_for": [],
             "extension_for": [],
             "file": "build/plugins/core/Output.js",
-            "line": 3,
+            "line": 25,
             "description": "Mixes in methods used to export files"
         },
         "Nextract.Plugins.Core.Sort": {
@@ -260,7 +267,7 @@
             "plugin_for": [],
             "extension_for": [],
             "file": "build/nextract.js",
-            "line": 3,
+            "line": 17,
             "description": "ETL class that all programs start from",
             "is_constructor": 1
         }
@@ -295,6 +302,12 @@
             "file": "build/examples/parameterizedQuery.js",
             "line": 3,
             "description": "Example: Parameterized query",
+            "class": "Nextract.Plugins.Core.Calculator"
+        },
+        {
+            "file": "build/examples/queries.js",
+            "line": 3,
+            "description": "Example: Query and sort...",
             "class": "Nextract.Plugins.Core.Calculator"
         },
         {
@@ -496,10 +509,10 @@
         },
         {
             "file": "build/plugins/core/Database.js",
-            "line": 68,
+            "line": 125,
             "description": "Raw query interface for select statements",
             "itemtype": "method",
-            "name": "select",
+            "name": "selectQuery",
             "example": [
                 "\n    var sql = 'select first_name, last_name, age, salary from users where id = :id';\n    var sqlParams = { id: id };\n    ETL.Plugins.Core.Database.select('dbname', sql, sqlParams);"
             ],
@@ -522,6 +535,48 @@
             ],
             "return": {
                 "description": "Promise resolved with an array of database rows that match the given select statement",
+                "type": "Promise"
+            },
+            "class": "Nextract.Plugins.Core.Filter"
+        },
+        {
+            "file": "build/plugins/core/Database.js",
+            "line": 156,
+            "description": "Delete query executed for each row in the collection",
+            "itemtype": "method",
+            "name": "deleteQuery",
+            "example": [
+                "\n    var filterCriteria = [\n     { tableColumn: 'first_name', comparator: '=', collectionField: 'first_name' },\n     { tableColumn: 'last_name', comparator: '=', collectionField: 'last_name' }\n    ];\n\n    return ETL.Plugins.Core.Database.deleteQuery('nextract_sample', 'users', userData, filterCriteria);"
+            ],
+            "params": [
+                {
+                    "name": "dbName",
+                    "description": "A database name that matches a object key defined in your Nextract config file",
+                    "type": "String"
+                },
+                {
+                    "name": "tableName",
+                    "description": "Table name",
+                    "type": "String"
+                },
+                {
+                    "name": "collection",
+                    "description": "The collection to iterate on",
+                    "type": "Array"
+                },
+                {
+                    "name": "filterCriteria",
+                    "description": "Array of objects with key/value params to be subbed out in a\nparameterized query. The expected format is  [{ tableColumn: '', comparator: '', collectionField: '' }].",
+                    "type": "Array"
+                },
+                {
+                    "name": "maxParallelQueries",
+                    "description": "(optional) Max number of queries to run in parallel (defaults to 5)",
+                    "type": "Integer"
+                }
+            ],
+            "return": {
+                "description": "Promise resolved once all queries have completed",
                 "type": "Promise"
             },
             "class": "Nextract.Plugins.Core.Filter"
@@ -723,7 +778,7 @@
         },
         {
             "file": "build/plugins/core/Input.js",
-            "line": 66,
+            "line": 79,
             "description": "Used to read files",
             "itemtype": "method",
             "name": "readFile",
@@ -751,13 +806,13 @@
         },
         {
             "file": "build/plugins/core/Logger.js",
-            "line": 3,
+            "line": 15,
             "description": "Winston logging config\nReferences:\n- https://github.com/winstonjs/winston\n- http://stackoverflow.com/a/23330037\n- http://stackoverflow.com/a/25233851",
             "class": "Nextract.Plugins.Core.Output"
         },
         {
             "file": "build/plugins/core/Output.js",
-            "line": 79,
+            "line": 95,
             "description": "Used to output files",
             "itemtype": "method",
             "name": "writeFile",
@@ -875,13 +930,13 @@
         },
         {
             "file": "build/plugins/pluginUtils.js",
-            "line": 3,
-            "description": "Nextract Plugin Base",
+            "line": 15,
+            "description": "Nextract Plugin Utils",
             "class": "Nextract"
         },
         {
             "file": "build/nextract.js",
-            "line": 17,
+            "line": 27,
             "description": "Object containing references to core plugins that have loaded in the current program",
             "itemtype": "property",
             "name": "Plugins.Core",
@@ -890,7 +945,7 @@
         },
         {
             "file": "build/nextract.js",
-            "line": 26,
+            "line": 36,
             "description": "Object containing references to vendor plugins that have loaded in the current program",
             "itemtype": "property",
             "name": "Plugins.Vendor",
@@ -899,7 +954,7 @@
         },
         {
             "file": "build/nextract.js",
-            "line": 40,
+            "line": 50,
             "description": "Used to mixin the functionality of a core or 3rd party vendor ETL plugin. These\nplugins are located in plugins/core & plugins/vendor.",
             "itemtype": "method",
             "name": "loadPlugin",
@@ -941,6 +996,10 @@
         },
         {
             "message": "Missing item type\nExample: Query and sort...",
+            "line": " build/examples/queries.js:3"
+        },
+        {
+            "message": "Missing item type\nExample: Query and sort...",
             "line": " build/examples/queryAndCalc.js:3"
         },
         {
@@ -957,15 +1016,15 @@
         },
         {
             "message": "Missing item type\nWinston logging config\nReferences:\n- https://github.com/winstonjs/winston\n- http://stackoverflow.com/a/23330037\n- http://stackoverflow.com/a/25233851",
-            "line": " build/plugins/core/Logger.js:3"
+            "line": " build/plugins/core/Logger.js:15"
         },
         {
             "message": "Missing item type\nCustom module used to validate data",
             "line": " build/plugins/core/Validator.js:3"
         },
         {
-            "message": "Missing item type\nNextract Plugin Base",
-            "line": " build/plugins/pluginUtils.js:3"
+            "message": "Missing item type\nNextract Plugin Utils",
+            "line": " build/plugins/pluginUtils.js:15"
         }
     ]
 }

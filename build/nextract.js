@@ -1,15 +1,25 @@
 'use strict';
 
+var _isArray2 = require('lodash/isArray');
+
+var _isArray3 = _interopRequireDefault(_isArray2);
+
+var _path = require('path');
+
+var _path2 = _interopRequireDefault(_path);
+
+var _Logger = require('./plugins/core/Logger');
+
+var _Logger2 = _interopRequireDefault(_Logger);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 /**
  * ETL class that all programs start from
  *
  * @class Nextract
  * @constructor
  */
-
-var _ = require('lodash'),
-    path = require('path'),
-    logger = require('./plugins/core/Logger');
 
 var Nextract = function Nextract() {
 
@@ -54,17 +64,17 @@ Nextract.prototype.mixin = function (pluginType, pluginNames) {
   var that = this;
 
   return new Promise(function (resolve, reject) {
-    pluginNames = _.isArray(pluginNames) ? pluginNames : [pluginNames];
+    pluginNames = (0, _isArray3.default)(pluginNames) ? pluginNames : [pluginNames];
 
     pluginNames.forEach(function (pluginName) {
       try {
         if (pluginType === 'Core') {
-          that.Plugins.Core[pluginName] = require(path.resolve(__dirname, 'plugins/core/' + pluginName));
+          that.Plugins.Core[pluginName] = require(_path2.default.resolve(__dirname, 'plugins/core/' + pluginName));
         } else {
-          that.Plugins.Vendor[pluginName] = require(path.resolve(__dirname, 'plugins/vendor/' + pluginName));
+          that.Plugins.Vendor[pluginName] = require(_path2.default.resolve(__dirname, 'plugins/vendor/' + pluginName));
         }
       } catch (err) {
-        logger.error('Nextract mixin: ', err);
+        _Logger2.default.error('Nextract mixin: ', err);
         reject(err);
       }
     });

@@ -5,9 +5,10 @@
  * @constructor
  */
 
-var _      = require('lodash'),
-    path   = require('path'),
-    logger = require('./plugins/core/Logger');
+import _ from 'lodash';
+import { isArray } from 'lodash/fp';
+import path from 'path';
+import logger from './plugins/core/Logger';
 
 var Nextract = function() {
 

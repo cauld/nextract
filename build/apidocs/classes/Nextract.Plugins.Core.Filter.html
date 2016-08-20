@@ -117,6 +117,10 @@
                       
                                           <ul class="index-list methods">
                                                   <li class="index-item method">
+                                                      <a href="#method_deleteQuery">deleteQuery</a>
+                      
+                                                  </li>
+                                                  <li class="index-item method">
                                                       <a href="#method_equals">equals</a>
                       
                                                   </li>
@@ -129,7 +133,7 @@
                       
                                                   </li>
                                                   <li class="index-item method">
-                                                      <a href="#method_select">select</a>
+                                                      <a href="#method_selectQuery">selectQuery</a>
                       
                                                   </li>
                                                   <li class="index-item method">
@@ -146,6 +150,142 @@
                                   <div id="methods" class="api-class-tabpanel">
                                       <h2 class="off-left">Methods</h2>
                       
+                      <div id="method_deleteQuery" class="method item">
+                          <h3 class="name"><code>deleteQuery</code></h3>
+                      
+                              <div class="args">
+                                  <span class="paren">(</span><ul class="args-list inline commas">
+                                      <li class="arg">
+                                              <code>dbName</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>tableName</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>collection</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>filterCriteria</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>maxParallelQueries</code>
+                                      </li>
+                                  </ul><span class="paren">)</span>
+                              </div>
+                      
+                              <span class="returns-inline">
+                                  <span class="type">Promise</span>
+                              </span>
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                          <div class="meta">
+                                      <p>
+                                      Defined in
+                              <a href="../files/build_plugins_core_Database.js.html#l156"><code>build&#x2F;plugins&#x2F;core&#x2F;Database.js:156</code></a>
+                              </p>
+                      
+                      
+                      
+                          </div>
+                      
+                          <div class="description">
+                              <p>Delete query executed for each row in the collection</p>
+                      
+                          </div>
+                      
+                              <div class="params">
+                                  <h4>Parameters:</h4>
+                      
+                                  <ul class="params-list">
+                                      <li class="param">
+                                              <code class="param-name">dbName</code>
+                                              <span class="type">String</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>A database name that matches a object key defined in your Nextract config file</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">tableName</code>
+                                              <span class="type">String</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>Table name</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">collection</code>
+                                              <span class="type">Array</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>The collection to iterate on</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">filterCriteria</code>
+                                              <span class="type">Array</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>Array of objects with key/value params to be subbed out in a
+                      parameterized query. The expected format is  [{ tableColumn: '', comparator: '', collectionField: '' }].</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">maxParallelQueries</code>
+                                              <span class="type">Integer</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>(optional) Max number of queries to run in parallel (defaults to 5)</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                  </ul>
+                              </div>
+                      
+                              <div class="returns">
+                                  <h4>Returns:</h4>
+                      
+                                  <div class="returns-description">
+                                              <span class="type">Promise</span>:
+                                          <p>Promise resolved once all queries have completed</p>
+                      
+                                  </div>
+                              </div>
+                      
+                      
+                              <div class="example">
+                                  <h4>Example:</h4>
+                      
+                                  <div class="example-content">
+                                      <pre class="code prettyprint"><code>var filterCriteria = [
+                       { tableColumn: 'first_name', comparator: '=', collectionField: 'first_name' },
+                       { tableColumn: 'last_name', comparator: '=', collectionField: 'last_name' }
+                      ];
+                      
+                      return ETL.Plugins.Core.Database.deleteQuery('nextract_sample', 'users', userData, filterCriteria);</code></pre>
+                      
+                                  </div>
+                              </div>
+                      </div>
                       <div id="method_equals" class="method item">
                           <h3 class="name"><code>equals</code></h3>
                       
@@ -455,8 +595,8 @@
                                   </div>
                               </div>
                       </div>
-                      <div id="method_select" class="method item">
-                          <h3 class="name"><code>select</code></h3>
+                      <div id="method_selectQuery" class="method item">
+                          <h3 class="name"><code>selectQuery</code></h3>
                       
                               <div class="args">
                                   <span class="paren">(</span><ul class="args-list inline commas">
@@ -485,7 +625,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_core_Database.js.html#l68"><code>build&#x2F;plugins&#x2F;core&#x2F;Database.js:68</code></a>
+                              <a href="../files/build_plugins_core_Database.js.html#l125"><code>build&#x2F;plugins&#x2F;core&#x2F;Database.js:125</code></a>
                               </p>
                       
                       

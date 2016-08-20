@@ -89,33 +89,49 @@
                           <pre class="code prettyprint linenums">
                       &#x27;use strict&#x27;;
                       
+                      var _isEmpty2 = require(&#x27;lodash/isEmpty&#x27;);
+                      
+                      var _isEmpty3 = _interopRequireDefault(_isEmpty2);
+                      
+                      var _jsonfile = require(&#x27;jsonfile&#x27;);
+                      
+                      var _jsonfile2 = _interopRequireDefault(_jsonfile);
+                      
+                      var _fs = require(&#x27;fs&#x27;);
+                      
+                      var _fs2 = _interopRequireDefault(_fs);
+                      
+                      var _csv = require(&#x27;csv&#x27;);
+                      
+                      var _csv2 = _interopRequireDefault(_csv);
+                      
+                      var _pluginUtils = require(&#x27;../pluginUtils&#x27;);
+                      
+                      var _pluginUtils2 = _interopRequireDefault(_pluginUtils);
+                      
+                      function _interopRequireDefault(obj) { return obj &amp;&amp; obj.__esModule ? obj : { default: obj }; }
+                      
                       /**
                        * Mixes in methods used to export files
                        *
                        * @class Nextract.Plugins.Core.Output
                        */
                       
-                      var _ = require(&#x27;lodash&#x27;),
-                          jsonfile = require(&#x27;jsonfile&#x27;),
-                          fs = require(&#x27;fs&#x27;),
-                          csv = require(&#x27;csv&#x27;),
-                          pluginUtils = require(&#x27;../pluginUtils&#x27;);
-                      
                       function writeCsvFile(filePath, data) {
                         var formattingConfig = arguments.length &lt;= 2 || arguments[2] === undefined ? {} : arguments[2];
                       
                         return new Promise(function (resolve, reject) {
-                          if (!_.isEmpty(data)) {
+                          if (!(0, _isEmpty3.default)(data)) {
                             //Ref: http://csv.adaltas.com/stringify/
-                            csv.stringify(data, formattingConfig, function (err, output) {
+                            _csv2.default.stringify(data, formattingConfig, function (err, output) {
                               if (err) {
-                                pluginUtils.logger.error(&#x27;writeTextFile&#x27;, err);
+                                _pluginUtils2.default.logger.error(&#x27;writeTextFile&#x27;, err);
                                 reject(err);
                               }
                       
-                              fs.writeFile(filePath, output, function (err) {
+                              _fs2.default.writeFile(filePath, output, function (err) {
                                 if (err) {
-                                  pluginUtils.logger.error(&#x27;writeTextFile&#x27;, err);
+                                  _pluginUtils2.default.logger.error(&#x27;writeTextFile&#x27;, err);
                                   reject(err);
                                 } else {
                                   resolve();
@@ -123,7 +139,7 @@
                               });
                             });
                           } else {
-                            pluginUtils.logger.error(&#x27;writeCsvFile&#x27;, &#x27;Input data is empty!&#x27;);
+                            _pluginUtils2.default.logger.error(&#x27;writeCsvFile&#x27;, &#x27;Input data is empty!&#x27;);
                             reject(&#x27;Input data is empty!&#x27;);
                           }
                         });
@@ -147,17 +163,17 @@
                         var formattingConfig = arguments.length &lt;= 2 || arguments[2] === undefined ? {} : arguments[2];
                       
                         return new Promise(function (resolve, reject) {
-                          if (!_.isEmpty(data)) {
-                            jsonfile.writeFile(filePath, { &quot;data&quot;: data }, formattingConfig, function (err) {
+                          if (!(0, _isEmpty3.default)(data)) {
+                            _jsonfile2.default.writeFile(filePath, { &quot;data&quot;: data }, formattingConfig, function (err) {
                               if (err) {
-                                pluginUtils.logger.error(&#x27;writeJsonFile&#x27;, err);
+                                _pluginUtils2.default.logger.error(&#x27;writeJsonFile&#x27;, err);
                                 reject(err);
                               } else {
                                 resolve();
                               }
                             });
                           } else {
-                            pluginUtils.logger.error(&#x27;writeJsonFile&#x27;, &#x27;Input data is empty!&#x27;);
+                            _pluginUtils2.default.logger.error(&#x27;writeJsonFile&#x27;, &#x27;Input data is empty!&#x27;);
                             reject(&#x27;Input data is empty!&#x27;);
                           }
                         });

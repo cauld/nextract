@@ -89,16 +89,25 @@
                           <pre class="code prettyprint linenums">
                       &#x27;use strict&#x27;;
                       
-                      /**
-                       * Nextract Plugin Base
-                       */
+                      var _default = require(&#x27;./config/default&#x27;);
                       
-                      var config = require(&#x27;./config/default&#x27;),
-                          logger = require(&#x27;./core/Logger&#x27;);
+                      var _default2 = _interopRequireDefault(_default);
+                      
+                      var _Logger = require(&#x27;./core/Logger&#x27;);
+                      
+                      var logger = _interopRequireWildcard(_Logger);
+                      
+                      function _interopRequireWildcard(obj) { if (obj &amp;&amp; obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+                      
+                      function _interopRequireDefault(obj) { return obj &amp;&amp; obj.__esModule ? obj : { default: obj }; }
+                      
+                      /**
+                       * Nextract Plugin Utils
+                       */
                       
                       module.exports = {
                       
-                        config: config,
+                        config: _default2.default,
                         logger: logger
                       
                       };

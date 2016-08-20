@@ -1,9 +1,9 @@
 /**
- * Nextract Plugin Base
+ * Nextract Plugin Utils
  */
 
-var config = require('./config/default'),
-    logger = require('./core/Logger');
+import config from './config/default';
+import * as logger from './core/Logger';
 
 module.exports = {
 

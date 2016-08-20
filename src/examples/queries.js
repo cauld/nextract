@@ -9,14 +9,15 @@ var ETL = new Nextract();
 
 ETL.loadPlugin('Core', ['Database', 'Calculator', 'Logger'])
     .then(function() {
-      return ETL.Plugins.Core.Database.selectQuery('nextract_sample', 'select first_name, last_name, age, salary from users');
+      return ETL.Plugins.Core.Database.selectQuery('nextract_sample', 'select first_name, last_name from users');
     })
-    .then(function(data) {
-      return ETL.Plugins.Core.Calculator.add(data, 'salary', 1000, 'new_salary');
-    })
-    .then(function(data) {
-      //Lets add a new full name property
-      return ETL.Plugins.Core.Calculator.concat(data, ['Mr/Mrs:', 'first_name', 'last_name'], ' ', 'full_name');
+    .then(function(userData) {
+      var deleteCriteria = [
+        { tableColumn: 'first_name', comparator: '=', collectionField: 'first_name' },
+        { tableColumn: 'last_name', comparator: '=', collectionField: 'last_name' }
+      ];
+
+      return ETL.Plugins.Core.Database.deleteQuery('nextract_sample', 'users_copy', userData, deleteCriteria);
     })
     .then(function(data) {
       ETL.Plugins.Core.Logger.debug('Manipulated queryResults:', data);

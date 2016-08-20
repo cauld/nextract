@@ -89,16 +89,26 @@
                           <pre class="code prettyprint linenums">
                       &#x27;use strict&#x27;;
                       
+                      var _isArray2 = require(&#x27;lodash/isArray&#x27;);
+                      
+                      var _isArray3 = _interopRequireDefault(_isArray2);
+                      
+                      var _path = require(&#x27;path&#x27;);
+                      
+                      var _path2 = _interopRequireDefault(_path);
+                      
+                      var _Logger = require(&#x27;./plugins/core/Logger&#x27;);
+                      
+                      var _Logger2 = _interopRequireDefault(_Logger);
+                      
+                      function _interopRequireDefault(obj) { return obj &amp;&amp; obj.__esModule ? obj : { default: obj }; }
+                      
                       /**
                        * ETL class that all programs start from
                        *
                        * @class Nextract
                        * @constructor
                        */
-                      
-                      var _ = require(&#x27;lodash&#x27;),
-                          path = require(&#x27;path&#x27;),
-                          logger = require(&#x27;./plugins/core/Logger&#x27;);
                       
                       var Nextract = function Nextract() {
                       
@@ -143,17 +153,17 @@
                         var that = this;
                       
                         return new Promise(function (resolve, reject) {
-                          pluginNames = _.isArray(pluginNames) ? pluginNames : [pluginNames];
+                          pluginNames = (0, _isArray3.default)(pluginNames) ? pluginNames : [pluginNames];
                       
                           pluginNames.forEach(function (pluginName) {
                             try {
                               if (pluginType === &#x27;Core&#x27;) {
-                                that.Plugins.Core[pluginName] = require(path.resolve(__dirname, &#x27;plugins/core/&#x27; + pluginName));
+                                that.Plugins.Core[pluginName] = require(_path2.default.resolve(__dirname, &#x27;plugins/core/&#x27; + pluginName));
                               } else {
-                                that.Plugins.Vendor[pluginName] = require(path.resolve(__dirname, &#x27;plugins/vendor/&#x27; + pluginName));
+                                that.Plugins.Vendor[pluginName] = require(_path2.default.resolve(__dirname, &#x27;plugins/vendor/&#x27; + pluginName));
                               }
                             } catch (err) {
-                              logger.error(&#x27;Nextract mixin: &#x27;, err);
+                              _Logger2.default.error(&#x27;Nextract mixin: &#x27;, err);
                               reject(err);
                             }
                           });
