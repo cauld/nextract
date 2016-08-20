@@ -1,9 +1,5 @@
 'use strict';
 
-var _isArray2 = require('lodash/isArray');
-
-var _isArray3 = _interopRequireDefault(_isArray2);
-
 var _has2 = require('lodash/has');
 
 var _has3 = _interopRequireDefault(_has2);
@@ -74,29 +70,24 @@ module.exports = {
    *
    * @method select
    * @example
-   *     ETL.Plugins.Core.Database.select('dbname', 'select * from tablename');
+   *     var sql = 'select first_name, last_name, age, salary from users where id = :id';
+   *     var sqlParams = { id: id };
+   *     ETL.Plugins.Core.Database.select('dbname', sql, sqlParams);
    *
    * @param {String} dbName A database name that matches a object key defined in your Nextract config file
-   * @param {String} sql SQL statement to execute. Can be a fully formed SQL statement or
-   * a parameterized one with "?" placeholders. If the later, then sqlParams
-   * must be an array of values to be replaced in order.
-   * @param {Array} sqlParams (optional) List of params to be subbed as a parameterized query
+   * @param {String} sql SQL statement to execute. Can be a fully formed SQL select statement or
+   * a parameterized one with ":key" placeholders. If the later, then sqlParams
+   * must be an object of key/values to be replaced.
+   * @param {Object} sqlParams (optional) List of key/value params to be subbed out in a parameterized query
    * @return {Promise} Promise resolved with an array of database rows that match the given select statement
    */
-  select: function select(dbName, sql, sqlParams) {
-    if (!(0, _isArray3.default)(sqlParams)) {
-      sqlParams = [];
-    }
+  select: function select(dbName, sql) {
+    var sqlReplacements = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
 
     var dbInstance = getInstance(dbName);
 
-    //Build and run raw/binded SQL statement
-    //(eg) "SELECT * FROM ddm.app_filters WHERE app_guid = :app_guid"
     return dbInstance.query(sql, {
-      //replacements: {
-      //  app_guid: appGuid
-      //},
-      //type: sequelizeORM.sequelize.QueryTypes.SELECT
+      replacements: sqlReplacements,
       type: dbInstance.QueryTypes.SELECT
     }).then(function (data) {
       return data;

@@ -24,7 +24,7 @@ function sequelizeQueryLogging(sql) {
 
 function buildNewConnection(dbName) {
   //TODO: add error handling if db does not exist in pluginConfig
-  var dbpluginConfig = pluginConfig.databases[dbName];
+  let dbpluginConfig = pluginConfig.databases[dbName];
 
   connectionInstances[dbName] = new Sequelize(dbpluginConfig.name, dbpluginConfig.user, dbpluginConfig.password, {
     host: dbpluginConfig.host,
@@ -59,29 +59,22 @@ module.exports = {
    *
    * @method select
    * @example
-   *     ETL.Plugins.Core.Database.select('dbname', 'select * from tablename');
+   *     var sql = 'select first_name, last_name, age, salary from users where id = :id';
+   *     var sqlParams = { id: id };
+   *     ETL.Plugins.Core.Database.select('dbname', sql, sqlParams);
    *
    * @param {String} dbName A database name that matches a object key defined in your Nextract config file
-   * @param {String} sql SQL statement to execute. Can be a fully formed SQL statement or
-   * a parameterized one with "?" placeholders. If the later, then sqlParams
-   * must be an array of values to be replaced in order.
-   * @param {Array} sqlParams (optional) List of params to be subbed as a parameterized query
+   * @param {String} sql SQL statement to execute. Can be a fully formed SQL select statement or
+   * a parameterized one with ":key" placeholders. If the later, then sqlParams
+   * must be an object of key/values to be replaced.
+   * @param {Object} sqlParams (optional) List of key/value params to be subbed out in a parameterized query
    * @return {Promise} Promise resolved with an array of database rows that match the given select statement
    */
-  select: function(dbName, sql, sqlParams) {
-    if (!_.isArray(sqlParams)) {
-      sqlParams = [];
-    }
+  select: function(dbName, sql, sqlReplacements = {}) {
+    let dbInstance = getInstance(dbName);
 
-    var dbInstance = getInstance(dbName);
-
-    //Build and run raw/binded SQL statement
-    //(eg) "SELECT * FROM ddm.app_filters WHERE app_guid = :app_guid"
     return dbInstance.query(sql, {
-      //replacements: {
-      //  app_guid: appGuid
-      //},
-      //type: sequelizeORM.sequelize.QueryTypes.SELECT
+      replacements: sqlReplacements,
       type: dbInstance.QueryTypes.SELECT
     })
     .then(function(data) {

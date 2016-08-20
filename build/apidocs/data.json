@@ -34,6 +34,13 @@
             "fors": {},
             "namespaces": {}
         },
+        "build/examples/parameterizedQuery.js": {
+            "name": "build/examples/parameterizedQuery.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
         "build/examples/queryAndCalc.js": {
             "name": "build/examples/queryAndCalc.js",
             "modules": {},
@@ -285,6 +292,12 @@
             "class": "Nextract.Plugins.Core.Calculator"
         },
         {
+            "file": "build/examples/parameterizedQuery.js",
+            "line": 3,
+            "description": "Example: Parameterized query",
+            "class": "Nextract.Plugins.Core.Calculator"
+        },
+        {
             "file": "build/examples/queryAndCalc.js",
             "line": 3,
             "description": "Example: Query and sort...",
@@ -298,7 +311,7 @@
         },
         {
             "file": "build/plugins/core/Calculator.js",
-            "line": 37,
+            "line": 35,
             "description": "Adds two numbers and/or object properties",
             "itemtype": "method",
             "name": "add",
@@ -335,7 +348,7 @@
         },
         {
             "file": "build/plugins/core/Calculator.js",
-            "line": 55,
+            "line": 53,
             "description": "Subtracts two numbers and/or object properties",
             "itemtype": "method",
             "name": "subtract",
@@ -372,7 +385,7 @@
         },
         {
             "file": "build/plugins/core/Calculator.js",
-            "line": 73,
+            "line": 71,
             "description": "Divides two numbers and/or object properties",
             "itemtype": "method",
             "name": "divide",
@@ -409,7 +422,7 @@
         },
         {
             "file": "build/plugins/core/Calculator.js",
-            "line": 91,
+            "line": 89,
             "description": "Multiplies two numbers and/or object properties",
             "itemtype": "method",
             "name": "multiply",
@@ -445,13 +458,50 @@
             "class": "Nextract.Plugins.Core.Calculator"
         },
         {
+            "file": "build/plugins/core/Calculator.js",
+            "line": 107,
+            "description": "Concatenates strings and/or object properties",
+            "itemtype": "method",
+            "name": "concat",
+            "example": [
+                "\n    ETL.Plugins.Core.Calculator.concat(collection, ['Mr/Mrs:', 'first_name', 'last_name'], ' ', 'full_name');"
+            ],
+            "params": [
+                {
+                    "name": "collection",
+                    "description": "The collection to iterate over",
+                    "type": "Object"
+                },
+                {
+                    "name": "propsOrValsToConcat",
+                    "description": "An array of strings and/or object properties to concat",
+                    "type": "Array"
+                },
+                {
+                    "name": "delimiter",
+                    "description": "The delimiter to use in between each propsOrValsToConcat",
+                    "type": "String"
+                },
+                {
+                    "name": "propertyToUpdateOrAdd",
+                    "description": "The object property to update or create with the value\nof this operation",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "Promise resolved with the updated collection",
+                "type": "Promise"
+            },
+            "class": "Nextract.Plugins.Core.Calculator"
+        },
+        {
             "file": "build/plugins/core/Database.js",
-            "line": 72,
+            "line": 68,
             "description": "Raw query interface for select statements",
             "itemtype": "method",
             "name": "select",
             "example": [
-                "\n    ETL.Plugins.Core.Database.select('dbname', 'select * from tablename');"
+                "\n    var sql = 'select first_name, last_name, age, salary from users where id = :id';\n    var sqlParams = { id: id };\n    ETL.Plugins.Core.Database.select('dbname', sql, sqlParams);"
             ],
             "params": [
                 {
@@ -461,13 +511,13 @@
                 },
                 {
                     "name": "sql",
-                    "description": "SQL statement to execute. Can be a fully formed SQL statement or\na parameterized one with \"?\" placeholders. If the later, then sqlParams\nmust be an array of values to be replaced in order.",
+                    "description": "SQL statement to execute. Can be a fully formed SQL select statement or\na parameterized one with \":key\" placeholders. If the later, then sqlParams\nmust be an object of key/values to be replaced.",
                     "type": "String"
                 },
                 {
                     "name": "sqlParams",
-                    "description": "(optional) List of params to be subbed as a parameterized query",
-                    "type": "Array"
+                    "description": "(optional) List of key/value params to be subbed out in a parameterized query",
+                    "type": "Object"
                 }
             ],
             "return": {
@@ -884,6 +934,10 @@
         {
             "message": "Missing item type\nExample: Running some ETL tasks in parallel",
             "line": " build/examples/parallelTasks.js:3"
+        },
+        {
+            "message": "Missing item type\nExample: Parameterized query",
+            "line": " build/examples/parameterizedQuery.js:3"
         },
         {
             "message": "Missing item type\nExample: Query and sort...",

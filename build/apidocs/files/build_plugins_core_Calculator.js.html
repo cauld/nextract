@@ -87,7 +87,7 @@
                       
                       <div class="file">
                           <pre class="code prettyprint linenums">
-                      &quot;use strict&quot;;
+                      &#x27;use strict&#x27;;
                       
                       /**
                        * Mixes in a series of common mathematical calculations
@@ -96,15 +96,13 @@
                        */
                       
                       //import _ from &#x27;lodash&#x27;;
-                      //import { add, subtract, ceil, divide, floor, multiply, round, concat, isUndefined, isInteger } from &#x27;lodash/fp&#x27;;
+                      //import { add, subtract, ceil, divide, floor, multiply, round, isUndefined, isInteger } from &#x27;lodash/fp&#x27;;
                       
                       //Would be nice to do import as show above but babel-plugin-lodash has issues with the format _[lodashMethod]
                       var _ = require(&quot;lodash&quot;);
                       
                       function doLodashPassthrough(collection, lodashMethod, firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd) {
                         return new Promise(function (resolve, reject) {
-                          console.log(&quot;lodashMethod&quot;, lodashMethod);
-                      
                           collection.forEach(function (element) {
                             var v1 = _.isInteger(firstPropOrVal) === true ? firstPropOrVal : element[firstPropOrVal];
                             var v2 = _.isInteger(secondPropOrVal) === true ? secondPropOrVal : element[secondPropOrVal];
@@ -195,8 +193,44 @@
                           return doLodashPassthrough(collection, &#x27;multiply&#x27;, firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd);
                         },
                       
-                        //TBD...
-                        concat: function concat() {},
+                        /**
+                         * Concatenates strings and/or object properties
+                         *
+                         * @method concat
+                         * @example
+                         *     ETL.Plugins.Core.Calculator.concat(collection, [&#x27;Mr/Mrs:&#x27;, &#x27;first_name&#x27;, &#x27;last_name&#x27;], &#x27; &#x27;, &#x27;full_name&#x27;);
+                          * @param {Object} collection The collection to iterate over
+                         * @param {Array} propsOrValsToConcat An array of strings and/or object properties to concat
+                         * @param {String} delimiter The delimiter to use in between each propsOrValsToConcat
+                         * @param {String} propertyToUpdateOrAdd The object property to update or create with the value
+                         * of this operation
+                         *
+                         * @return {Promise} Promise resolved with the updated collection
+                         */
+                        concat: function concat(collection, propsOrValsToConcat) {
+                          var delimiter = arguments.length &lt;= 2 || arguments[2] === undefined ? &#x27;&#x27; : arguments[2];
+                          var propertyToUpdateOrAdd = arguments[3];
+                      
+                          return new Promise(function (resolve, reject) {
+                            if (!_.isArray(propsOrValsToConcat)) {
+                              reject(&#x27;Invalid calculator request, please check your input params!&#x27;);
+                            } else {
+                              collection.forEach(function (element) {
+                                //First assume each string is a key in the object, if not treat as a normal string
+                                var valuesToConcat = [];
+                                propsOrValsToConcat.forEach(function (p) {
+                                  var v = _.has(element, p) === true ? element[p].toString() : p.toString();
+                                  valuesToConcat[valuesToConcat.length] = v;
+                                });
+                      
+                                //Set or update with new value
+                                element[propertyToUpdateOrAdd] = valuesToConcat.join(delimiter);
+                              });
+                      
+                              resolve(collection);
+                            }
+                          });
+                        },
                       
                         //TBD...
                         round: function round() {},
