@@ -34,6 +34,13 @@
             "fors": {},
             "namespaces": {}
         },
+        "build/examples/queryAndCalc.js": {
+            "name": "build/examples/queryAndCalc.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
         "build/examples/queryAndSort.js": {
             "name": "build/examples/queryAndSort.js",
             "modules": {},
@@ -162,7 +169,7 @@
             "plugin_for": [],
             "extension_for": [],
             "file": "build/plugins/core/Calculator.js",
-            "line": 41,
+            "line": 3,
             "description": "Mixes in a series of common mathematical calculations"
         },
         "Nextract.Plugins.Core.Filter": {
@@ -278,6 +285,12 @@
             "class": "Nextract.Plugins.Core.Calculator"
         },
         {
+            "file": "build/examples/queryAndCalc.js",
+            "line": 3,
+            "description": "Example: Query and sort...",
+            "class": "Nextract.Plugins.Core.Calculator"
+        },
+        {
             "file": "build/examples/queryAndSort.js",
             "line": 3,
             "description": "Example: Query and sort...",
@@ -285,74 +298,150 @@
         },
         {
             "file": "build/plugins/core/Calculator.js",
-            "line": 49,
-            "description": "Adds numbers",
+            "line": 37,
+            "description": "Adds two numbers and/or object properties",
             "itemtype": "method",
             "name": "add",
+            "example": [
+                "\n    ETL.Plugins.Core.Calculator.add(collection, 'salary', 1000, 'new_salary');"
+            ],
+            "params": [
+                {
+                    "name": "collection",
+                    "description": "The collection to iterate over",
+                    "type": "Object"
+                },
+                {
+                    "name": "firstPropOrVal",
+                    "description": "The 1st value or property to use in this operation",
+                    "type": "String|Number"
+                },
+                {
+                    "name": "secondPropOrVal",
+                    "description": "The 2nd value or property to use in this operation",
+                    "type": "String|Number"
+                },
+                {
+                    "name": "propertyToUpdateOrAdd",
+                    "description": "The object property to update or create with the value\nof this operation",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "Promise resolved with the updated collection",
+                "type": "Promise"
+            },
             "class": "Nextract.Plugins.Core.Calculator"
         },
         {
             "file": "build/plugins/core/Calculator.js",
-            "line": 58,
-            "description": "Adds numbers",
+            "line": 55,
+            "description": "Subtracts two numbers and/or object properties",
             "itemtype": "method",
             "name": "subtract",
+            "example": [
+                "\n    ETL.Plugins.Core.Calculator.subtract(collection, 'salary', 1000, 'new_salary');"
+            ],
+            "params": [
+                {
+                    "name": "collection",
+                    "description": "The collection to iterate over",
+                    "type": "Object"
+                },
+                {
+                    "name": "firstPropOrVal",
+                    "description": "The 1st value or property to use in this operation",
+                    "type": "String|Number"
+                },
+                {
+                    "name": "secondPropOrVal",
+                    "description": "The 2nd value or property to use in this operation",
+                    "type": "String|Number"
+                },
+                {
+                    "name": "propertyToUpdateOrAdd",
+                    "description": "The object property to update or create with the value\nof this operation",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "Promise resolved with the updated collection",
+                "type": "Promise"
+            },
             "class": "Nextract.Plugins.Core.Calculator"
         },
         {
             "file": "build/plugins/core/Calculator.js",
-            "line": 67,
-            "description": "Adds numbers",
-            "itemtype": "method",
-            "name": "ceil",
-            "class": "Nextract.Plugins.Core.Calculator"
-        },
-        {
-            "file": "build/plugins/core/Calculator.js",
-            "line": 76,
-            "description": "Adds numbers",
+            "line": 73,
+            "description": "Divides two numbers and/or object properties",
             "itemtype": "method",
             "name": "divide",
+            "example": [
+                "\n    ETL.Plugins.Core.Calculator.divide(collection, 'salary', 10, 'new_salary');"
+            ],
+            "params": [
+                {
+                    "name": "collection",
+                    "description": "The collection to iterate over",
+                    "type": "Object"
+                },
+                {
+                    "name": "firstPropOrVal",
+                    "description": "The 1st value or property to use in this operation",
+                    "type": "String|Number"
+                },
+                {
+                    "name": "secondPropOrVal",
+                    "description": "The 2nd value or property to use in this operation",
+                    "type": "String|Number"
+                },
+                {
+                    "name": "propertyToUpdateOrAdd",
+                    "description": "The object property to update or create with the value\nof this operation",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "Promise resolved with the updated collection",
+                "type": "Promise"
+            },
             "class": "Nextract.Plugins.Core.Calculator"
         },
         {
             "file": "build/plugins/core/Calculator.js",
-            "line": 85,
-            "description": "Adds numbers",
-            "itemtype": "method",
-            "name": "floor",
-            "class": "Nextract.Plugins.Core.Calculator"
-        },
-        {
-            "file": "build/plugins/core/Calculator.js",
-            "line": 94,
-            "description": "Adds numbers",
-            "itemtype": "method",
-            "name": "mean",
-            "class": "Nextract.Plugins.Core.Calculator"
-        },
-        {
-            "file": "build/plugins/core/Calculator.js",
-            "line": 103,
-            "description": "Adds numbers",
+            "line": 91,
+            "description": "Multiplies two numbers and/or object properties",
             "itemtype": "method",
             "name": "multiply",
-            "class": "Nextract.Plugins.Core.Calculator"
-        },
-        {
-            "file": "build/plugins/core/Calculator.js",
-            "line": 112,
-            "description": "Adds numbers",
-            "itemtype": "method",
-            "name": "round",
-            "class": "Nextract.Plugins.Core.Calculator"
-        },
-        {
-            "file": "build/plugins/core/Calculator.js",
-            "line": 121,
-            "description": "Adds numbers",
-            "itemtype": "method",
-            "name": "concat",
+            "example": [
+                "\n    ETL.Plugins.Core.Calculator.multiply(collection, 'salary', 10, 'new_salary');"
+            ],
+            "params": [
+                {
+                    "name": "collection",
+                    "description": "The collection to iterate over",
+                    "type": "Object"
+                },
+                {
+                    "name": "firstPropOrVal",
+                    "description": "The 1st value or property to use in this operation",
+                    "type": "String|Number"
+                },
+                {
+                    "name": "secondPropOrVal",
+                    "description": "The 2nd value or property to use in this operation",
+                    "type": "String|Number"
+                },
+                {
+                    "name": "propertyToUpdateOrAdd",
+                    "description": "The object property to update or create with the value\nof this operation",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "Promise resolved with the updated collection",
+                "type": "Promise"
+            },
             "class": "Nextract.Plugins.Core.Calculator"
         },
         {
@@ -795,6 +884,10 @@
         {
             "message": "Missing item type\nExample: Running some ETL tasks in parallel",
             "line": " build/examples/parallelTasks.js:3"
+        },
+        {
+            "message": "Missing item type\nExample: Query and sort...",
+            "line": " build/examples/queryAndCalc.js:3"
         },
         {
             "message": "Missing item type\nExample: Query and sort...",

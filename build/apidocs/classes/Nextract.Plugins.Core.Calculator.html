@@ -88,7 +88,7 @@
                       
                       
                               <div class="foundat">
-                                  Defined in: <a href="../files/build_plugins_core_Calculator.js.html#l41"><code>build&#x2F;plugins&#x2F;core&#x2F;Calculator.js:41</code></a>
+                                  Defined in: <a href="../files/build_plugins_core_Calculator.js.html#l3"><code>build&#x2F;plugins&#x2F;core&#x2F;Calculator.js:3</code></a>
                               </div>
                       
                       
@@ -121,31 +121,11 @@
                       
                                                   </li>
                                                   <li class="index-item method">
-                                                      <a href="#method_ceil">ceil</a>
-                      
-                                                  </li>
-                                                  <li class="index-item method">
-                                                      <a href="#method_concat">concat</a>
-                      
-                                                  </li>
-                                                  <li class="index-item method">
                                                       <a href="#method_divide">divide</a>
                       
                                                   </li>
                                                   <li class="index-item method">
-                                                      <a href="#method_floor">floor</a>
-                      
-                                                  </li>
-                                                  <li class="index-item method">
-                                                      <a href="#method_mean">mean</a>
-                      
-                                                  </li>
-                                                  <li class="index-item method">
                                                       <a href="#method_multiply">multiply</a>
-                      
-                                                  </li>
-                                                  <li class="index-item method">
-                                                      <a href="#method_round">round</a>
                       
                                                   </li>
                                                   <li class="index-item method">
@@ -165,39 +145,26 @@
                       <div id="method_add" class="method item">
                           <h3 class="name"><code>add</code></h3>
                       
-                              <span class="paren">()</span>
+                              <div class="args">
+                                  <span class="paren">(</span><ul class="args-list inline commas">
+                                      <li class="arg">
+                                              <code>collection</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>firstPropOrVal</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>secondPropOrVal</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>propertyToUpdateOrAdd</code>
+                                      </li>
+                                  </ul><span class="paren">)</span>
+                              </div>
                       
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                          <div class="meta">
-                                      <p>
-                                      Defined in
-                              <a href="../files/build_plugins_core_Calculator.js.html#l49"><code>build&#x2F;plugins&#x2F;core&#x2F;Calculator.js:49</code></a>
-                              </p>
-                      
-                      
-                      
-                          </div>
-                      
-                          <div class="description">
-                              <p>Adds numbers</p>
-                      
-                          </div>
-                      
-                      
-                      
-                      
-                      </div>
-                      <div id="method_ceil" class="method item">
-                          <h3 class="name"><code>ceil</code></h3>
-                      
-                              <span class="paren">()</span>
-                      
+                              <span class="returns-inline">
+                                  <span class="type">Promise</span>
+                              </span>
                       
                       
                       
@@ -208,7 +175,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_core_Calculator.js.html#l67"><code>build&#x2F;plugins&#x2F;core&#x2F;Calculator.js:67</code></a>
+                              <a href="../files/build_plugins_core_Calculator.js.html#l37"><code>build&#x2F;plugins&#x2F;core&#x2F;Calculator.js:37</code></a>
                               </p>
                       
                       
@@ -216,81 +183,105 @@
                           </div>
                       
                           <div class="description">
-                              <p>Adds numbers</p>
+                              <p>Adds two numbers and/or object properties</p>
                       
                           </div>
                       
+                              <div class="params">
+                                  <h4>Parameters:</h4>
+                      
+                                  <ul class="params-list">
+                                      <li class="param">
+                                              <code class="param-name">collection</code>
+                                              <span class="type">Object</span>
                       
                       
+                                          <div class="param-description">
+                                              <p>The collection to iterate over</p>
                       
-                      </div>
-                      <div id="method_concat" class="method item">
-                          <h3 class="name"><code>concat</code></h3>
+                                          </div>
                       
-                              <span class="paren">()</span>
-                      
-                      
-                      
-                      
-                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">firstPropOrVal</code>
+                                              <span class="type">String | Number</span>
                       
                       
+                                          <div class="param-description">
+                                              <p>The 1st value or property to use in this operation</p>
                       
-                          <div class="meta">
-                                      <p>
-                                      Defined in
-                              <a href="../files/build_plugins_core_Calculator.js.html#l121"><code>build&#x2F;plugins&#x2F;core&#x2F;Calculator.js:121</code></a>
-                              </p>
+                                          </div>
                       
-                      
-                      
-                          </div>
-                      
-                          <div class="description">
-                              <p>Adds numbers</p>
-                      
-                          </div>
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">secondPropOrVal</code>
+                                              <span class="type">String | Number</span>
                       
                       
+                                          <div class="param-description">
+                                              <p>The 2nd value or property to use in this operation</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">propertyToUpdateOrAdd</code>
+                                              <span class="type">String</span>
                       
                       
+                                          <div class="param-description">
+                                              <p>The object property to update or create with the value
+                      of this operation</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                  </ul>
+                              </div>
+                      
+                              <div class="returns">
+                                  <h4>Returns:</h4>
+                      
+                                  <div class="returns-description">
+                                              <span class="type">Promise</span>:
+                                          <p>Promise resolved with the updated collection</p>
+                      
+                                  </div>
+                              </div>
+                      
+                      
+                              <div class="example">
+                                  <h4>Example:</h4>
+                      
+                                  <div class="example-content">
+                                      <pre class="code prettyprint"><code>ETL.Plugins.Core.Calculator.add(collection, 'salary', 1000, 'new_salary');</code></pre>
+                      
+                                  </div>
+                              </div>
                       </div>
                       <div id="method_divide" class="method item">
                           <h3 class="name"><code>divide</code></h3>
                       
-                              <span class="paren">()</span>
+                              <div class="args">
+                                  <span class="paren">(</span><ul class="args-list inline commas">
+                                      <li class="arg">
+                                              <code>collection</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>firstPropOrVal</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>secondPropOrVal</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>propertyToUpdateOrAdd</code>
+                                      </li>
+                                  </ul><span class="paren">)</span>
+                              </div>
                       
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                          <div class="meta">
-                                      <p>
-                                      Defined in
-                              <a href="../files/build_plugins_core_Calculator.js.html#l76"><code>build&#x2F;plugins&#x2F;core&#x2F;Calculator.js:76</code></a>
-                              </p>
-                      
-                      
-                      
-                          </div>
-                      
-                          <div class="description">
-                              <p>Adds numbers</p>
-                      
-                          </div>
-                      
-                      
-                      
-                      
-                      </div>
-                      <div id="method_floor" class="method item">
-                          <h3 class="name"><code>floor</code></h3>
-                      
-                              <span class="paren">()</span>
-                      
+                              <span class="returns-inline">
+                                  <span class="type">Promise</span>
+                              </span>
                       
                       
                       
@@ -301,7 +292,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_core_Calculator.js.html#l85"><code>build&#x2F;plugins&#x2F;core&#x2F;Calculator.js:85</code></a>
+                              <a href="../files/build_plugins_core_Calculator.js.html#l73"><code>build&#x2F;plugins&#x2F;core&#x2F;Calculator.js:73</code></a>
                               </p>
                       
                       
@@ -309,81 +300,105 @@
                           </div>
                       
                           <div class="description">
-                              <p>Adds numbers</p>
+                              <p>Divides two numbers and/or object properties</p>
                       
                           </div>
                       
+                              <div class="params">
+                                  <h4>Parameters:</h4>
+                      
+                                  <ul class="params-list">
+                                      <li class="param">
+                                              <code class="param-name">collection</code>
+                                              <span class="type">Object</span>
                       
                       
+                                          <div class="param-description">
+                                              <p>The collection to iterate over</p>
                       
-                      </div>
-                      <div id="method_mean" class="method item">
-                          <h3 class="name"><code>mean</code></h3>
+                                          </div>
                       
-                              <span class="paren">()</span>
-                      
-                      
-                      
-                      
-                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">firstPropOrVal</code>
+                                              <span class="type">String | Number</span>
                       
                       
+                                          <div class="param-description">
+                                              <p>The 1st value or property to use in this operation</p>
                       
-                          <div class="meta">
-                                      <p>
-                                      Defined in
-                              <a href="../files/build_plugins_core_Calculator.js.html#l94"><code>build&#x2F;plugins&#x2F;core&#x2F;Calculator.js:94</code></a>
-                              </p>
+                                          </div>
                       
-                      
-                      
-                          </div>
-                      
-                          <div class="description">
-                              <p>Adds numbers</p>
-                      
-                          </div>
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">secondPropOrVal</code>
+                                              <span class="type">String | Number</span>
                       
                       
+                                          <div class="param-description">
+                                              <p>The 2nd value or property to use in this operation</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">propertyToUpdateOrAdd</code>
+                                              <span class="type">String</span>
                       
                       
+                                          <div class="param-description">
+                                              <p>The object property to update or create with the value
+                      of this operation</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                  </ul>
+                              </div>
+                      
+                              <div class="returns">
+                                  <h4>Returns:</h4>
+                      
+                                  <div class="returns-description">
+                                              <span class="type">Promise</span>:
+                                          <p>Promise resolved with the updated collection</p>
+                      
+                                  </div>
+                              </div>
+                      
+                      
+                              <div class="example">
+                                  <h4>Example:</h4>
+                      
+                                  <div class="example-content">
+                                      <pre class="code prettyprint"><code>ETL.Plugins.Core.Calculator.divide(collection, 'salary', 10, 'new_salary');</code></pre>
+                      
+                                  </div>
+                              </div>
                       </div>
                       <div id="method_multiply" class="method item">
                           <h3 class="name"><code>multiply</code></h3>
                       
-                              <span class="paren">()</span>
+                              <div class="args">
+                                  <span class="paren">(</span><ul class="args-list inline commas">
+                                      <li class="arg">
+                                              <code>collection</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>firstPropOrVal</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>secondPropOrVal</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>propertyToUpdateOrAdd</code>
+                                      </li>
+                                  </ul><span class="paren">)</span>
+                              </div>
                       
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                          <div class="meta">
-                                      <p>
-                                      Defined in
-                              <a href="../files/build_plugins_core_Calculator.js.html#l103"><code>build&#x2F;plugins&#x2F;core&#x2F;Calculator.js:103</code></a>
-                              </p>
-                      
-                      
-                      
-                          </div>
-                      
-                          <div class="description">
-                              <p>Adds numbers</p>
-                      
-                          </div>
-                      
-                      
-                      
-                      
-                      </div>
-                      <div id="method_round" class="method item">
-                          <h3 class="name"><code>round</code></h3>
-                      
-                              <span class="paren">()</span>
-                      
+                              <span class="returns-inline">
+                                  <span class="type">Promise</span>
+                              </span>
                       
                       
                       
@@ -394,7 +409,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_core_Calculator.js.html#l112"><code>build&#x2F;plugins&#x2F;core&#x2F;Calculator.js:112</code></a>
+                              <a href="../files/build_plugins_core_Calculator.js.html#l91"><code>build&#x2F;plugins&#x2F;core&#x2F;Calculator.js:91</code></a>
                               </p>
                       
                       
@@ -402,19 +417,105 @@
                           </div>
                       
                           <div class="description">
-                              <p>Adds numbers</p>
+                              <p>Multiplies two numbers and/or object properties</p>
                       
                           </div>
                       
+                              <div class="params">
+                                  <h4>Parameters:</h4>
+                      
+                                  <ul class="params-list">
+                                      <li class="param">
+                                              <code class="param-name">collection</code>
+                                              <span class="type">Object</span>
                       
                       
+                                          <div class="param-description">
+                                              <p>The collection to iterate over</p>
                       
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">firstPropOrVal</code>
+                                              <span class="type">String | Number</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>The 1st value or property to use in this operation</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">secondPropOrVal</code>
+                                              <span class="type">String | Number</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>The 2nd value or property to use in this operation</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">propertyToUpdateOrAdd</code>
+                                              <span class="type">String</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>The object property to update or create with the value
+                      of this operation</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                  </ul>
+                              </div>
+                      
+                              <div class="returns">
+                                  <h4>Returns:</h4>
+                      
+                                  <div class="returns-description">
+                                              <span class="type">Promise</span>:
+                                          <p>Promise resolved with the updated collection</p>
+                      
+                                  </div>
+                              </div>
+                      
+                      
+                              <div class="example">
+                                  <h4>Example:</h4>
+                      
+                                  <div class="example-content">
+                                      <pre class="code prettyprint"><code>ETL.Plugins.Core.Calculator.multiply(collection, 'salary', 10, 'new_salary');</code></pre>
+                      
+                                  </div>
+                              </div>
                       </div>
                       <div id="method_subtract" class="method item">
                           <h3 class="name"><code>subtract</code></h3>
                       
-                              <span class="paren">()</span>
+                              <div class="args">
+                                  <span class="paren">(</span><ul class="args-list inline commas">
+                                      <li class="arg">
+                                              <code>collection</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>firstPropOrVal</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>secondPropOrVal</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>propertyToUpdateOrAdd</code>
+                                      </li>
+                                  </ul><span class="paren">)</span>
+                              </div>
                       
+                              <span class="returns-inline">
+                                  <span class="type">Promise</span>
+                              </span>
                       
                       
                       
@@ -425,7 +526,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_core_Calculator.js.html#l58"><code>build&#x2F;plugins&#x2F;core&#x2F;Calculator.js:58</code></a>
+                              <a href="../files/build_plugins_core_Calculator.js.html#l55"><code>build&#x2F;plugins&#x2F;core&#x2F;Calculator.js:55</code></a>
                               </p>
                       
                       
@@ -433,13 +534,81 @@
                           </div>
                       
                           <div class="description">
-                              <p>Adds numbers</p>
+                              <p>Subtracts two numbers and/or object properties</p>
                       
                           </div>
                       
+                              <div class="params">
+                                  <h4>Parameters:</h4>
+                      
+                                  <ul class="params-list">
+                                      <li class="param">
+                                              <code class="param-name">collection</code>
+                                              <span class="type">Object</span>
                       
                       
+                                          <div class="param-description">
+                                              <p>The collection to iterate over</p>
                       
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">firstPropOrVal</code>
+                                              <span class="type">String | Number</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>The 1st value or property to use in this operation</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">secondPropOrVal</code>
+                                              <span class="type">String | Number</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>The 2nd value or property to use in this operation</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">propertyToUpdateOrAdd</code>
+                                              <span class="type">String</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>The object property to update or create with the value
+                      of this operation</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                  </ul>
+                              </div>
+                      
+                              <div class="returns">
+                                  <h4>Returns:</h4>
+                      
+                                  <div class="returns-description">
+                                              <span class="type">Promise</span>:
+                                          <p>Promise resolved with the updated collection</p>
+                      
+                                  </div>
+                              </div>
+                      
+                      
+                              <div class="example">
+                                  <h4>Example:</h4>
+                      
+                                  <div class="example-content">
+                                      <pre class="code prettyprint"><code>ETL.Plugins.Core.Calculator.subtract(collection, 'salary', 1000, 'new_salary');</code></pre>
+                      
+                                  </div>
+                              </div>
                       </div>
                                   </div>
                       
