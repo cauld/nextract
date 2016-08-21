@@ -74,8 +74,12 @@
         "build/plugins/core/Database.js": {
             "name": "build/plugins/core/Database.js",
             "modules": {},
-            "classes": {},
-            "fors": {},
+            "classes": {
+                "Nextract.Plugins.Core.Database": 1
+            },
+            "fors": {
+                "Nextract.Plugins.Core.Database": 1
+            },
             "namespaces": {}
         },
         "build/plugins/core/Filter.js": {
@@ -186,6 +190,18 @@
             "line": 3,
             "description": "Mixes in a series of common mathematical calculations"
         },
+        "Nextract.Plugins.Core.Database": {
+            "name": "Nextract.Plugins.Core.Database",
+            "shortname": "Nextract.Plugins.Core.Database",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "build/plugins/core/Database.js",
+            "line": 49,
+            "description": "Mixes in methods used to work with a database"
+        },
         "Nextract.Plugins.Core.Filter": {
             "name": "Nextract.Plugins.Core.Filter",
             "shortname": "Nextract.Plugins.Core.Filter",
@@ -195,7 +211,7 @@
             "plugin_for": [],
             "extension_for": [],
             "file": "build/plugins/core/Filter.js",
-            "line": 17,
+            "line": 13,
             "description": "Mixes in methods used to filter sets of data"
         },
         "Nextract.Plugins.Core.GroupBy": {
@@ -509,12 +525,12 @@
         },
         {
             "file": "build/plugins/core/Database.js",
-            "line": 125,
+            "line": 163,
             "description": "Raw query interface for select statements",
             "itemtype": "method",
             "name": "selectQuery",
             "example": [
-                "\n    var sql = 'select first_name, last_name, age, salary from users where id = :id';\n    var sqlParams = { id: id };\n    ETL.Plugins.Core.Database.select('dbname', sql, sqlParams);"
+                "\n    var sql = 'select first_name, last_name, age, salary from users where id = :id';\n    var sqlParams = { id: id };\n    ETL.Plugins.Core.Database.selectQuery('dbname', sql, sqlParams);"
             ],
             "params": [
                 {
@@ -537,16 +553,16 @@
                 "description": "Promise resolved with an array of database rows that match the given select statement",
                 "type": "Promise"
             },
-            "class": "Nextract.Plugins.Core.Filter"
+            "class": "Nextract.Plugins.Core.Database"
         },
         {
             "file": "build/plugins/core/Database.js",
-            "line": 156,
+            "line": 196,
             "description": "Delete query executed for each row in the collection",
             "itemtype": "method",
             "name": "deleteQuery",
             "example": [
-                "\n    var filterCriteria = [\n     { tableColumn: 'first_name', comparator: '=', collectionField: 'first_name' },\n     { tableColumn: 'last_name', comparator: '=', collectionField: 'last_name' }\n    ];\n\n    return ETL.Plugins.Core.Database.deleteQuery('nextract_sample', 'users', userData, filterCriteria);"
+                "\n    var matchCriteria = [\n     { tableColumn: 'first_name', comparator: '=', collectionField: 'first_name' },\n     { tableColumn: 'last_name', comparator: '=', collectionField: 'last_name' }\n    ];\n\n    return ETL.Plugins.Core.Database.deleteQuery('nextract_sample', 'users', userData, matchCriteria);"
             ],
             "params": [
                 {
@@ -565,7 +581,7 @@
                     "type": "Array"
                 },
                 {
-                    "name": "filterCriteria",
+                    "name": "matchCriteria",
                     "description": "Array of objects with key/value params to be subbed out in a\nparameterized query. The expected format is  [{ tableColumn: '', comparator: '', collectionField: '' }].",
                     "type": "Array"
                 },
@@ -579,17 +595,95 @@
                 "description": "Promise resolved once all queries have completed",
                 "type": "Promise"
             },
-            "class": "Nextract.Plugins.Core.Filter"
+            "class": "Nextract.Plugins.Core.Database"
+        },
+        {
+            "file": "build/plugins/core/Database.js",
+            "line": 227,
+            "description": "Update query executed for each row in the collection",
+            "itemtype": "method",
+            "name": "updateQuery",
+            "example": [
+                "\n    var matchCriteria = [\n     { tableColumn: 'first_name', comparator: '=', collectionField: 'first_name' },\n     { tableColumn: 'last_name', comparator: '=', collectionField: 'last_name' }\n    ];\n\n    return ETL.Plugins.Core.Database.deleteQuery('nextract_sample', 'users', userData, matchCriteria);"
+            ],
+            "params": [
+                {
+                    "name": "dbName",
+                    "description": "A database name that matches a object key defined in your Nextract config file",
+                    "type": "String"
+                },
+                {
+                    "name": "tableName",
+                    "description": "Table name",
+                    "type": "String"
+                },
+                {
+                    "name": "collection",
+                    "description": "The collection to iterate on",
+                    "type": "Array"
+                },
+                {
+                    "name": "matchCriteria",
+                    "description": "Array of objects with key/value params to be subbed out in a\nparameterized query. The expected format is  [{ tableColumn: '', comparator: '', collectionField: '' }].",
+                    "type": "Array"
+                },
+                {
+                    "name": "maxParallelQueries",
+                    "description": "(optional) Max number of queries to run in parallel (defaults to 5)",
+                    "type": "Integer"
+                }
+            ],
+            "return": {
+                "description": "Promise resolved once all queries have completed",
+                "type": "Promise"
+            },
+            "class": "Nextract.Plugins.Core.Database"
+        },
+        {
+            "file": "build/plugins/core/Database.js",
+            "line": 267,
+            "description": "Insert query executed for each row in the collection. Uses batched inserts for performance gains.",
+            "itemtype": "method",
+            "name": "insertQuery",
+            "example": [
+                "\n    var columnsToInsert = ['first_name', 'last_name', 'age'];\n    var collectionsToInsert = [\n     { 'first_name': 'foo', 'last_name': 'bar', 'age': 25 },\n     { 'first_name': 'foo', 'last_name': 'baz', 'age': 48 }\n    ];\n\n    return ETL.Plugins.Core.Database.insertQuery('nextract_sample', 'users', collectionsToInsert, columnsToInsert);"
+            ],
+            "params": [
+                {
+                    "name": "dbName",
+                    "description": "A database name that matches a object key defined in your Nextract config file",
+                    "type": "String"
+                },
+                {
+                    "name": "tableName",
+                    "description": "Table name",
+                    "type": "String"
+                },
+                {
+                    "name": "collection",
+                    "description": "The collection to iterate on",
+                    "type": "Array"
+                },
+                {
+                    "name": "columnsToUpdate",
+                    "description": "Array of property (column) names to use in the INSERT",
+                    "type": "Array"
+                },
+                {
+                    "name": "batchAmount",
+                    "description": "(optional) Number of rows to batch insert (defaults to 1000)",
+                    "type": "Integer"
+                }
+            ],
+            "return": {
+                "description": "Promise resolved once all queries have completed",
+                "type": "Promise"
+            },
+            "class": "Nextract.Plugins.Core.Database"
         },
         {
             "file": "build/plugins/core/Filter.js",
-            "line": 13,
-            "description": "Custom module used to filter data...",
-            "class": "Nextract.Plugins.Core.Filter"
-        },
-        {
-            "file": "build/plugins/core/Filter.js",
-            "line": 25,
+            "line": 21,
             "description": "Iterates over elements of collection, returning an array of all elements\nthat equal the given testValue.",
             "itemtype": "method",
             "name": "equals",
@@ -621,7 +715,7 @@
         },
         {
             "file": "build/plugins/core/Filter.js",
-            "line": 48,
+            "line": 44,
             "description": "Iterates over elements of collection, returning an array of all elements\nthat are greater than the given number.",
             "itemtype": "method",
             "name": "greaterThan",
@@ -653,7 +747,7 @@
         },
         {
             "file": "build/plugins/core/Filter.js",
-            "line": 71,
+            "line": 67,
             "description": "Iterates over elements of collection, returning an array of all elements\nthat are less than the given number.",
             "itemtype": "method",
             "name": "lessThan",
@@ -685,7 +779,7 @@
         },
         {
             "file": "build/plugins/core/Filter.js",
-            "line": 94,
+            "line": 90,
             "description": "Creates a duplicate-free version of a collection, using SameValueZero for equality comparisons, in which\nonly the first occurrence of each element is kept.\n\nFor usage reference - https://lodash.com/docs#uniqBy",
             "itemtype": "method",
             "name": "uniqBy",
@@ -1005,10 +1099,6 @@
         {
             "message": "Missing item type\nExample: Query and sort...",
             "line": " build/examples/queryAndSort.js:3"
-        },
-        {
-            "message": "Missing item type\nCustom module used to filter data...",
-            "line": " build/plugins/core/Filter.js:13"
         },
         {
             "message": "Missing item type\nCustom module used to ...",

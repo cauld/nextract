@@ -15,7 +15,7 @@ ETL.loadPlugin('Core', ['Database', 'Sort', 'Logger'])
       return ETL.Plugins.Core.Database.select('nextract_sample', sql, sqlReplacements);
     })
     .then(function(data) {
-      ETL.Plugins.Core.Logger.info('Query Results:', data);
+      ETL.Plugins.Core.Logger.info('Query Results: ', data);
     })
     .catch(function(err) {
       ETL.Plugins.Core.Logger.error('ETL process failed: ', err);

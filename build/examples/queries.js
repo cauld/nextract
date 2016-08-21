@@ -9,12 +9,35 @@ var path = require('path'),
 
 var ETL = new Nextract();
 
-ETL.loadPlugin('Core', ['Database', 'Calculator', 'Logger']).then(function () {
-  return ETL.Plugins.Core.Database.selectQuery('nextract_sample', 'select first_name, last_name from users');
-}).then(function (userData) {
-  var deleteCriteria = [{ tableColumn: 'first_name', comparator: '=', collectionField: 'first_name' }, { tableColumn: 'last_name', comparator: '=', collectionField: 'last_name' }];
+function makeid() {
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-  return ETL.Plugins.Core.Database.deleteQuery('nextract_sample', 'users_copy', userData, deleteCriteria);
+  for (var i = 0; i < 5; i++) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }return text;
+}
+
+ETL.loadPlugin('Core', ['Database', 'Calculator', 'Logger']).then(function () {
+  return ETL.Plugins.Core.Database.selectQuery('nextract_sample', "select id, first_name, last_name from users where last_name = 'smith'");
+}).then(function (queryResults) {
+  /*
+  var smithUserData,
+      matchCriteria;
+   smithUserData = queryResults[0];
+  smithUserData.first_name = 'Taz';
+   matchCriteria = [{ tableColumn: 'id', comparator: '=', collectionField: 'id' }];
+   return ETL.Plugins.Core.Database.updateQuery('nextract_sample', 'users', [smithUserData], ['first_name'], matchCriteria);
+  */
+
+  var collectionsToInsert = [];
+  for (var i = 0; i < 3436; i++) {
+    collectionsToInsert[collectionsToInsert.length] = { 'first_name': makeid(), 'last_name': makeid(), 'age': 40 };
+  }
+
+  var columnsToInsert = ['first_name', 'last_name', 'age'];
+
+  return ETL.Plugins.Core.Database.insertQuery('nextract_sample', 'users', collectionsToInsert, columnsToInsert);
 }).then(function (data) {
   ETL.Plugins.Core.Logger.debug('Manipulated queryResults:', data);
 }).catch(function (err) {

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Nextract.Plugins.Core.Filter - nextract</title>
+    <title>Nextract.Plugins.Core.Database - nextract</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -84,12 +84,12 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                      <h1>Nextract.Plugins.Core.Filter Class</h1>
+                      <h1>Nextract.Plugins.Core.Database Class</h1>
                       <div class="box meta">
                       
                       
                               <div class="foundat">
-                                  Defined in: <a href="../files/build_plugins_core_Filter.js.html#l13"><code>build&#x2F;plugins&#x2F;core&#x2F;Filter.js:13</code></a>
+                                  Defined in: <a href="../files/build_plugins_core_Database.js.html#l49"><code>build&#x2F;plugins&#x2F;core&#x2F;Database.js:49</code></a>
                               </div>
                       
                       
@@ -97,7 +97,7 @@
                       
                       
                       <div class="box intro">
-                          <p>Mixes in methods used to filter sets of data</p>
+                          <p>Mixes in methods used to work with a database</p>
                       
                       </div>
                       
@@ -118,19 +118,19 @@
                       
                                           <ul class="index-list methods">
                                                   <li class="index-item method">
-                                                      <a href="#method_equals">equals</a>
+                                                      <a href="#method_deleteQuery">deleteQuery</a>
                       
                                                   </li>
                                                   <li class="index-item method">
-                                                      <a href="#method_greaterThan">greaterThan</a>
+                                                      <a href="#method_insertQuery">insertQuery</a>
                       
                                                   </li>
                                                   <li class="index-item method">
-                                                      <a href="#method_lessThan">lessThan</a>
+                                                      <a href="#method_selectQuery">selectQuery</a>
                       
                                                   </li>
                                                   <li class="index-item method">
-                                                      <a href="#method_uniqBy">uniqBy</a>
+                                                      <a href="#method_updateQuery">updateQuery</a>
                       
                                                   </li>
                                           </ul>
@@ -143,19 +143,25 @@
                                   <div id="methods" class="api-class-tabpanel">
                                       <h2 class="off-left">Methods</h2>
                       
-                      <div id="method_equals" class="method item">
-                          <h3 class="name"><code>equals</code></h3>
+                      <div id="method_deleteQuery" class="method item">
+                          <h3 class="name"><code>deleteQuery</code></h3>
                       
                               <div class="args">
                                   <span class="paren">(</span><ul class="args-list inline commas">
                                       <li class="arg">
+                                              <code>dbName</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>tableName</code>
+                                      </li>
+                                      <li class="arg">
                                               <code>collection</code>
                                       </li>
                                       <li class="arg">
-                                              <code>valueToTest</code>
+                                              <code>matchCriteria</code>
                                       </li>
                                       <li class="arg">
-                                              <code>propertyToTest</code>
+                                              <code>maxParallelQueries</code>
                                       </li>
                                   </ul><span class="paren">)</span>
                               </div>
@@ -173,7 +179,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_core_Filter.js.html#l21"><code>build&#x2F;plugins&#x2F;core&#x2F;Filter.js:21</code></a>
+                              <a href="../files/build_plugins_core_Database.js.html#l196"><code>build&#x2F;plugins&#x2F;core&#x2F;Database.js:196</code></a>
                               </p>
                       
                       
@@ -181,8 +187,7 @@
                           </div>
                       
                           <div class="description">
-                              <p>Iterates over elements of collection, returning an array of all elements
-                      that equal the given testValue.</p>
+                              <p>Delete query executed for each row in the collection</p>
                       
                           </div>
                       
@@ -191,34 +196,57 @@
                       
                                   <ul class="params-list">
                                       <li class="param">
-                                              <code class="param-name">collection</code>
-                                              <span class="type">Array | Object</span>
-                      
-                      
-                                          <div class="param-description">
-                                              <p>The collection to iterate over</p>
-                      
-                                          </div>
-                      
-                                      </li>
-                                      <li class="param">
-                                              <code class="param-name">valueToTest</code>
-                                              <span class="type">String | Number</span>
-                      
-                      
-                                          <div class="param-description">
-                                              <p>The value being against during each iteration</p>
-                      
-                                          </div>
-                      
-                                      </li>
-                                      <li class="param">
-                                              <code class="param-name">propertyToTest</code>
+                                              <code class="param-name">dbName</code>
                                               <span class="type">String</span>
                       
                       
                                           <div class="param-description">
-                                              <p>The object property name being tested against during each iteration</p>
+                                              <p>A database name that matches a object key defined in your Nextract config file</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">tableName</code>
+                                              <span class="type">String</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>Table name</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">collection</code>
+                                              <span class="type">Array</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>The collection to iterate on</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">matchCriteria</code>
+                                              <span class="type">Array</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>Array of objects with key/value params to be subbed out in a
+                      parameterized query. The expected format is  [{ tableColumn: '', comparator: '', collectionField: '' }].</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">maxParallelQueries</code>
+                                              <span class="type">Integer</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>(optional) Max number of queries to run in parallel (defaults to 5)</p>
                       
                                           </div>
                       
@@ -231,7 +259,7 @@
                       
                                   <div class="returns-description">
                                               <span class="type">Promise</span>:
-                                          <p>Promise resolved with an array of all elements that equal the testValue</p>
+                                          <p>Promise resolved once all queries have completed</p>
                       
                                   </div>
                               </div>
@@ -241,24 +269,35 @@
                                   <h4>Example:</h4>
                       
                                   <div class="example-content">
-                                      <pre class="code prettyprint"><code>ETL.Plugins.Core.Filter.equals(collection, 'foo', 'name');</code></pre>
+                                      <pre class="code prettyprint"><code>var matchCriteria = [
+                       { tableColumn: 'first_name', comparator: '=', collectionField: 'first_name' },
+                       { tableColumn: 'last_name', comparator: '=', collectionField: 'last_name' }
+                      ];
+                      
+                      return ETL.Plugins.Core.Database.deleteQuery('nextract_sample', 'users', userData, matchCriteria);</code></pre>
                       
                                   </div>
                               </div>
                       </div>
-                      <div id="method_greaterThan" class="method item">
-                          <h3 class="name"><code>greaterThan</code></h3>
+                      <div id="method_insertQuery" class="method item">
+                          <h3 class="name"><code>insertQuery</code></h3>
                       
                               <div class="args">
                                   <span class="paren">(</span><ul class="args-list inline commas">
                                       <li class="arg">
+                                              <code>dbName</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>tableName</code>
+                                      </li>
+                                      <li class="arg">
                                               <code>collection</code>
                                       </li>
                                       <li class="arg">
-                                              <code>valueToTest</code>
+                                              <code>columnsToUpdate</code>
                                       </li>
                                       <li class="arg">
-                                              <code>propertyToTest</code>
+                                              <code>batchAmount</code>
                                       </li>
                                   </ul><span class="paren">)</span>
                               </div>
@@ -276,7 +315,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_core_Filter.js.html#l44"><code>build&#x2F;plugins&#x2F;core&#x2F;Filter.js:44</code></a>
+                              <a href="../files/build_plugins_core_Database.js.html#l267"><code>build&#x2F;plugins&#x2F;core&#x2F;Database.js:267</code></a>
                               </p>
                       
                       
@@ -284,8 +323,7 @@
                           </div>
                       
                           <div class="description">
-                              <p>Iterates over elements of collection, returning an array of all elements
-                      that are greater than the given number.</p>
+                              <p>Insert query executed for each row in the collection. Uses batched inserts for performance gains.</p>
                       
                           </div>
                       
@@ -294,34 +332,56 @@
                       
                                   <ul class="params-list">
                                       <li class="param">
-                                              <code class="param-name">collection</code>
-                                              <span class="type">Array | Object</span>
-                      
-                      
-                                          <div class="param-description">
-                                              <p>The collection to iterate over</p>
-                      
-                                          </div>
-                      
-                                      </li>
-                                      <li class="param">
-                                              <code class="param-name">valueToTest</code>
-                                              <span class="type">String | Number</span>
-                      
-                      
-                                          <div class="param-description">
-                                              <p>The value being against during each iteration</p>
-                      
-                                          </div>
-                      
-                                      </li>
-                                      <li class="param">
-                                              <code class="param-name">propertyToTest</code>
+                                              <code class="param-name">dbName</code>
                                               <span class="type">String</span>
                       
                       
                                           <div class="param-description">
-                                              <p>The object property name being tested against during each iteration</p>
+                                              <p>A database name that matches a object key defined in your Nextract config file</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">tableName</code>
+                                              <span class="type">String</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>Table name</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">collection</code>
+                                              <span class="type">Array</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>The collection to iterate on</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">columnsToUpdate</code>
+                                              <span class="type">Array</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>Array of property (column) names to use in the INSERT</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">batchAmount</code>
+                                              <span class="type">Integer</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>(optional) Number of rows to batch insert (defaults to 1000)</p>
                       
                                           </div>
                       
@@ -334,7 +394,7 @@
                       
                                   <div class="returns-description">
                                               <span class="type">Promise</span>:
-                                          <p>Promise resolved with an array of all elements that are greater than the testValue</p>
+                                          <p>Promise resolved once all queries have completed</p>
                       
                                   </div>
                               </div>
@@ -344,24 +404,30 @@
                                   <h4>Example:</h4>
                       
                                   <div class="example-content">
-                                      <pre class="code prettyprint"><code>ETL.Plugins.Core.Filter.greaterThan(collection, 10);</code></pre>
+                                      <pre class="code prettyprint"><code>var columnsToInsert = ['first_name', 'last_name', 'age'];
+                      var collectionsToInsert = [
+                       { 'first_name': 'foo', 'last_name': 'bar', 'age': 25 },
+                       { 'first_name': 'foo', 'last_name': 'baz', 'age': 48 }
+                      ];
+                      
+                      return ETL.Plugins.Core.Database.insertQuery('nextract_sample', 'users', collectionsToInsert, columnsToInsert);</code></pre>
                       
                                   </div>
                               </div>
                       </div>
-                      <div id="method_lessThan" class="method item">
-                          <h3 class="name"><code>lessThan</code></h3>
+                      <div id="method_selectQuery" class="method item">
+                          <h3 class="name"><code>selectQuery</code></h3>
                       
                               <div class="args">
                                   <span class="paren">(</span><ul class="args-list inline commas">
                                       <li class="arg">
-                                              <code>collection</code>
+                                              <code>dbName</code>
                                       </li>
                                       <li class="arg">
-                                              <code>valueToTest</code>
+                                              <code>sql</code>
                                       </li>
                                       <li class="arg">
-                                              <code>propertyToTest</code>
+                                              <code>sqlParams</code>
                                       </li>
                                   </ul><span class="paren">)</span>
                               </div>
@@ -379,7 +445,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_core_Filter.js.html#l67"><code>build&#x2F;plugins&#x2F;core&#x2F;Filter.js:67</code></a>
+                              <a href="../files/build_plugins_core_Database.js.html#l163"><code>build&#x2F;plugins&#x2F;core&#x2F;Database.js:163</code></a>
                               </p>
                       
                       
@@ -387,8 +453,7 @@
                           </div>
                       
                           <div class="description">
-                              <p>Iterates over elements of collection, returning an array of all elements
-                      that are less than the given number.</p>
+                              <p>Raw query interface for select statements</p>
                       
                           </div>
                       
@@ -397,34 +462,36 @@
                       
                                   <ul class="params-list">
                                       <li class="param">
-                                              <code class="param-name">collection</code>
-                                              <span class="type">Array | Object</span>
-                      
-                      
-                                          <div class="param-description">
-                                              <p>The collection to iterate over</p>
-                      
-                                          </div>
-                      
-                                      </li>
-                                      <li class="param">
-                                              <code class="param-name">valueToTest</code>
-                                              <span class="type">String | Number</span>
-                      
-                      
-                                          <div class="param-description">
-                                              <p>The value being against during each iteration</p>
-                      
-                                          </div>
-                      
-                                      </li>
-                                      <li class="param">
-                                              <code class="param-name">propertyToTest</code>
+                                              <code class="param-name">dbName</code>
                                               <span class="type">String</span>
                       
                       
                                           <div class="param-description">
-                                              <p>The object property name being tested against during each iteration</p>
+                                              <p>A database name that matches a object key defined in your Nextract config file</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">sql</code>
+                                              <span class="type">String</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>SQL statement to execute. Can be a fully formed SQL select statement or
+                      a parameterized one with &quot;:key&quot; placeholders. If the later, then sqlParams
+                      must be an object of key/values to be replaced.</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">sqlParams</code>
+                                              <span class="type">Object</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>(optional) List of key/value params to be subbed out in a parameterized query</p>
                       
                                           </div>
                       
@@ -437,7 +504,7 @@
                       
                                   <div class="returns-description">
                                               <span class="type">Promise</span>:
-                                          <p>Promise resolved with an array of all elements that are less than the testValue</p>
+                                          <p>Promise resolved with an array of database rows that match the given select statement</p>
                       
                                   </div>
                               </div>
@@ -447,21 +514,32 @@
                                   <h4>Example:</h4>
                       
                                   <div class="example-content">
-                                      <pre class="code prettyprint"><code>ETL.Plugins.Core.Filter.lessThan(collection, 10);</code></pre>
+                                      <pre class="code prettyprint"><code>var sql = 'select first_name, last_name, age, salary from users where id = :id';
+                      var sqlParams = { id: id };
+                      ETL.Plugins.Core.Database.selectQuery('dbname', sql, sqlParams);</code></pre>
                       
                                   </div>
                               </div>
                       </div>
-                      <div id="method_uniqBy" class="method item">
-                          <h3 class="name"><code>uniqBy</code></h3>
+                      <div id="method_updateQuery" class="method item">
+                          <h3 class="name"><code>updateQuery</code></h3>
                       
                               <div class="args">
                                   <span class="paren">(</span><ul class="args-list inline commas">
                                       <li class="arg">
+                                              <code>dbName</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>tableName</code>
+                                      </li>
+                                      <li class="arg">
                                               <code>collection</code>
                                       </li>
                                       <li class="arg">
-                                              <code>propertyToTest</code>
+                                              <code>matchCriteria</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>maxParallelQueries</code>
                                       </li>
                                   </ul><span class="paren">)</span>
                               </div>
@@ -479,7 +557,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_core_Filter.js.html#l90"><code>build&#x2F;plugins&#x2F;core&#x2F;Filter.js:90</code></a>
+                              <a href="../files/build_plugins_core_Database.js.html#l227"><code>build&#x2F;plugins&#x2F;core&#x2F;Database.js:227</code></a>
                               </p>
                       
                       
@@ -487,9 +565,7 @@
                           </div>
                       
                           <div class="description">
-                              <p>Creates a duplicate-free version of a collection, using SameValueZero for equality comparisons, in which
-                      only the first occurrence of each element is kept.</p>
-                      <p>For usage reference - <a href="https://lodash.com/docs#uniqBy">https://lodash.com/docs#uniqBy</a></p>
+                              <p>Update query executed for each row in the collection</p>
                       
                           </div>
                       
@@ -498,23 +574,57 @@
                       
                                   <ul class="params-list">
                                       <li class="param">
-                                              <code class="param-name">collection</code>
-                                              <span class="type">Array | Object</span>
+                                              <code class="param-name">dbName</code>
+                                              <span class="type">String</span>
                       
                       
                                           <div class="param-description">
-                                              <p>The collection to iterate over</p>
+                                              <p>A database name that matches a object key defined in your Nextract config file</p>
                       
                                           </div>
                       
                                       </li>
                                       <li class="param">
-                                              <code class="param-name">propertyToTest</code>
+                                              <code class="param-name">tableName</code>
                                               <span class="type">String</span>
                       
                       
                                           <div class="param-description">
-                                              <p>The object property name being tested against during each iteration</p>
+                                              <p>Table name</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">collection</code>
+                                              <span class="type">Array</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>The collection to iterate on</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">matchCriteria</code>
+                                              <span class="type">Array</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>Array of objects with key/value params to be subbed out in a
+                      parameterized query. The expected format is  [{ tableColumn: '', comparator: '', collectionField: '' }].</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">maxParallelQueries</code>
+                                              <span class="type">Integer</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>(optional) Max number of queries to run in parallel (defaults to 5)</p>
                       
                                           </div>
                       
@@ -527,7 +637,7 @@
                       
                                   <div class="returns-description">
                                               <span class="type">Promise</span>:
-                                          <p>Promise resolved with the new duplicate free array</p>
+                                          <p>Promise resolved once all queries have completed</p>
                       
                                   </div>
                               </div>
@@ -537,7 +647,12 @@
                                   <h4>Example:</h4>
                       
                                   <div class="example-content">
-                                      <pre class="code prettyprint"><code>ETL.Plugins.Core.Filter.uniqBy(collection, 'last_name');</code></pre>
+                                      <pre class="code prettyprint"><code>var matchCriteria = [
+                       { tableColumn: 'first_name', comparator: '=', collectionField: 'first_name' },
+                       { tableColumn: 'last_name', comparator: '=', collectionField: 'last_name' }
+                      ];
+                      
+                      return ETL.Plugins.Core.Database.deleteQuery('nextract_sample', 'users', userData, matchCriteria);</code></pre>
                       
                                   </div>
                               </div>

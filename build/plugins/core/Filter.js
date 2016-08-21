@@ -11,10 +11,6 @@ var _filter3 = _interopRequireDefault(_filter2);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
- * Custom module used to filter data...
- */
-
-/**
  * Mixes in methods used to filter sets of data
  *
  * @class Nextract.Plugins.Core.Filter

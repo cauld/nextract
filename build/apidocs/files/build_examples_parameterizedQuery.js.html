@@ -40,6 +40,7 @@
                             <ul id="api-classes" class="apis classes">
                                 <li><a href="../classes/Nextract.html">Nextract</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Calculator.html">Nextract.Plugins.Core.Calculator</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Database.html">Nextract.Plugins.Core.Database</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Filter.html">Nextract.Plugins.Core.Filter</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.GroupBy.html">Nextract.Plugins.Core.GroupBy</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Input.html">Nextract.Plugins.Core.Input</a></li>
@@ -104,7 +105,7 @@
                       
                         return ETL.Plugins.Core.Database.select(&#x27;nextract_sample&#x27;, sql, sqlReplacements);
                       }).then(function (data) {
-                        ETL.Plugins.Core.Logger.info(&#x27;Query Results:&#x27;, data);
+                        ETL.Plugins.Core.Logger.info(&#x27;Query Results: &#x27;, data);
                       }).catch(function (err) {
                         ETL.Plugins.Core.Logger.error(&#x27;ETL process failed: &#x27;, err);
                       });

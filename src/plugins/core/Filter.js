@@ -1,8 +1,4 @@
 /**
- * Custom module used to filter data...
- */
-
-/**
  * Mixes in methods used to filter sets of data
  *
  * @class Nextract.Plugins.Core.Filter
