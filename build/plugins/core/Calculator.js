@@ -12,21 +12,28 @@
 //Would be nice to do import as show above but babel-plugin-lodash has issues with the format _[lodashMethod]
 var _ = require("lodash");
 
-function doLodashPassthrough(collection, lodashMethod, firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd) {
+function doLodashPassthrough(collection, lodashMethod, firstPropOrVal, secondPropOrVal) {
+  var propertyToUpdateOrAdd = arguments.length <= 4 || arguments[4] === undefined ? '' : arguments[4];
+
   return new Promise(function (resolve, reject) {
-    collection.forEach(function (element) {
-      var v1 = _.isInteger(firstPropOrVal) === true ? firstPropOrVal : element[firstPropOrVal];
-      var v2 = _.isInteger(secondPropOrVal) === true ? secondPropOrVal : element[secondPropOrVal];
+    if (_.isEmpty(propertyToUpdateOrAdd)) {
+      reject('Invalid calculator ' + lodashMethod + ' request, please check your input params!');
+    } else {
+      collection.forEach(function (element) {
+        //Users can pass a property name or a number to be added
+        var v1 = _.isString(firstPropOrVal) && _.has(element, firstPropOrVal) ? element[firstPropOrVal] : Number(firstPropOrVal);
+        var v2 = _.isString(secondPropOrVal) && _.has(element, secondPropOrVal) ? element[secondPropOrVal] : Number(secondPropOrVal);
 
-      if (_.isUndefined(v1) || _.isUndefined(v2)) {
-        reject('Invalid calculator request, please check your input params!');
-      } else {
-        //Set or update with new value
-        element[propertyToUpdateOrAdd] = _[lodashMethod](v1, v2);
-      }
-    });
+        if (_.isUndefined(v1) || _.isUndefined(v2)) {
+          reject('Invalid calculator ' + lodashMethod + ' request, please check your input params!');
+        } else {
+          //Set or update with new value
+          element[propertyToUpdateOrAdd] = _[lodashMethod](v1, v2);
+        }
+      });
 
-    resolve(collection);
+      resolve(collection);
+    }
   });
 }
 
