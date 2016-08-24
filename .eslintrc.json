@@ -7,7 +7,9 @@
     "comma-dangle": [2, "only-multiline"]
   },
   "globals": {
-    "_path2": true
+    "_path2": true,
+    "self": true,
+    "postMessage": true
   },
   "env": {
     "node": true,

@@ -69,8 +69,8 @@
             "fors": {},
             "namespaces": {}
         },
-        "build/plugins/core/Calculator.js": {
-            "name": "build/plugins/core/Calculator.js",
+        "build/plugins/core/Calculator/Calculator.js": {
+            "name": "build/plugins/core/Calculator/Calculator.js",
             "modules": {},
             "classes": {
                 "Nextract.Plugins.Core.Calculator": 1
@@ -78,8 +78,8 @@
             "fors": {},
             "namespaces": {}
         },
-        "build/plugins/core/Database.js": {
-            "name": "build/plugins/core/Database.js",
+        "build/plugins/core/Database/Database.js": {
+            "name": "build/plugins/core/Database/Database.js",
             "modules": {},
             "classes": {},
             "fors": {
@@ -87,8 +87,8 @@
             },
             "namespaces": {}
         },
-        "build/plugins/core/Filter.js": {
-            "name": "build/plugins/core/Filter.js",
+        "build/plugins/core/Filter/Filter.js": {
+            "name": "build/plugins/core/Filter/Filter.js",
             "modules": {},
             "classes": {
                 "Nextract.Plugins.Core.Filter": 1
@@ -96,8 +96,8 @@
             "fors": {},
             "namespaces": {}
         },
-        "build/plugins/core/GroupBy.js": {
-            "name": "build/plugins/core/GroupBy.js",
+        "build/plugins/core/GroupBy/GroupBy.js": {
+            "name": "build/plugins/core/GroupBy/GroupBy.js",
             "modules": {},
             "classes": {
                 "Nextract.Plugins.Core.GroupBy": 1
@@ -105,15 +105,15 @@
             "fors": {},
             "namespaces": {}
         },
-        "build/plugins/core/Http.js": {
-            "name": "build/plugins/core/Http.js",
+        "build/plugins/core/Http/Http.js": {
+            "name": "build/plugins/core/Http/Http.js",
             "modules": {},
             "classes": {},
             "fors": {},
             "namespaces": {}
         },
-        "build/plugins/core/Input.js": {
-            "name": "build/plugins/core/Input.js",
+        "build/plugins/core/Input/Input.js": {
+            "name": "build/plugins/core/Input/Input.js",
             "modules": {},
             "classes": {
                 "Nextract.Plugins.Core.Input": 1
@@ -121,15 +121,15 @@
             "fors": {},
             "namespaces": {}
         },
-        "build/plugins/core/Logger.js": {
-            "name": "build/plugins/core/Logger.js",
+        "build/plugins/core/Logger/Logger.js": {
+            "name": "build/plugins/core/Logger/Logger.js",
             "modules": {},
             "classes": {},
             "fors": {},
             "namespaces": {}
         },
-        "build/plugins/core/Output.js": {
-            "name": "build/plugins/core/Output.js",
+        "build/plugins/core/Output/Output.js": {
+            "name": "build/plugins/core/Output/Output.js",
             "modules": {},
             "classes": {
                 "Nextract.Plugins.Core.Output": 1
@@ -137,17 +137,15 @@
             "fors": {},
             "namespaces": {}
         },
-        "build/plugins/core/Sort.js": {
-            "name": "build/plugins/core/Sort.js",
+        "build/plugins/core/Sort/Sort.js": {
+            "name": "build/plugins/core/Sort/Sort.js",
             "modules": {},
-            "classes": {
-                "Nextract.Plugins.Core.Sort": 1
-            },
+            "classes": {},
             "fors": {},
             "namespaces": {}
         },
-        "build/plugins/core/Utils.js": {
-            "name": "build/plugins/core/Utils.js",
+        "build/plugins/core/Utils/Utils.js": {
+            "name": "build/plugins/core/Utils/Utils.js",
             "modules": {},
             "classes": {
                 "Nextract.Plugins.Core.Utils": 1
@@ -155,18 +153,13 @@
             "fors": {},
             "namespaces": {}
         },
-        "build/plugins/core/Validator.js": {
-            "name": "build/plugins/core/Validator.js",
-            "modules": {},
-            "classes": {},
-            "fors": {},
-            "namespaces": {}
-        },
         "build/plugins/pluginUtils.js": {
             "name": "build/plugins/pluginUtils.js",
             "modules": {},
             "classes": {},
-            "fors": {},
+            "fors": {
+                "Nextract.pluginUtils": 1
+            },
             "namespaces": {}
         },
         "build/nextract.js": {
@@ -191,7 +184,7 @@
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
-            "file": "build/plugins/core/Calculator.js",
+            "file": "build/plugins/core/Calculator/Calculator.js",
             "line": 3,
             "description": "Mixes in a series of common mathematical calculations"
         },
@@ -212,8 +205,8 @@
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
-            "file": "build/plugins/core/Filter.js",
-            "line": 13,
+            "file": "build/plugins/core/Filter/Filter.js",
+            "line": 15,
             "description": "Mixes in methods used to filter sets of data"
         },
         "Nextract.Plugins.Core.GroupBy": {
@@ -224,8 +217,8 @@
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
-            "file": "build/plugins/core/GroupBy.js",
-            "line": 21,
+            "file": "build/plugins/core/GroupBy/GroupBy.js",
+            "line": 23,
             "description": "Mixes in methods used to perform grouping operations on data"
         },
         "Nextract.Plugins.Core.Input": {
@@ -236,7 +229,7 @@
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
-            "file": "build/plugins/core/Input.js",
+            "file": "build/plugins/core/Input/Input.js",
             "line": 21,
             "description": "Mixes in methods used to read files"
         },
@@ -248,21 +241,9 @@
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
-            "file": "build/plugins/core/Output.js",
+            "file": "build/plugins/core/Output/Output.js",
             "line": 25,
             "description": "Mixes in methods used to export files"
-        },
-        "Nextract.Plugins.Core.Sort": {
-            "name": "Nextract.Plugins.Core.Sort",
-            "shortname": "Nextract.Plugins.Core.Sort",
-            "classitems": [],
-            "plugins": [],
-            "extensions": [],
-            "plugin_for": [],
-            "extension_for": [],
-            "file": "build/plugins/core/Sort.js",
-            "line": 21,
-            "description": "Mixes in methods used to sort data"
         },
         "Nextract.Plugins.Core.Utils": {
             "name": "Nextract.Plugins.Core.Utils",
@@ -272,9 +253,18 @@
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
-            "file": "build/plugins/core/Utils.js",
+            "file": "build/plugins/core/Utils/Utils.js",
             "line": 3,
-            "description": "Mixes in methods used to work with a database"
+            "description": "Utility methods"
+        },
+        "Nextract.pluginUtils": {
+            "name": "Nextract.pluginUtils",
+            "shortname": "Nextract.pluginUtils",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": []
         },
         "Nextract": {
             "name": "Nextract",
@@ -347,8 +337,8 @@
             "class": "Nextract.Plugins.Core.Calculator"
         },
         {
-            "file": "build/plugins/core/Calculator.js",
-            "line": 42,
+            "file": "build/plugins/core/Calculator/Calculator.js",
+            "line": 44,
             "description": "Adds two numbers and/or object properties",
             "itemtype": "method",
             "name": "add",
@@ -384,8 +374,8 @@
             "class": "Nextract.Plugins.Core.Calculator"
         },
         {
-            "file": "build/plugins/core/Calculator.js",
-            "line": 60,
+            "file": "build/plugins/core/Calculator/Calculator.js",
+            "line": 62,
             "description": "Subtracts two numbers and/or object properties",
             "itemtype": "method",
             "name": "subtract",
@@ -421,8 +411,8 @@
             "class": "Nextract.Plugins.Core.Calculator"
         },
         {
-            "file": "build/plugins/core/Calculator.js",
-            "line": 78,
+            "file": "build/plugins/core/Calculator/Calculator.js",
+            "line": 80,
             "description": "Divides two numbers and/or object properties",
             "itemtype": "method",
             "name": "divide",
@@ -458,8 +448,8 @@
             "class": "Nextract.Plugins.Core.Calculator"
         },
         {
-            "file": "build/plugins/core/Calculator.js",
-            "line": 96,
+            "file": "build/plugins/core/Calculator/Calculator.js",
+            "line": 98,
             "description": "Multiplies two numbers and/or object properties",
             "itemtype": "method",
             "name": "multiply",
@@ -495,8 +485,8 @@
             "class": "Nextract.Plugins.Core.Calculator"
         },
         {
-            "file": "build/plugins/core/Calculator.js",
-            "line": 114,
+            "file": "build/plugins/core/Calculator/Calculator.js",
+            "line": 116,
             "description": "Concatenates strings and/or object properties",
             "itemtype": "method",
             "name": "concat",
@@ -532,7 +522,7 @@
             "class": "Nextract.Plugins.Core.Calculator"
         },
         {
-            "file": "build/plugins/core/Database.js",
+            "file": "build/plugins/core/Database/Database.js",
             "line": 178,
             "description": "Raw query interface for select statements",
             "itemtype": "method",
@@ -566,7 +556,7 @@
             "class": "Nextract.Plugins.Core.Database"
         },
         {
-            "file": "build/plugins/core/Database.js",
+            "file": "build/plugins/core/Database/Database.js",
             "line": 213,
             "description": "Allows you to run an DELETE query against a database using data obtained from previous steps. Runs\na query for each row in the collection.",
             "itemtype": "method",
@@ -609,7 +599,7 @@
             "class": "Nextract.Plugins.Core.Database"
         },
         {
-            "file": "build/plugins/core/Database.js",
+            "file": "build/plugins/core/Database/Database.js",
             "line": 245,
             "description": "Allows you to run an UPDATE query against a database using data obtained from previous steps. Runs\na query for each row in the collection.",
             "itemtype": "method",
@@ -653,7 +643,7 @@
             "class": "Nextract.Plugins.Core.Database"
         },
         {
-            "file": "build/plugins/core/Database.js",
+            "file": "build/plugins/core/Database/Database.js",
             "line": 285,
             "description": "Insert query for collections. Will insert each collection item into a database table.\nUses batched inserts for performance gains.",
             "itemtype": "method",
@@ -697,7 +687,7 @@
             "class": "Nextract.Plugins.Core.Database"
         },
         {
-            "file": "build/plugins/core/Database.js",
+            "file": "build/plugins/core/Database/Database.js",
             "line": 385,
             "description": "Allows you to run a select query against a database using data obtained from previous steps. Runs\na query for each row in the collection. The collection will be returned with the properties of the\noriginal item data + the properties of the joined data.  Optionally returns all or just matched rows.",
             "itemtype": "method",
@@ -741,8 +731,8 @@
             "class": "Nextract.Plugins.Core.Database"
         },
         {
-            "file": "build/plugins/core/Filter.js",
-            "line": 21,
+            "file": "build/plugins/core/Filter/Filter.js",
+            "line": 23,
             "description": "Iterates over elements of collection, returning an array of all elements\nthat equal the given testValue.",
             "itemtype": "method",
             "name": "equals",
@@ -773,8 +763,8 @@
             "class": "Nextract.Plugins.Core.Filter"
         },
         {
-            "file": "build/plugins/core/Filter.js",
-            "line": 44,
+            "file": "build/plugins/core/Filter/Filter.js",
+            "line": 46,
             "description": "Iterates over elements of collection, returning an array of all elements\nthat are greater than the given number.",
             "itemtype": "method",
             "name": "greaterThan",
@@ -805,8 +795,8 @@
             "class": "Nextract.Plugins.Core.Filter"
         },
         {
-            "file": "build/plugins/core/Filter.js",
-            "line": 67,
+            "file": "build/plugins/core/Filter/Filter.js",
+            "line": 69,
             "description": "Iterates over elements of collection, returning an array of all elements\nthat are less than the given number.",
             "itemtype": "method",
             "name": "lessThan",
@@ -837,8 +827,8 @@
             "class": "Nextract.Plugins.Core.Filter"
         },
         {
-            "file": "build/plugins/core/Filter.js",
-            "line": 90,
+            "file": "build/plugins/core/Filter/Filter.js",
+            "line": 92,
             "description": "Creates a duplicate-free version of a collection, using SameValueZero for equality comparisons, in which\nonly the first occurrence of each element is kept.\n\nFor usage reference - https://lodash.com/docs#uniqBy",
             "itemtype": "method",
             "name": "uniqBy",
@@ -864,8 +854,8 @@
             "class": "Nextract.Plugins.Core.Filter"
         },
         {
-            "file": "build/plugins/core/GroupBy.js",
-            "line": 29,
+            "file": "build/plugins/core/GroupBy/GroupBy.js",
+            "line": 31,
             "description": "Computes the maximum value of array. It accepts iteratee which is invoked for each element in\narray to generate the criterion by which the value is ranked. The iteratee is invoked with\none argument: (value).\n\nFor usage reference - https://lodash.com/docs#maxBy",
             "itemtype": "method",
             "name": "maxBy",
@@ -879,8 +869,8 @@
             "class": "Nextract.Plugins.Core.GroupBy"
         },
         {
-            "file": "build/plugins/core/GroupBy.js",
-            "line": 46,
+            "file": "build/plugins/core/GroupBy/GroupBy.js",
+            "line": 48,
             "description": "Computes the minimum value of array. It accepts iteratee which is invoked for each element in\narray to generate the criterion by which the value is ranked. The iteratee is invoked with\none argument: (value).\n\nFor usage reference - https://lodash.com/docs#minBy",
             "itemtype": "method",
             "name": "minBy",
@@ -894,8 +884,8 @@
             "class": "Nextract.Plugins.Core.GroupBy"
         },
         {
-            "file": "build/plugins/core/GroupBy.js",
-            "line": 63,
+            "file": "build/plugins/core/GroupBy/GroupBy.js",
+            "line": 65,
             "description": "Computes the mean of the values in array. It accepts iteratee which is invoked for each element in\narray to generate the criterion by which the value is ranked. The iteratee is invoked with\none argument: (value).\n\nFor usage reference - https://lodash.com/docs#maxBy",
             "itemtype": "method",
             "name": "meanBy",
@@ -909,8 +899,8 @@
             "class": "Nextract.Plugins.Core.GroupBy"
         },
         {
-            "file": "build/plugins/core/GroupBy.js",
-            "line": 80,
+            "file": "build/plugins/core/GroupBy/GroupBy.js",
+            "line": 82,
             "description": "Computes the sum of the values in array. It accepts iteratee which is invoked for each element\nin array to generate the value to be summed. The iteratee is invoked with one argument: (value).\n\nFor usage reference - https://lodash.com/docs#maxBy",
             "itemtype": "method",
             "name": "sumBy",
@@ -924,13 +914,13 @@
             "class": "Nextract.Plugins.Core.GroupBy"
         },
         {
-            "file": "build/plugins/core/Http.js",
+            "file": "build/plugins/core/Http/Http.js",
             "line": 3,
             "description": "Custom module used to ...",
             "class": "Nextract.Plugins.Core.Input"
         },
         {
-            "file": "build/plugins/core/Input.js",
+            "file": "build/plugins/core/Input/Input.js",
             "line": 79,
             "description": "Used to read files",
             "itemtype": "method",
@@ -958,13 +948,13 @@
             "class": "Nextract.Plugins.Core.Input"
         },
         {
-            "file": "build/plugins/core/Logger.js",
+            "file": "build/plugins/core/Logger/Logger.js",
             "line": 15,
             "description": "Winston logging config\nReferences:\n- https://github.com/winstonjs/winston\n- http://stackoverflow.com/a/23330037\n- http://stackoverflow.com/a/25233851",
             "class": "Nextract.Plugins.Core.Output"
         },
         {
-            "file": "build/plugins/core/Output.js",
+            "file": "build/plugins/core/Output/Output.js",
             "line": 95,
             "description": "Used to output files",
             "itemtype": "method",
@@ -997,8 +987,8 @@
             "class": "Nextract.Plugins.Core.Output"
         },
         {
-            "file": "build/plugins/core/Sort.js",
-            "line": 29,
+            "file": "build/plugins/core/Sort/Sort.js",
+            "line": 23,
             "description": "This method is like _.sortBy except that it allows specifying the sort orders of the iteratees to sort by.\nIf orders is unspecified, all values are sorted in ascending order. Otherwise, specify an order of \"desc\"\nfor descending or \"asc\" for ascending sort order of corresponding values.\n\nFor usage reference - https://lodash.com/docs#orderBy",
             "itemtype": "method",
             "name": "orderBy",
@@ -1009,11 +999,11 @@
                 "description": "Promise resolved with the new sorted array",
                 "type": "Promise"
             },
-            "class": "Nextract.Plugins.Core.Sort"
+            "class": "Nextract.Plugins.Core.Utils"
         },
         {
-            "file": "build/plugins/core/Sort.js",
-            "line": 49,
+            "file": "build/plugins/core/Sort/Sort.js",
+            "line": 61,
             "description": "Creates an array of elements, sorted in ascending order by the results of running each element in a collection thru each iteratee.\nThis method performs a stable sort, that is, it preserves the original sort order of equal elements.\nThe iteratees are invoked with one argument: (value).\n\nFor usage reference - https://lodash.com/docs#sortBy",
             "itemtype": "method",
             "name": "sortBy",
@@ -1024,11 +1014,11 @@
                 "description": "Promise resolved with the new sorted array",
                 "type": "Promise"
             },
-            "class": "Nextract.Plugins.Core.Sort"
+            "class": "Nextract.Plugins.Core.Utils"
         },
         {
-            "file": "build/plugins/core/Sort.js",
-            "line": 68,
+            "file": "build/plugins/core/Sort/Sort.js",
+            "line": 80,
             "description": "Sorts the elements of an array in place via a custom compare function\n\nFor usage reference - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort",
             "itemtype": "method",
             "name": "customCompare",
@@ -1051,10 +1041,10 @@
                 "description": "Promise resolved with the new sorted array",
                 "type": "Promise"
             },
-            "class": "Nextract.Plugins.Core.Sort"
+            "class": "Nextract.Plugins.Core.Utils"
         },
         {
-            "file": "build/plugins/core/Utils.js",
+            "file": "build/plugins/core/Utils/Utils.js",
             "line": 11,
             "description": "Utility which runs all passed Promises and returns only once all have been fufilled",
             "itemtype": "method",
@@ -1076,16 +1066,64 @@
             "class": "Nextract.Plugins.Core.Utils"
         },
         {
-            "file": "build/plugins/core/Validator.js",
-            "line": 3,
-            "description": "Custom module used to validate data",
-            "class": "Nextract"
+            "file": "build/plugins/pluginUtils.js",
+            "line": 29,
+            "description": "Provides access to the current config from inside a plugin. Useful if a plugin requires access to\ndynamic configuration details (e.g.) the database plugin uses this to lookup database creds\nfor a given database name.",
+            "itemtype": "method",
+            "name": "config",
+            "return": {
+                "description": "Promise resolved with current Nextract config object",
+                "type": "Promise"
+            },
+            "class": "Nextract.pluginUtils"
         },
         {
             "file": "build/plugins/pluginUtils.js",
-            "line": 15,
-            "description": "Nextract Plugin Utils",
-            "class": "Nextract"
+            "line": 41,
+            "description": "Provides access to the Core logger from inside a plugin",
+            "itemtype": "method",
+            "name": "logger",
+            "example": [
+                "\n   pluginUtils.logger.error('Houston we have a problem', err);"
+            ],
+            "return": {
+                "description": "Promise resolved with current Nextract config object",
+                "type": "Promise"
+            },
+            "class": "Nextract.pluginUtils"
+        },
+        {
+            "file": "build/plugins/pluginUtils.js",
+            "line": 54,
+            "description": "Convinence method used by plugins to run code in a background web worker thread. A worker\nscript must exist in the same directory as the plugin itself with a name of Worker.js. The\nformat of the worker script must match the one defined in the Sort plugin for example\n(see src/plugins/core/Sort/Worker.js);",
+            "itemtype": "method",
+            "name": "runInWorker",
+            "example": [
+                "\n    var workerMsg = { cmd: 'orderBy', args: [collection, iteratees, orders] };",
+                "\n    return pluginUtils.runInWorker('Core', 'Sort', workerMsg);"
+            ],
+            "params": [
+                {
+                    "name": "pluginType",
+                    "description": "Plugin type (Core or Vendor)",
+                    "type": "String"
+                },
+                {
+                    "name": "pluginName",
+                    "description": "Plugin name (e.g.) Sort",
+                    "type": "String"
+                },
+                {
+                    "name": "workerMsg",
+                    "description": "The message to be passed to the worker. The object contains\ntwo properties; 1) cmd - The command/method to run inside the Worker & 2) args - The\narguments being passed to the methiod defined in command via apply().",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "Promise resolved with an array of database rows that match the given select statement",
+                "type": "Promise"
+            },
+            "class": "Nextract.pluginUtils"
         },
         {
             "file": "build/nextract.js",
@@ -1165,19 +1203,11 @@
         },
         {
             "message": "Missing item type\nCustom module used to ...",
-            "line": " build/plugins/core/Http.js:3"
+            "line": " build/plugins/core/Http/Http.js:3"
         },
         {
             "message": "Missing item type\nWinston logging config\nReferences:\n- https://github.com/winstonjs/winston\n- http://stackoverflow.com/a/23330037\n- http://stackoverflow.com/a/25233851",
-            "line": " build/plugins/core/Logger.js:15"
-        },
-        {
-            "message": "Missing item type\nCustom module used to validate data",
-            "line": " build/plugins/core/Validator.js:3"
-        },
-        {
-            "message": "Missing item type\nNextract Plugin Utils",
-            "line": " build/plugins/pluginUtils.js:15"
+            "line": " build/plugins/core/Logger/Logger.js:15"
         }
     ]
 }

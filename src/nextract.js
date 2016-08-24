@@ -8,7 +8,7 @@
 import _ from 'lodash';
 import { isArray } from 'lodash/fp';
 import path from 'path';
-import logger from './plugins/core/Logger';
+import logger from './plugins/core/Logger/Logger';
 
 var Nextract = function() {
 
@@ -58,10 +58,10 @@ Nextract.prototype.mixin = function(pluginType, pluginNames) {
 
     pluginNames.forEach(function(pluginName) {
       try {
-        if (pluginType === 'Core') {
-          that.Plugins.Core[pluginName] = require(path.resolve(__dirname, 'plugins/core/' + pluginName));
+        if (pluginType === 'Core' || pluginType === 'Vendor') {
+          that.Plugins.Core[pluginName] = require(path.resolve(__dirname, 'plugins/' + pluginType.toLowerCase() + '/' + pluginName + '/' + pluginName));
         } else {
-           that.Plugins.Vendor[pluginName] = require(path.resolve(__dirname, 'plugins/vendor/' + pluginName));
+          reject('Invalid plugin type given, must be Core or Vendor!');
         }
       } catch(err) {
         logger.error('Nextract mixin: ', err);

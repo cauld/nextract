@@ -8,8 +8,8 @@ YUI.add("yuidoc-meta", function(Y) {
         "Nextract.Plugins.Core.GroupBy",
         "Nextract.Plugins.Core.Input",
         "Nextract.Plugins.Core.Output",
-        "Nextract.Plugins.Core.Sort",
-        "Nextract.Plugins.Core.Utils"
+        "Nextract.Plugins.Core.Utils",
+        "Nextract.pluginUtils"
     ],
     "modules": [],
     "allModules": [],

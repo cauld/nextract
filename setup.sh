@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 echo "Installing required npm packages..."
+npm install grunt -g
 npm install
 
 echo "Add default config files..."

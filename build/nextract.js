@@ -8,7 +8,7 @@ var _path = require('path');
 
 var _path2 = _interopRequireDefault(_path);
 
-var _Logger = require('./plugins/core/Logger');
+var _Logger = require('./plugins/core/Logger/Logger');
 
 var _Logger2 = _interopRequireDefault(_Logger);
 
@@ -68,10 +68,10 @@ Nextract.prototype.mixin = function (pluginType, pluginNames) {
 
     pluginNames.forEach(function (pluginName) {
       try {
-        if (pluginType === 'Core') {
-          that.Plugins.Core[pluginName] = require(_path2.default.resolve(__dirname, 'plugins/core/' + pluginName));
+        if (pluginType === 'Core' || pluginType === 'Vendor') {
+          that.Plugins.Core[pluginName] = require(_path2.default.resolve(__dirname, 'plugins/' + pluginType.toLowerCase() + '/' + pluginName + '/' + pluginName));
         } else {
-          that.Plugins.Vendor[pluginName] = require(_path2.default.resolve(__dirname, 'plugins/vendor/' + pluginName));
+          reject('Invalid plugin type given, must be Core or Vendor!');
         }
       } catch (err) {
         _Logger2.default.error('Nextract mixin: ', err);

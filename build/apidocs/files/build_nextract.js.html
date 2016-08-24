@@ -45,8 +45,8 @@
                                 <li><a href="../classes/Nextract.Plugins.Core.GroupBy.html">Nextract.Plugins.Core.GroupBy</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Input.html">Nextract.Plugins.Core.Input</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Output.html">Nextract.Plugins.Core.Output</a></li>
-                                <li><a href="../classes/Nextract.Plugins.Core.Sort.html">Nextract.Plugins.Core.Sort</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Utils.html">Nextract.Plugins.Core.Utils</a></li>
+                                <li><a href="../classes/Nextract.pluginUtils.html">Nextract.pluginUtils</a></li>
                             </ul>
                 
                 
@@ -98,7 +98,7 @@
                       
                       var _path2 = _interopRequireDefault(_path);
                       
-                      var _Logger = require(&#x27;./plugins/core/Logger&#x27;);
+                      var _Logger = require(&#x27;./plugins/core/Logger/Logger&#x27;);
                       
                       var _Logger2 = _interopRequireDefault(_Logger);
                       
@@ -158,10 +158,10 @@
                       
                           pluginNames.forEach(function (pluginName) {
                             try {
-                              if (pluginType === &#x27;Core&#x27;) {
-                                that.Plugins.Core[pluginName] = require(_path2.default.resolve(__dirname, &#x27;plugins/core/&#x27; + pluginName));
+                              if (pluginType === &#x27;Core&#x27; || pluginType === &#x27;Vendor&#x27;) {
+                                that.Plugins.Core[pluginName] = require(_path2.default.resolve(__dirname, &#x27;plugins/&#x27; + pluginType.toLowerCase() + &#x27;/&#x27; + pluginName + &#x27;/&#x27; + pluginName));
                               } else {
-                                that.Plugins.Vendor[pluginName] = require(_path2.default.resolve(__dirname, &#x27;plugins/vendor/&#x27; + pluginName));
+                                reject(&#x27;Invalid plugin type given, must be Core or Vendor!&#x27;);
                               }
                             } catch (err) {
                               _Logger2.default.error(&#x27;Nextract mixin: &#x27;, err);

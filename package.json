@@ -21,7 +21,8 @@
     "pg-native": "^1.10.0",
     "request": "^2.74.0",
     "sequelize": "^3.24.0",
-    "winston": "^2.2.0"
+    "winston": "^2.2.0",
+    "workerjs": "^0.1.1"
   },
   "author": "Brilaps, LLC",
   "devDependencies": {
