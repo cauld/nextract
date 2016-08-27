@@ -204,9 +204,18 @@
                                 reject(&#x27;Plugin worker file not found for&#x27;, self.pluginName);
                               } else {
                                 var worker = new _workerjs2.default(workerScript, true);
-                                worker.onmessage = function (collection) {
+                      
+                                //Worker callback success handler
+                                worker.onmessage = function (workerResponse) {
                                   worker.terminate();
-                                  resolve(collection);
+                                  resolve(workerResponse.data);
+                                };
+                      
+                                //Worker callback error handler
+                                worker.onerror = function (event) {
+                                  worker.terminate();
+                                  var rejectMsg = event.message + &quot; (&quot; + event.filename + &quot;:&quot; + event.lineno + &quot;)&quot;;
+                                  reject(rejectMsg);
                                 };
                       
                                 worker.postMessage(workerMsg);

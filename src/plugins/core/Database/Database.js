@@ -342,10 +342,6 @@ module.exports = {
           })
           .then(function() {
             callback(); //Tells async that we are done with this item
-          })
-          .catch(function(err) {
-            databasePlugin.logger.error(err);
-            reject(err);
           });
         },
         function(err) {

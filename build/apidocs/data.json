@@ -430,7 +430,7 @@
         },
         {
             "file": "build/plugins/core/Calculator/Calculator.js",
-            "line": 74,
+            "line": 82,
             "description": "Subtracts two numbers and/or object properties",
             "itemtype": "method",
             "name": "subtract",
@@ -467,44 +467,7 @@
         },
         {
             "file": "build/plugins/core/Calculator/Calculator.js",
-            "line": 92,
-            "description": "Divides two numbers and/or object properties",
-            "itemtype": "method",
-            "name": "divide",
-            "example": [
-                "\n    ETL.Plugins.Core.Calculator.divide(collection, 'salary', 10, 'new_salary');"
-            ],
-            "params": [
-                {
-                    "name": "collection",
-                    "description": "The collection to iterate over",
-                    "type": "Object"
-                },
-                {
-                    "name": "firstPropOrVal",
-                    "description": "The 1st value or property to use in this operation",
-                    "type": "String|Number"
-                },
-                {
-                    "name": "secondPropOrVal",
-                    "description": "The 2nd value or property to use in this operation",
-                    "type": "String|Number"
-                },
-                {
-                    "name": "propertyToUpdateOrAdd",
-                    "description": "The object property to update or create with the value\nof this operation",
-                    "type": "String"
-                }
-            ],
-            "return": {
-                "description": "Promise resolved with the updated collection",
-                "type": "Promise"
-            },
-            "class": "Nextract.Plugins.Core.Calculator"
-        },
-        {
-            "file": "build/plugins/core/Calculator/Calculator.js",
-            "line": 110,
+            "line": 108,
             "description": "Multiplies two numbers and/or object properties",
             "itemtype": "method",
             "name": "multiply",
@@ -541,7 +504,44 @@
         },
         {
             "file": "build/plugins/core/Calculator/Calculator.js",
-            "line": 128,
+            "line": 134,
+            "description": "Divides two numbers and/or object properties",
+            "itemtype": "method",
+            "name": "divide",
+            "example": [
+                "\n    ETL.Plugins.Core.Calculator.divide(collection, 'salary', 10, 'new_salary');"
+            ],
+            "params": [
+                {
+                    "name": "collection",
+                    "description": "The collection to iterate over",
+                    "type": "Object"
+                },
+                {
+                    "name": "firstPropOrVal",
+                    "description": "The 1st value or property to use in this operation",
+                    "type": "String|Number"
+                },
+                {
+                    "name": "secondPropOrVal",
+                    "description": "The 2nd value or property to use in this operation",
+                    "type": "String|Number"
+                },
+                {
+                    "name": "propertyToUpdateOrAdd",
+                    "description": "The object property to update or create with the value\nof this operation",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "Promise resolved with the updated collection",
+                "type": "Promise"
+            },
+            "class": "Nextract.Plugins.Core.Calculator"
+        },
+        {
+            "file": "build/plugins/core/Calculator/Calculator.js",
+            "line": 160,
             "description": "Concatenates strings and/or object properties",
             "itemtype": "method",
             "name": "concat",
@@ -743,7 +743,7 @@
         },
         {
             "file": "build/plugins/core/Database/Database.js",
-            "line": 399,
+            "line": 396,
             "description": "Allows you to run a select query against a database using data obtained from previous steps. Runs\na query for each row in the collection. The collection will be returned with the properties of the\noriginal item data + the properties of the joined data.  Optionally returns all or just matched rows.",
             "itemtype": "method",
             "name": "joinQuery",
@@ -1282,7 +1282,7 @@
         },
         {
             "file": "build/plugins/pluginBase.js",
-            "line": 127,
+            "line": 136,
             "description": "Plugin tasks are a series of chained Promises. setupTaskEngine is used to start the chain.\nSince the plugin instance itself is an object and not a promise we cannot immediately chain\n(then) off it.",
             "itemtype": "method",
             "name": "runInWorker",
@@ -1297,7 +1297,7 @@
         },
         {
             "file": "build/plugins/pluginBase.js",
-            "line": 144,
+            "line": 153,
             "description": "This should be the 2nd method called by a plugin (after setupTaskEngine) when\nperforming a task.  Takes care of internal proceses required when starting a new\nstarts.  Might be something as simple as logging or might be more complex.",
             "itemtype": "method",
             "name": "runInWorker",
@@ -1312,7 +1312,7 @@
         },
         {
             "file": "build/plugins/pluginBase.js",
-            "line": 164,
+            "line": 173,
             "description": "This should be the last method called by a plugin (after setupTaskEngine) when\ndone performing a task.  Takes care of internal proceses required when end a\ntask.  Might be something as simple as logging or might be more complex.",
             "itemtype": "method",
             "name": "endTask",

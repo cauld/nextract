@@ -8,6 +8,8 @@ import config from './config/default';
 import * as logger from './core/Logger/Logger';
 import fs from 'fs';
 import path from 'path';
+import _ from 'lodash';
+import { has, isArray } from 'lodash/fp';
 import Worker from 'workerjs';
 
 var PluginBase = function(pluginName = null, pluginType = null) {
@@ -96,9 +98,18 @@ var PluginBase = function(pluginName = null, pluginType = null) {
           reject('Plugin worker file not found for', self.pluginName);
         } else {
           var worker = new Worker(workerScript, true);
-          worker.onmessage = function(collection) {
+
+          //Worker callback success handler
+          worker.onmessage = function(workerResponse) {
             worker.terminate();
-            resolve(collection);
+            resolve(workerResponse.data);
+          };
+
+          //Worker callback error handler
+          worker.onerror = function(event) {
+            worker.terminate();
+            var rejectMsg = event.message + " (" + event.filename + ":" + event.lineno + ")";
+            reject(rejectMsg);
           };
 
           worker.postMessage(workerMsg);

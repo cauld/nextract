@@ -67,7 +67,15 @@ module.exports = {
    * @return {Promise} Promise resolved with the updated collection
    */
   add: function(collection, firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd) {
-    return doLodashPassthrough(collection, 'add', firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd);
+    if (collection.length < calculatorPlugin.ETL.config.collections.sizeToBackground) {
+      return doLodashPassthrough(collection, 'add', firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd);
+    } else {
+      var workerMsg = {
+        args: [collection, 'add', firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd]
+      };
+
+      return calculatorPlugin.runInWorker(workerMsg);
+    }
   },
 
   /**
@@ -86,26 +94,15 @@ module.exports = {
    * @return {Promise} Promise resolved with the updated collection
    */
   subtract: function(collection, firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd) {
-    return doLodashPassthrough(collection, 'subtract', firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd);
-  },
+    if (collection.length < calculatorPlugin.ETL.config.collections.sizeToBackground) {
+      return doLodashPassthrough(collection, 'subtract', firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd);
+    } else {
+      var workerMsg = {
+        args: [collection, 'subtract', firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd]
+      };
 
-  /**
-   * Divides two numbers and/or object properties
-   *
-   * @method divide
-   * @example
-   *     ETL.Plugins.Core.Calculator.divide(collection, 'salary', 10, 'new_salary');
-
-   * @param {Object} collection The collection to iterate over
-   * @param {String|Number} firstPropOrVal The 1st value or property to use in this operation
-   * @param {String|Number} secondPropOrVal The 2nd value or property to use in this operation
-   * @param {String} propertyToUpdateOrAdd The object property to update or create with the value
-   * of this operation
-   *
-   * @return {Promise} Promise resolved with the updated collection
-   */
-  divide: function(collection, firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd) {
-    return doLodashPassthrough(collection, 'divide', firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd);
+      return calculatorPlugin.runInWorker(workerMsg);
+    }
   },
 
   /**
@@ -124,7 +121,42 @@ module.exports = {
    * @return {Promise} Promise resolved with the updated collection
    */
   multiply: function(collection, firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd) {
-    return doLodashPassthrough(collection, 'multiply', firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd);
+    if (collection.length < calculatorPlugin.ETL.config.collections.sizeToBackground) {
+      return doLodashPassthrough(collection, 'multiply', firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd);
+    } else {
+      var workerMsg = {
+        args: [collection, 'multiply', firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd]
+      };
+
+      return calculatorPlugin.runInWorker(workerMsg);
+    }
+  },
+
+  /**
+   * Divides two numbers and/or object properties
+   *
+   * @method divide
+   * @example
+   *     ETL.Plugins.Core.Calculator.divide(collection, 'salary', 10, 'new_salary');
+
+   * @param {Object} collection The collection to iterate over
+   * @param {String|Number} firstPropOrVal The 1st value or property to use in this operation
+   * @param {String|Number} secondPropOrVal The 2nd value or property to use in this operation
+   * @param {String} propertyToUpdateOrAdd The object property to update or create with the value
+   * of this operation
+   *
+   * @return {Promise} Promise resolved with the updated collection
+   */
+  divide: function(collection, firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd) {
+    if (collection.length < calculatorPlugin.ETL.config.collections.sizeToBackground) {
+      return doLodashPassthrough(collection, 'divide', firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd);
+    } else {
+      var workerMsg = {
+        args: [collection, 'divide', firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd]
+      };
+
+      return calculatorPlugin.runInWorker(workerMsg);
+    }
   },
 
   /**

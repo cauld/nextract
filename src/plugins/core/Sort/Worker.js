@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 
 import _ from 'lodash';
-import { orderBy, sortBy, isArray, isFunction } from 'lodash/fp';
+import { orderBy, sortBy } from 'lodash/fp';
 
 
 self.workerMethods = {

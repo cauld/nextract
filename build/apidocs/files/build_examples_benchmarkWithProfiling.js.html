@@ -153,7 +153,7 @@
                       }).then(function (pageData) {
                         //STEP 4: It is always best to reduce the collection down to only the data you really need for performance reasons.
                         //So here we pick out only a subject of the current collection properties.
-                        var propertiesOfInterest = [&#x27;page_id&#x27;, &#x27;page_title&#x27;, &#x27;page_restrictions&#x27;, &#x27;page_counter&#x27;, &#x27;page_random&#x27;, &#x27;page_latest&#x27;, &#x27;page_len&#x27;];
+                        var propertiesOfInterest = [&#x27;page_title&#x27;, &#x27;page_counter&#x27;, &#x27;page_random&#x27;, &#x27;page_latest&#x27;, &#x27;page_len&#x27;];
                         var stepPromise = etlJob.Plugins.Core.Utils.pluckProperties(pageData, propertiesOfInterest);
                       
                         return runStep(&#x27;STEP_4&#x27;, stepPromise);
@@ -169,7 +169,7 @@
                         return runStep(&#x27;STEP_6&#x27;, stepPromise);
                       }).then(function (pageData) {
                         //STEP 7: Insert into a 2nd database (to demo cross db support)
-                        var columnsToInsert = [&#x27;page_title&#x27;, &#x27;page_restrictions&#x27;, &#x27;page_counter&#x27;, &#x27;page_random&#x27;, &#x27;page_latest&#x27;, &#x27;page_len&#x27;];
+                        var columnsToInsert = [&#x27;page_title&#x27;, &#x27;page_counter&#x27;, &#x27;page_random&#x27;, &#x27;page_latest&#x27;, &#x27;page_len&#x27;];
                         var stepPromise = etlJob.Plugins.Core.Database.insertQuery(&#x27;nextract_pg_sample&#x27;, &#x27;page&#x27;, pageData, columnsToInsert);
                       
                         return runStep(&#x27;STEP_7&#x27;, stepPromise);

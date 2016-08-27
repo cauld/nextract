@@ -62,7 +62,7 @@ etlJob.loadPlugins('Core', ['Database', 'Filter', 'Calculator', 'Sort', 'Utils',
 }).then(function (pageData) {
   //STEP 4: It is always best to reduce the collection down to only the data you really need for performance reasons.
   //So here we pick out only a subject of the current collection properties.
-  var propertiesOfInterest = ['page_id', 'page_title', 'page_restrictions', 'page_counter', 'page_random', 'page_latest', 'page_len'];
+  var propertiesOfInterest = ['page_title', 'page_counter', 'page_random', 'page_latest', 'page_len'];
   var stepPromise = etlJob.Plugins.Core.Utils.pluckProperties(pageData, propertiesOfInterest);
 
   return runStep('STEP_4', stepPromise);
@@ -78,7 +78,7 @@ etlJob.loadPlugins('Core', ['Database', 'Filter', 'Calculator', 'Sort', 'Utils',
   return runStep('STEP_6', stepPromise);
 }).then(function (pageData) {
   //STEP 7: Insert into a 2nd database (to demo cross db support)
-  var columnsToInsert = ['page_title', 'page_restrictions', 'page_counter', 'page_random', 'page_latest', 'page_len'];
+  var columnsToInsert = ['page_title', 'page_counter', 'page_random', 'page_latest', 'page_len'];
   var stepPromise = etlJob.Plugins.Core.Database.insertQuery('nextract_pg_sample', 'page', pageData, columnsToInsert);
 
   return runStep('STEP_7', stepPromise);

@@ -113,9 +113,18 @@ var PluginBase = function PluginBase() {
           reject('Plugin worker file not found for', self.pluginName);
         } else {
           var worker = new _workerjs2.default(workerScript, true);
-          worker.onmessage = function (collection) {
+
+          //Worker callback success handler
+          worker.onmessage = function (workerResponse) {
             worker.terminate();
-            resolve(collection);
+            resolve(workerResponse.data);
+          };
+
+          //Worker callback error handler
+          worker.onerror = function (event) {
+            worker.terminate();
+            var rejectMsg = event.message + " (" + event.filename + ":" + event.lineno + ")";
+            reject(rejectMsg);
           };
 
           worker.postMessage(workerMsg);
