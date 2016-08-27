@@ -7,16 +7,16 @@
 var path = require('path'),
     Nextract = require(path.resolve(__dirname, '../nextract'));
 
-var ETL = new Nextract();
+var etlJob = new Nextract();
 
-ETL.loadPlugin('Core', ['Database', 'Filter', 'GroupBy', 'Logger']).then(function () {
-  return ETL.Plugins.Core.Database.select('nextract', 'select first_name, last_name, age, salary from users');
+etlJob.loadPlugins('Core', ['Database', 'Filter', 'GroupBy', 'Logger']).then(function () {
+  return etlJob.Plugins.Core.Database.selectQuery('nextract_sample', 'select first_name, last_name, age, salary from employees');
 }).then(function (data) {
-  return ETL.Plugins.Core.Filter.greaterThan(data, 'age', 30);
+  return etlJob.Plugins.Core.Filter.greaterThan(data, 'age', 30);
 }).then(function (data) {
-  return ETL.Plugins.Core.GroupBy.sumBy(data, 'salary');
+  return etlJob.Plugins.Core.GroupBy.sumBy(data, 'salary');
 }).then(function (data) {
-  ETL.Plugins.Core.Logger.info('Together they make: ', data);
+  etlJob.Plugins.Core.Logger.info('Together they make:', data);
 }).catch(function (err) {
-  ETL.Plugins.Core.Logger.info('ETL process failed: ', err);
+  etlJob.Plugins.Core.Logger.info('etlJob process failed:', err);
 });

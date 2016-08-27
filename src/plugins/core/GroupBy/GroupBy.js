@@ -4,9 +4,33 @@
  * @class Nextract.Plugins.Core.GroupBy
  */
 
-import _ from 'lodash';
-import { maxBy, minBy, meanBy, sumBy } from 'lodash/fp';
-//import pluginUtils from '../../pluginUtils';
+//import _ from 'lodash';
+//import { maxBy, minBy, meanBy, sumBy } from 'lodash/fp';
+import pluginBase from '../../pluginBase';
+
+//Would be nice to do import as show above but babel-plugin-lodash has issues with the format _[lodashMethod]
+var _ = require('lodash');
+
+//Instantiate the plugin
+var groupByPlugin = new pluginBase('GroupBy', 'Core');
+
+function doLodashPassthrough(collection, lodashMethod, prop) {
+  let taskName = lodashMethod;
+  let updatedCollection;
+
+  return new Promise(function (resolve, reject) {
+    groupByPlugin
+      .setupTaskEngine()
+      .then(groupByPlugin.startTask(taskName))
+      .then(function() {
+        updatedCollection = _[lodashMethod](collection, prop);
+      })
+      .then(groupByPlugin.endTask(taskName))
+      .then(function() {
+        resolve(updatedCollection);
+      });
+  });
+}
 
 module.exports = {
 
@@ -21,10 +45,13 @@ module.exports = {
    * @example
    *     ETL.Plugins.Core.GroupBy.maxBy(objects, 'n');
    *
+   * @param {Object} collection The collection to iterate over
+   * @param {String} prop The property to use in this operation
+   *
    * @return {Promise} Promise resolved with the maximum value
    */
-  maxBy: function(array, iteratee) {
-    return Promise.resolve(_.maxBy(array, iteratee));
+  maxBy: function(collection, prop) {
+    return doLodashPassthrough(collection, 'maxBy', prop);
   },
 
   /**
@@ -38,10 +65,13 @@ module.exports = {
    * @example
    *     ETL.Plugins.Core.GroupBy.minBy(objects, 'n');
    *
+   * @param {Object} collection The collection to iterate over
+   * @param {String} prop The property to use in this operation
+   *
    * @return {Promise} Promise resolved with the maximum value
    */
-  minBy: function(array, iteratee) {
-    return Promise.resolve(_.minBy(array, iteratee));
+  minBy: function(collection, prop) {
+    return doLodashPassthrough(collection, 'minBy', prop);
   },
 
   /**
@@ -55,10 +85,13 @@ module.exports = {
    * @example
    *     ETL.Plugins.Core.GroupBy.meanBy(objects, 'n');
    *
+   * @param {Object} collection The collection to iterate over
+   * @param {String} prop The property to use in this operation
+   *
    * @return {Promise} Promise resolved with the maximum value
    */
-  meanBy: function(array, iteratee) {
-    return Promise.resolve(_.meanBy(array, iteratee));
+  meanBy: function(collection, prop) {
+    return doLodashPassthrough(collection, 'meanBy', prop);
   },
 
   /**
@@ -71,10 +104,13 @@ module.exports = {
    * @example
    *     ETL.Plugins.Core.GroupBy.sumBy(objects, 'n');
    *
+   * @param {Object} collection The collection to iterate over
+   * @param {String} prop The property to use in this operation
+   *
    * @return {Promise} Promise resolved with the sum
    */
-  sumBy: function(array, iteratee) {
-    return Promise.resolve(_.sumBy(array, iteratee));
+  sumBy: function(collection, prop) {
+    return doLodashPassthrough(collection, 'sumBy', prop);
   }
 
 };

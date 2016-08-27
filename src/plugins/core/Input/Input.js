@@ -4,10 +4,19 @@
  * @class Nextract.Plugins.Core.Input
  */
 
+/*
+TODO:
+1) Migrate to setupTaskEngine, startTask, endTask format
+2) Implement excel
+*/
+
 import jsonfile from 'jsonfile';
 import fs from 'fs';
 import csv from 'csv';
-import pluginUtils from '../../pluginUtils';
+import pluginBase from '../../pluginBase';
+
+//Instantiate the plugin
+var inputPlugin = new pluginBase('Input', 'Core');
 
 function readJsonFile(filePath) {
   return new Promise(function (resolve, reject) {
@@ -15,7 +24,7 @@ function readJsonFile(filePath) {
       console.log("fileData", fileData);
 
       if (err) {
-        pluginUtils.logger.error('readJsonFile', err);
+        inputPlugin.logger.error('readJsonFile', err);
         reject(err);
       } else {
         resolve(fileData);
@@ -38,7 +47,7 @@ function readCsvFile(filePath, parserConfig = { delimiter: ',', columns: true })
     //Read the contents of the file into memory
     fs.readFile(filePath, function (err, fileData) {
       if (err) {
-        pluginUtils.logger.error('readTextFile', err);
+        inputPlugin.logger.error('readTextFile', err);
         reject(err);
       }
 
@@ -48,7 +57,7 @@ function readCsvFile(filePath, parserConfig = { delimiter: ',', columns: true })
       //Ref: http://csv.adaltas.com/parse/
       csv.parse(input, parserConfig, function(err, output) {
         if (err) {
-          pluginUtils.logger.error('readTextFile csv parse', err);
+          inputPlugin.logger.error('readTextFile csv parse', err);
           reject(err);
         } else {
           resolve(output);

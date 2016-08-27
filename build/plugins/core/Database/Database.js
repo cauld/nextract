@@ -12,10 +12,6 @@ var _flatten2 = require('lodash/flatten');
 
 var _flatten3 = _interopRequireDefault(_flatten2);
 
-var _values2 = require('lodash/values');
-
-var _values3 = _interopRequireDefault(_values2);
-
 var _map2 = require('lodash/map');
 
 var _map3 = _interopRequireDefault(_map2);
@@ -36,9 +32,9 @@ var _has2 = require('lodash/has');
 
 var _has3 = _interopRequireDefault(_has2);
 
-var _pluginUtils = require('../../pluginUtils');
+var _pluginBase = require('../../pluginBase');
 
-var _pluginUtils2 = _interopRequireDefault(_pluginUtils);
+var _pluginBase2 = _interopRequireDefault(_pluginBase);
 
 var _eachOfSeries = require('async/eachOfSeries');
 
@@ -58,7 +54,8 @@ var _sequelize2 = _interopRequireDefault(_sequelize);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var connectionInstances = {},
+var databasePlugin,
+    connectionInstances = {},
     queryLogging,
     enableQueryLogging = false; /**
                                  * Mixes in methods used to work with a database
@@ -66,18 +63,25 @@ var connectionInstances = {},
                                  * @class Nextract.Plugins.Core.Database
                                  */
 
-//TODO: Transactions (http://docs.sequelizejs.com/en/v3/docs/transactions/)
+/*
+TODO:
+1) Transactions (http://docs.sequelizejs.com/en/v3/docs/transactions/)
+2) Migrate to setupTaskEngine, startTask, endTask format
+*/
 
 queryLogging = enableQueryLogging === false ? false : sequelizeQueryLogging;
 
+//Instantiate the plugin
+databasePlugin = new _pluginBase2.default('Database', 'Core');
+
 //Sequelize expects a function for logging or false for no logging
 function sequelizeQueryLogging(sql) {
-  _pluginUtils2.default.logger.info('SQL Debugging:', sql);
+  databasePlugin.logger.info('SQL Debugging:', sql);
 }
 
 function buildNewConnection(dbName) {
   //TODO: add error handling if db does not exist in pluginConfig
-  var dbpluginConfig = _pluginUtils2.default.config.databases[dbName];
+  var dbpluginConfig = databasePlugin.ETL.config.databases[dbName];
 
   connectionInstances[dbName] = new _sequelize2.default(dbpluginConfig.name, dbpluginConfig.user, dbpluginConfig.password, {
     host: dbpluginConfig.host,
@@ -157,12 +161,12 @@ function runMany(dbName, queryType, baseQuery, collection, columnsToUpdate, matc
       }).then(function () {
         callback(); //This query is done
       }).catch(function (err) {
-        _pluginUtils2.default.logger.error(err);
+        databasePlugin.logger.error(err);
         reject(err);
       });
     }, function (err) {
       if (err) {
-        _pluginUtils2.default.logger.error('Invalid ' + queryType + ' request:', err);
+        databasePlugin.logger.error('Invalid ' + queryType + ' request:', err);
         reject('Invalid ' + queryType + ' request:', err);
       } else {
         //All queries are done.  Resolves with the original collection to enable
@@ -206,7 +210,7 @@ module.exports = {
     }).then(function (data) {
       return data;
     }).catch(function (err) {
-      _pluginUtils2.default.logger.error('Invalid SELECT request:', err);
+      databasePlugin.logger.error('Invalid SELECT request:', err);
     });
   },
 
@@ -311,6 +315,8 @@ module.exports = {
 
     var baseQuery, collectionLength, sqlReplacementGroups, valuesPlaceholder, batchGroupsRequired, batchValues, sqlJobs;
 
+    //collection = [collection[0], collection[1]];
+
     //We'll batch INSERT to improve perfomance. Start by constructing a base INSERT statment.
     baseQuery = 'INSERT INTO ' + tableName + ' (';
     columnsToInsert.forEach(function (column, index) {
@@ -347,7 +353,15 @@ module.exports = {
     for (var _i = 0; _i < batchGroupsRequired; _i++) {
       var workingBatch = collection.splice(0, batchAmount);
       var collectionsToParams = (0, _map3.default)(workingBatch, function (batch) {
-        return (0, _values3.default)(batch);
+        //We can't gauruntee the order of JavaScript properties and its possible each collection
+        //item contains more properties than the ones being requested as part of the insert. So
+        //we must handpick them out in the right order here.
+        var inOrderVales = [];
+        columnsToInsert.forEach(function (col) {
+          inOrderVales[inOrderVales.length] = batch[col];
+        });
+
+        return inOrderVales;
       });
 
       sqlJobs[sqlJobs.length] = {
@@ -367,12 +381,12 @@ module.exports = {
         }).then(function () {
           callback(); //Tells async that we are done with this item
         }).catch(function (err) {
-          _pluginUtils2.default.logger.error(err);
+          databasePlugin.logger.error(err);
           reject(err);
         });
       }, function (err) {
         if (err) {
-          _pluginUtils2.default.logger.error('Invalid INSERT request:', err);
+          databasePlugin.logger.error('Invalid INSERT request:', err);
           reject('Invalid INSERT request:', err);
         } else {
           //All queries are done
@@ -447,12 +461,12 @@ module.exports = {
 
           callback(); //Tells async that we are done with this item
         }).catch(function (err) {
-          _pluginUtils2.default.logger.error(err);
+          databasePlugin.logger.error(err);
           reject(err);
         });
       }, function (err) {
         if (err) {
-          _pluginUtils2.default.logger.error('Invalid join/lookup request:', err);
+          databasePlugin.logger.error('Invalid join/lookup request:', err);
           reject('Invalid join/lookup request:', err);
         } else {
           //All queries are done

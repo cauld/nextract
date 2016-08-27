@@ -39,14 +39,15 @@
                         <div id="api-tabview-panel">
                             <ul id="api-classes" class="apis classes">
                                 <li><a href="../classes/Nextract.html">Nextract</a></li>
+                                <li><a href="../classes/Nextract.PluginBase.html">Nextract.PluginBase</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Calculator.html">Nextract.Plugins.Core.Calculator</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Database.html">Nextract.Plugins.Core.Database</a></li>
-                                <li><a href="../classes/Nextract.Plugins.Core.Filter.html">Nextract.Plugins.Core.Filter</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.GroupBy.html">Nextract.Plugins.Core.GroupBy</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Http.html">Nextract.Plugins.Core.Http</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Input.html">Nextract.Plugins.Core.Input</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Output.html">Nextract.Plugins.Core.Output</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Sort.html">Nextract.Plugins.Core.Sort</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Utils.html">Nextract.Plugins.Core.Utils</a></li>
-                                <li><a href="../classes/Nextract.pluginUtils.html">Nextract.pluginUtils</a></li>
                             </ul>
                 
                 
@@ -97,17 +98,17 @@
                       var path = require(&#x27;path&#x27;),
                           Nextract = require(path.resolve(__dirname, &#x27;../nextract&#x27;));
                       
-                      var ETL = new Nextract();
+                      var etlJob = new Nextract();
                       
-                      ETL.loadPlugin(&#x27;Core&#x27;, [&#x27;Database&#x27;, &#x27;Sort&#x27;, &#x27;Logger&#x27;]).then(function () {
-                        var sql = &#x27;select first_name, last_name from users where last_name = :last_name&#x27;;
-                        var sqlReplacements = { &#x27;last_name&#x27;: &#x27;smith&#x27; };
+                      etlJob.loadPlugins(&#x27;Core&#x27;, [&#x27;Database&#x27;, &#x27;Sort&#x27;, &#x27;Logger&#x27;]).then(function () {
+                        var sql = &#x27;select first_name, last_name from employees where age &gt;= :age&#x27;;
+                        var sqlReplacements = { &#x27;age&#x27;: 30 };
                       
-                        return ETL.Plugins.Core.Database.select(&#x27;nextract_sample&#x27;, sql, sqlReplacements);
+                        return etlJob.Plugins.Core.Database.selectQuery(&#x27;nextract_sample&#x27;, sql, sqlReplacements);
                       }).then(function (data) {
-                        ETL.Plugins.Core.Logger.info(&#x27;Query Results: &#x27;, data);
+                        etlJob.Plugins.Core.Logger.info(&#x27;Query Results: &#x27;, data);
                       }).catch(function (err) {
-                        ETL.Plugins.Core.Logger.error(&#x27;ETL process failed: &#x27;, err);
+                        etlJob.Plugins.Core.Logger.error(&#x27;etlJob process failed: &#x27;, err);
                       });
                       
                           </pre>

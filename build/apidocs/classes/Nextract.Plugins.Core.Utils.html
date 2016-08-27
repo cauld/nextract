@@ -39,14 +39,15 @@
                         <div id="api-tabview-panel">
                             <ul id="api-classes" class="apis classes">
                                 <li><a href="../classes/Nextract.html">Nextract</a></li>
+                                <li><a href="../classes/Nextract.PluginBase.html">Nextract.PluginBase</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Calculator.html">Nextract.Plugins.Core.Calculator</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Database.html">Nextract.Plugins.Core.Database</a></li>
-                                <li><a href="../classes/Nextract.Plugins.Core.Filter.html">Nextract.Plugins.Core.Filter</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.GroupBy.html">Nextract.Plugins.Core.GroupBy</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Http.html">Nextract.Plugins.Core.Http</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Input.html">Nextract.Plugins.Core.Input</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Output.html">Nextract.Plugins.Core.Output</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Sort.html">Nextract.Plugins.Core.Sort</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Utils.html">Nextract.Plugins.Core.Utils</a></li>
-                                <li><a href="../classes/Nextract.pluginUtils.html">Nextract.pluginUtils</a></li>
                             </ul>
                 
                 
@@ -89,7 +90,7 @@
                       
                       
                               <div class="foundat">
-                                  Defined in: <a href="../files/build_plugins_core_Utils_Utils.js.html#l3"><code>build&#x2F;plugins&#x2F;core&#x2F;Utils&#x2F;Utils.js:3</code></a>
+                                  Defined in: <a href="../files/build_plugins_core_Utils_Utils.js.html#l13"><code>build&#x2F;plugins&#x2F;core&#x2F;Utils&#x2F;Utils.js:13</code></a>
                               </div>
                       
                       
@@ -118,19 +119,11 @@
                       
                                           <ul class="index-list methods">
                                                   <li class="index-item method">
-                                                      <a href="#method_customCompare">customCompare</a>
-                      
-                                                  </li>
-                                                  <li class="index-item method">
-                                                      <a href="#method_orderBy">orderBy</a>
+                                                      <a href="#method_pluckProperties">pluckProperties</a>
                       
                                                   </li>
                                                   <li class="index-item method">
                                                       <a href="#method_runAll">runAll</a>
-                      
-                                                  </li>
-                                                  <li class="index-item method">
-                                                      <a href="#method_sortBy">sortBy</a>
                       
                                                   </li>
                                           </ul>
@@ -143,8 +136,8 @@
                                   <div id="methods" class="api-class-tabpanel">
                                       <h2 class="off-left">Methods</h2>
                       
-                      <div id="method_customCompare" class="method item">
-                          <h3 class="name"><code>customCompare</code></h3>
+                      <div id="method_pluckProperties" class="method item">
+                          <h3 class="name"><code>pluckProperties</code></h3>
                       
                               <div class="args">
                                   <span class="paren">(</span><ul class="args-list inline commas">
@@ -152,7 +145,7 @@
                                               <code>collection</code>
                                       </li>
                                       <li class="arg">
-                                              <code>Specifies</code>
+                                              <code>propertiesToTake</code>
                                       </li>
                                   </ul><span class="paren">)</span>
                               </div>
@@ -170,7 +163,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_core_Sort_Sort.js.html#l80"><code>build&#x2F;plugins&#x2F;core&#x2F;Sort&#x2F;Sort.js:80</code></a>
+                              <a href="../files/build_plugins_core_Utils_Utils.js.html#l36"><code>build&#x2F;plugins&#x2F;core&#x2F;Utils&#x2F;Utils.js:36</code></a>
                               </p>
                       
                       
@@ -178,8 +171,8 @@
                           </div>
                       
                           <div class="description">
-                              <p>Sorts the elements of an array in place via a custom compare function</p>
-                      <p>For usage reference - <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort</a></p>
+                              <p>Modifes each item of a collection returning only the requested properties from each.
+                      Deep picking is not yet supported.</p>
                       
                           </div>
                       
@@ -189,7 +182,7 @@
                                   <ul class="params-list">
                                       <li class="param">
                                               <code class="param-name">collection</code>
-                                              <span class="type">Array | Object</span>
+                                              <span class="type">Object</span>
                       
                       
                                           <div class="param-description">
@@ -199,12 +192,12 @@
                       
                                       </li>
                                       <li class="param">
-                                              <code class="param-name">Specifies</code>
-                                              <span class="type">Function</span>
+                                              <code class="param-name">propertiesToTake</code>
+                                              <span class="type">Array</span>
                       
                       
                                           <div class="param-description">
-                                              <p>a function that defines the sort order</p>
+                                              <p>Array of property names to keep</p>
                       
                                           </div>
                       
@@ -217,7 +210,7 @@
                       
                                   <div class="returns-description">
                                               <span class="type">Promise</span>:
-                                          <p>Promise resolved with the new sorted array</p>
+                                          <p>Promise resolved with updated collection</p>
                       
                                   </div>
                               </div>
@@ -227,61 +220,7 @@
                                   <h4>Example:</h4>
                       
                                   <div class="example-content">
-                                      <pre class="code prettyprint"><code>ETL.Plugins.Core.Sort.customCompare(users, compareFunction);</code></pre>
-                      
-                                  </div>
-                              </div>
-                      </div>
-                      <div id="method_orderBy" class="method item">
-                          <h3 class="name"><code>orderBy</code></h3>
-                      
-                              <span class="paren">()</span>
-                      
-                              <span class="returns-inline">
-                                  <span class="type">Promise</span>
-                              </span>
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                          <div class="meta">
-                                      <p>
-                                      Defined in
-                              <a href="../files/build_plugins_core_Sort_Sort.js.html#l23"><code>build&#x2F;plugins&#x2F;core&#x2F;Sort&#x2F;Sort.js:23</code></a>
-                              </p>
-                      
-                      
-                      
-                          </div>
-                      
-                          <div class="description">
-                              <p>This method is like _.sortBy except that it allows specifying the sort orders of the iteratees to sort by.
-                      If orders is unspecified, all values are sorted in ascending order. Otherwise, specify an order of &quot;desc&quot;
-                      for descending or &quot;asc&quot; for ascending sort order of corresponding values.</p>
-                      <p>For usage reference - <a href="https://lodash.com/docs#orderBy">https://lodash.com/docs#orderBy</a></p>
-                      
-                          </div>
-                      
-                      
-                              <div class="returns">
-                                  <h4>Returns:</h4>
-                      
-                                  <div class="returns-description">
-                                              <span class="type">Promise</span>:
-                                          <p>Promise resolved with the new sorted array</p>
-                      
-                                  </div>
-                              </div>
-                      
-                      
-                              <div class="example">
-                                  <h4>Example:</h4>
-                      
-                                  <div class="example-content">
-                                      <pre class="code prettyprint"><code>ETL.Plugins.Core.Sort.orderBy(users, ['user', 'age'], ['asc', 'desc']);</code></pre>
+                                      <pre class="code prettyprint"><code>ETL.Plugins.Core.Utils.pluckProperties(collection, ['foo', 'bar', 'baz']);</code></pre>
                       
                                   </div>
                               </div>
@@ -310,7 +249,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_core_Utils_Utils.js.html#l11"><code>build&#x2F;plugins&#x2F;core&#x2F;Utils&#x2F;Utils.js:11</code></a>
+                              <a href="../files/build_plugins_core_Utils_Utils.js.html#l21"><code>build&#x2F;plugins&#x2F;core&#x2F;Utils&#x2F;Utils.js:21</code></a>
                               </p>
                       
                       
@@ -356,60 +295,6 @@
                       
                                   <div class="example-content">
                                       <pre class="code prettyprint"><code>ETL.Plugins.Core.Utils.runAll([p1, p2]);</code></pre>
-                      
-                                  </div>
-                              </div>
-                      </div>
-                      <div id="method_sortBy" class="method item">
-                          <h3 class="name"><code>sortBy</code></h3>
-                      
-                              <span class="paren">()</span>
-                      
-                              <span class="returns-inline">
-                                  <span class="type">Promise</span>
-                              </span>
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                          <div class="meta">
-                                      <p>
-                                      Defined in
-                              <a href="../files/build_plugins_core_Sort_Sort.js.html#l61"><code>build&#x2F;plugins&#x2F;core&#x2F;Sort&#x2F;Sort.js:61</code></a>
-                              </p>
-                      
-                      
-                      
-                          </div>
-                      
-                          <div class="description">
-                              <p>Creates an array of elements, sorted in ascending order by the results of running each element in a collection thru each iteratee.
-                      This method performs a stable sort, that is, it preserves the original sort order of equal elements.
-                      The iteratees are invoked with one argument: (value).</p>
-                      <p>For usage reference - <a href="https://lodash.com/docs#sortBy">https://lodash.com/docs#sortBy</a></p>
-                      
-                          </div>
-                      
-                      
-                              <div class="returns">
-                                  <h4>Returns:</h4>
-                      
-                                  <div class="returns-description">
-                                              <span class="type">Promise</span>:
-                                          <p>Promise resolved with the new sorted array</p>
-                      
-                                  </div>
-                              </div>
-                      
-                      
-                              <div class="example">
-                                  <h4>Example:</h4>
-                      
-                                  <div class="example-content">
-                                      <pre class="code prettyprint"><code>ETL.Plugins.Core.Sort.sortBy(users, ['user', 'age']);</code></pre>
                       
                                   </div>
                               </div>

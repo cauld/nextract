@@ -5,26 +5,26 @@
 var path     = require('path'),
     Nextract = require(path.resolve(__dirname, '../nextract'));
 
-var ETL = new Nextract();
+var etlJob = new Nextract();
 
-var sampleUsersInputFilePath = path.resolve(process.cwd(), 'data/users.json'),
-    sampleUsersOutputFilePath = path.resolve(process.cwd(), 'data/users_output.json');
+var sampleEmployeesInputFilePath = path.resolve(process.cwd(), 'data/employees.json'),
+    sampleEmployeesOutputFilePath = path.resolve(process.cwd(), 'data/employees_output.json');
 
-ETL.loadPlugin('Core', ['Input', 'Output', 'Sort', 'Logger'])
+etlJob.loadPlugins('Core', ['Input', 'Output', 'Sort', 'Logger'])
     .then(function() {
-      return ETL.Plugins.Core.Input.readFile('json', sampleUsersInputFilePath);
+      return etlJob.Plugins.Core.Input.readFile('json', sampleEmployeesInputFilePath);
     })
     .then(function(jsonData) {
-      var userData = jsonData.data.users;
-      return ETL.Plugins.Core.Sort.by(userData, ['last_name'], ['asc']);
+      var employeesData = jsonData.data.employees;
+      return etlJob.Plugins.Core.Sort.orderBy(employeesData, ['last_name'], ['desc']);
     })
     .then(function(data) {
-      ETL.Plugins.Core.Logger.info('Sorted queryResults: ', data);
-      return ETL.Plugins.Core.Output.writeFile('json', data, sampleUsersOutputFilePath, { spaces: 2 });
+      etlJob.Plugins.Core.Logger.info('Sorted queryResults:', data);
+      return etlJob.Plugins.Core.Output.writeFile('json', data, sampleEmployeesOutputFilePath, { spaces: 2 });
     })
     .then(function() {
-      ETL.Plugins.Core.Logger.info(sampleUsersOutputFilePath, 'has been written');
+      etlJob.Plugins.Core.Logger.info(sampleEmployeesOutputFilePath, 'has been written');
     })
     .catch(function(err) {
-      ETL.Plugins.Core.Logger.error('ETL process failed: ', err);
+      etlJob.Plugins.Core.Logger.error('etlJob process failed:', err);
     });

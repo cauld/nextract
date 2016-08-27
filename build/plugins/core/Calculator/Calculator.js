@@ -1,5 +1,15 @@
 'use strict';
 
+var _pluginBase = require('../../pluginBase');
+
+var _pluginBase2 = _interopRequireDefault(_pluginBase);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+//Would be nice to do import as show above but babel-plugin-lodash has issues with the format _[lodashMethod]
+var _ = require('lodash');
+
+//Instantiate the plugin
 /**
  * Mixes in a series of common mathematical calculations
  *
@@ -9,18 +19,16 @@
 //import _ from 'lodash';
 //import { add, subtract, ceil, divide, floor, multiply, round, isUndefined, isInteger } from 'lodash/fp';
 
-//import pluginUtils from '../../pluginUtils';
-
-//Would be nice to do import as show above but babel-plugin-lodash has issues with the format _[lodashMethod]
-var _ = require("lodash");
+var calculatorPlugin = new _pluginBase2.default('Calculator', 'Core');
 
 function doLodashPassthrough(collection, lodashMethod, firstPropOrVal, secondPropOrVal) {
   var propertyToUpdateOrAdd = arguments.length <= 4 || arguments[4] === undefined ? '' : arguments[4];
 
+  var taskName = lodashMethod;
+  var updatedCollection = void 0;
+
   return new Promise(function (resolve, reject) {
-    if (_.isEmpty(propertyToUpdateOrAdd)) {
-      reject('Invalid calculator ' + lodashMethod + ' request, please check your input params!');
-    } else {
+    calculatorPlugin.setupTaskEngine().then(calculatorPlugin.startTask(taskName)).then(function () {
       collection.forEach(function (element) {
         //Users can pass a property name or a number to be added
         var v1 = _.isString(firstPropOrVal) && _.has(element, firstPropOrVal) ? element[firstPropOrVal] : Number(firstPropOrVal);
@@ -34,8 +42,12 @@ function doLodashPassthrough(collection, lodashMethod, firstPropOrVal, secondPro
         }
       });
 
-      resolve(collection);
-    }
+      return collection;
+    }).then(function (collection) {
+      updatedCollection = collection;
+    }).then(calculatorPlugin.endTask(taskName)).then(function () {
+      resolve(updatedCollection);
+    });
   });
 }
 
@@ -131,10 +143,11 @@ module.exports = {
     var delimiter = arguments.length <= 2 || arguments[2] === undefined ? '' : arguments[2];
     var propertyToUpdateOrAdd = arguments[3];
 
+    var taskName = 'concat';
+    var updatedCollection = void 0;
+
     return new Promise(function (resolve, reject) {
-      if (!_.isArray(propsOrValsToConcat)) {
-        reject('Invalid calculator request, please check your input params!');
-      } else {
+      calculatorPlugin.setupTaskEngine().then(calculatorPlugin.startTask(taskName)).then(function () {
         collection.forEach(function (element) {
           //First assume each string is a key in the object, if not treat as a normal string
           var valuesToConcat = [];
@@ -147,8 +160,12 @@ module.exports = {
           element[propertyToUpdateOrAdd] = valuesToConcat.join(delimiter);
         });
 
-        resolve(collection);
-      }
+        return collection;
+      }).then(function (collection) {
+        updatedCollection = collection;
+      }).then(calculatorPlugin.endTask(taskName)).then(function () {
+        resolve(updatedCollection);
+      });
     });
   },
 

@@ -4,12 +4,21 @@
  * @class Nextract.Plugins.Core.Output
  */
 
+ /*
+TODO:
+1) Migrate to setupTaskEngine, startTask, endTask format
+2) Implement excel
+*/
+
 import _ from 'lodash';
 import { isEmpty } from 'lodash/fp';
 import jsonfile from 'jsonfile';
 import fs from 'fs';
 import csv from 'csv';
-import pluginUtils from '../../pluginUtils';
+import pluginBase from '../../pluginBase';
+
+//Instantiate the plugin
+var outputPlugin = new pluginBase('Input', 'Core');
 
 function writeCsvFile(filePath, data, formattingConfig = {}) {
   return new Promise(function (resolve, reject) {
@@ -17,13 +26,13 @@ function writeCsvFile(filePath, data, formattingConfig = {}) {
       //Ref: http://csv.adaltas.com/stringify/
       csv.stringify(data, formattingConfig, function(err, output) {
         if (err) {
-          pluginUtils.logger.error('writeTextFile', err);
+          outputPlugin.logger.error('writeTextFile', err);
           reject(err);
         }
 
         fs.writeFile(filePath, output, function (err) {
           if (err) {
-            pluginUtils.logger.error('writeTextFile', err);
+            outputPlugin.logger.error('writeTextFile', err);
             reject(err);
           } else {
             resolve();
@@ -31,7 +40,7 @@ function writeCsvFile(filePath, data, formattingConfig = {}) {
         });
       });
     } else {
-      pluginUtils.logger.error('writeCsvFile', 'Input data is empty!');
+      outputPlugin.logger.error('writeCsvFile', 'Input data is empty!');
       reject('Input data is empty!');
     }
   });
@@ -41,7 +50,7 @@ function writeCsvFile(filePath, data, formattingConfig = {}) {
 function writeExcelFile(filePath, data, formattingConfig = {}) {
   return new Promise(function (resolve, reject) {
 
-    //Can remove one implemented, just prevent ununsed var build error
+    //Can remove console.log once implemented, just preventing ununsed var build error
     console.log(formattingConfig);
 
     reject('Not implemented yet!');
@@ -55,14 +64,14 @@ function writeJsonFile(filePath, data, formattingConfig = {}) {
     if (!_.isEmpty(data)) {
       jsonfile.writeFile(filePath, { "data": data }, formattingConfig, function (err) {
         if (err) {
-          pluginUtils.logger.error('writeJsonFile', err);
+          outputPlugin.logger.error('writeJsonFile', err);
           reject(err);
         } else {
           resolve();
         }
       });
     } else {
-      pluginUtils.logger.error('writeJsonFile', 'Input data is empty!');
+      outputPlugin.logger.error('writeJsonFile', 'Input data is empty!');
       reject('Input data is empty!');
     }
   });

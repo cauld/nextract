@@ -6,7 +6,10 @@
 
 import _ from 'lodash';
 import { filter, uniqBy } from 'lodash/fp';
-//import pluginUtils from '../../pluginUtils';
+import pluginBase from '../../pluginBase';
+
+//Instantiate the plugin
+var filterPlugin = new pluginBase('Filter', 'Core');
 
 module.exports = {
 
@@ -25,12 +28,22 @@ module.exports = {
    * @return {Promise} Promise resolved with an array of all elements that equal the testValue
    */
   equals: function(collection, propertyToTest, valueToTest) {
-    return new Promise(function (resolve, reject) {
-      var result = _.filter(collection, function(v) {
-        return v[propertyToTest] == valueToTest;
-      });
+    let taskName = 'greaterThan';
+    let updatedCollection;
 
-      resolve(result);
+    return new Promise(function (resolve, reject) {
+      filterPlugin
+        .setupTaskEngine()
+        .then(filterPlugin.startTask(taskName))
+        .then(function() {
+          updatedCollection = _.filter(collection, function(v) {
+            return v[propertyToTest] == valueToTest;
+          });
+        })
+        .then(filterPlugin.endTask(taskName))
+        .then(function() {
+          resolve(updatedCollection);
+        });
     });
   },
 
@@ -49,12 +62,22 @@ module.exports = {
    * @return {Promise} Promise resolved with an array of all elements that are greater than the testValue
    */
   greaterThan: function(collection, propertyToTest, valueToTest) {
-    return new Promise(function (resolve, reject) {
-      var result = _.filter(collection, function(v) {
-        return v[propertyToTest] > valueToTest;
-      });
+    let taskName = 'greaterThan';
+    let updatedCollection;
 
-      resolve(result);
+    return new Promise(function (resolve, reject) {
+      filterPlugin
+        .setupTaskEngine()
+        .then(filterPlugin.startTask(taskName))
+        .then(function() {
+          updatedCollection = _.filter(collection, function(v) {
+            return v[propertyToTest] > valueToTest;
+          });
+        })
+        .then(filterPlugin.endTask(taskName))
+        .then(function() {
+          resolve(updatedCollection);
+        });
     });
   },
 
@@ -73,12 +96,22 @@ module.exports = {
    * @return {Promise} Promise resolved with an array of all elements that are less than the testValue
    */
   lessThan: function(collection, propertyToTest, valueToTest) {
-    return new Promise(function (resolve, reject) {
-      var result = _.filter(collection, function(v) {
-        return v[propertyToTest] < valueToTest;
-      });
+    let taskName = 'lessThan';
+    let updatedCollection;
 
-      resolve(result);
+    return new Promise(function (resolve, reject) {
+      filterPlugin
+        .setupTaskEngine()
+        .then(filterPlugin.startTask(taskName))
+        .then(function() {
+          updatedCollection = _.filter(collection, function(v) {
+            return v[propertyToTest] < valueToTest;
+          });
+        })
+        .then(filterPlugin.endTask(taskName))
+        .then(function() {
+          resolve(updatedCollection);
+        });
     });
   },
 
@@ -98,7 +131,21 @@ module.exports = {
    * @return {Promise} Promise resolved with the new duplicate free array
    */
   uniqBy: function(collection, propertyToTest) {
-    return Promise.resolve(_.uniqBy(collection, propertyToTest));
+    let taskName = 'uniqBy';
+    let updatedCollection;
+
+    return new Promise(function (resolve, reject) {
+      filterPlugin
+        .setupTaskEngine()
+        .then(filterPlugin.startTask(taskName))
+        .then(function() {
+          updatedCollection = _.uniqBy(collection, propertyToTest);
+        })
+        .then(filterPlugin.endTask(taskName))
+        .then(function() {
+          resolve(updatedCollection);
+        });
+    });
   }
 
 };

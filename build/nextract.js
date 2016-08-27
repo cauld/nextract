@@ -51,11 +51,11 @@ var Nextract = function Nextract() {
      * Used to mixin the functionality of a core or 3rd party vendor ETL plugin. These
      * plugins are located in plugins/core & plugins/vendor.
      *
-     * @method loadPlugin
+     * @method loadPlugins
      * @param {String} pluginTypes Type of plugin being imported (Core or Vendor)
      * @param {String | Array} pluginNames Plugin(s) to import
      */
-    loadPlugin: this.mixin
+    loadPlugins: this.mixin
 
   };
 };

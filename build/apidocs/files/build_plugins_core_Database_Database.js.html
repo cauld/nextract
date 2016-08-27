@@ -39,14 +39,15 @@
                         <div id="api-tabview-panel">
                             <ul id="api-classes" class="apis classes">
                                 <li><a href="../classes/Nextract.html">Nextract</a></li>
+                                <li><a href="../classes/Nextract.PluginBase.html">Nextract.PluginBase</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Calculator.html">Nextract.Plugins.Core.Calculator</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Database.html">Nextract.Plugins.Core.Database</a></li>
-                                <li><a href="../classes/Nextract.Plugins.Core.Filter.html">Nextract.Plugins.Core.Filter</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.GroupBy.html">Nextract.Plugins.Core.GroupBy</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Http.html">Nextract.Plugins.Core.Http</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Input.html">Nextract.Plugins.Core.Input</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Output.html">Nextract.Plugins.Core.Output</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Sort.html">Nextract.Plugins.Core.Sort</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Utils.html">Nextract.Plugins.Core.Utils</a></li>
-                                <li><a href="../classes/Nextract.pluginUtils.html">Nextract.pluginUtils</a></li>
                             </ul>
                 
                 
@@ -102,10 +103,6 @@
                       
                       var _flatten3 = _interopRequireDefault(_flatten2);
                       
-                      var _values2 = require(&#x27;lodash/values&#x27;);
-                      
-                      var _values3 = _interopRequireDefault(_values2);
-                      
                       var _map2 = require(&#x27;lodash/map&#x27;);
                       
                       var _map3 = _interopRequireDefault(_map2);
@@ -126,9 +123,9 @@
                       
                       var _has3 = _interopRequireDefault(_has2);
                       
-                      var _pluginUtils = require(&#x27;../../pluginUtils&#x27;);
+                      var _pluginBase = require(&#x27;../../pluginBase&#x27;);
                       
-                      var _pluginUtils2 = _interopRequireDefault(_pluginUtils);
+                      var _pluginBase2 = _interopRequireDefault(_pluginBase);
                       
                       var _eachOfSeries = require(&#x27;async/eachOfSeries&#x27;);
                       
@@ -148,7 +145,8 @@
                       
                       function _interopRequireDefault(obj) { return obj &amp;&amp; obj.__esModule ? obj : { default: obj }; }
                       
-                      var connectionInstances = {},
+                      var databasePlugin,
+                          connectionInstances = {},
                           queryLogging,
                           enableQueryLogging = false; /**
                                                        * Mixes in methods used to work with a database
@@ -156,18 +154,25 @@
                                                        * @class Nextract.Plugins.Core.Database
                                                        */
                       
-                      //TODO: Transactions (http://docs.sequelizejs.com/en/v3/docs/transactions/)
+                      /*
+                      TODO:
+                      1) Transactions (http://docs.sequelizejs.com/en/v3/docs/transactions/)
+                      2) Migrate to setupTaskEngine, startTask, endTask format
+                      */
                       
                       queryLogging = enableQueryLogging === false ? false : sequelizeQueryLogging;
                       
+                      //Instantiate the plugin
+                      databasePlugin = new _pluginBase2.default(&#x27;Database&#x27;, &#x27;Core&#x27;);
+                      
                       //Sequelize expects a function for logging or false for no logging
                       function sequelizeQueryLogging(sql) {
-                        _pluginUtils2.default.logger.info(&#x27;SQL Debugging:&#x27;, sql);
+                        databasePlugin.logger.info(&#x27;SQL Debugging:&#x27;, sql);
                       }
                       
                       function buildNewConnection(dbName) {
                         //TODO: add error handling if db does not exist in pluginConfig
-                        var dbpluginConfig = _pluginUtils2.default.config.databases[dbName];
+                        var dbpluginConfig = databasePlugin.ETL.config.databases[dbName];
                       
                         connectionInstances[dbName] = new _sequelize2.default(dbpluginConfig.name, dbpluginConfig.user, dbpluginConfig.password, {
                           host: dbpluginConfig.host,
@@ -247,12 +252,12 @@
                             }).then(function () {
                               callback(); //This query is done
                             }).catch(function (err) {
-                              _pluginUtils2.default.logger.error(err);
+                              databasePlugin.logger.error(err);
                               reject(err);
                             });
                           }, function (err) {
                             if (err) {
-                              _pluginUtils2.default.logger.error(&#x27;Invalid &#x27; + queryType + &#x27; request:&#x27;, err);
+                              databasePlugin.logger.error(&#x27;Invalid &#x27; + queryType + &#x27; request:&#x27;, err);
                               reject(&#x27;Invalid &#x27; + queryType + &#x27; request:&#x27;, err);
                             } else {
                               //All queries are done.  Resolves with the original collection to enable
@@ -296,7 +301,7 @@
                           }).then(function (data) {
                             return data;
                           }).catch(function (err) {
-                            _pluginUtils2.default.logger.error(&#x27;Invalid SELECT request:&#x27;, err);
+                            databasePlugin.logger.error(&#x27;Invalid SELECT request:&#x27;, err);
                           });
                         },
                       
@@ -401,6 +406,8 @@
                       
                           var baseQuery, collectionLength, sqlReplacementGroups, valuesPlaceholder, batchGroupsRequired, batchValues, sqlJobs;
                       
+                          //collection = [collection[0], collection[1]];
+                      
                           //We&#x27;ll batch INSERT to improve perfomance. Start by constructing a base INSERT statment.
                           baseQuery = &#x27;INSERT INTO &#x27; + tableName + &#x27; (&#x27;;
                           columnsToInsert.forEach(function (column, index) {
@@ -437,7 +444,15 @@
                           for (var _i = 0; _i &lt; batchGroupsRequired; _i++) {
                             var workingBatch = collection.splice(0, batchAmount);
                             var collectionsToParams = (0, _map3.default)(workingBatch, function (batch) {
-                              return (0, _values3.default)(batch);
+                              //We can&#x27;t gauruntee the order of JavaScript properties and its possible each collection
+                              //item contains more properties than the ones being requested as part of the insert. So
+                              //we must handpick them out in the right order here.
+                              var inOrderVales = [];
+                              columnsToInsert.forEach(function (col) {
+                                inOrderVales[inOrderVales.length] = batch[col];
+                              });
+                      
+                              return inOrderVales;
                             });
                       
                             sqlJobs[sqlJobs.length] = {
@@ -457,12 +472,12 @@
                               }).then(function () {
                                 callback(); //Tells async that we are done with this item
                               }).catch(function (err) {
-                                _pluginUtils2.default.logger.error(err);
+                                databasePlugin.logger.error(err);
                                 reject(err);
                               });
                             }, function (err) {
                               if (err) {
-                                _pluginUtils2.default.logger.error(&#x27;Invalid INSERT request:&#x27;, err);
+                                databasePlugin.logger.error(&#x27;Invalid INSERT request:&#x27;, err);
                                 reject(&#x27;Invalid INSERT request:&#x27;, err);
                               } else {
                                 //All queries are done
@@ -537,12 +552,12 @@
                       
                                 callback(); //Tells async that we are done with this item
                               }).catch(function (err) {
-                                _pluginUtils2.default.logger.error(err);
+                                databasePlugin.logger.error(err);
                                 reject(err);
                               });
                             }, function (err) {
                               if (err) {
-                                _pluginUtils2.default.logger.error(&#x27;Invalid join/lookup request:&#x27;, err);
+                                databasePlugin.logger.error(&#x27;Invalid join/lookup request:&#x27;, err);
                                 reject(&#x27;Invalid join/lookup request:&#x27;, err);
                               } else {
                                 //All queries are done

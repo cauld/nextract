@@ -20,6 +20,10 @@ defaultConfig = {
       "user": "root",
       "password": ""
     }
+  },
+
+  "collections": {
+    "sizeToBackground": 1000
   }
 };
 

@@ -7,31 +7,45 @@
 //import _ from 'lodash';
 //import { add, subtract, ceil, divide, floor, multiply, round, isUndefined, isInteger } from 'lodash/fp';
 
-//import pluginUtils from '../../pluginUtils';
+import pluginBase from '../../pluginBase';
 
 //Would be nice to do import as show above but babel-plugin-lodash has issues with the format _[lodashMethod]
-var _ = require("lodash");
+var _ = require('lodash');
+
+//Instantiate the plugin
+var calculatorPlugin = new pluginBase('Calculator', 'Core');
 
 function doLodashPassthrough(collection, lodashMethod, firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd = '') {
+  let taskName = lodashMethod;
+  let updatedCollection;
+
   return new Promise(function (resolve, reject) {
-    if (_.isEmpty(propertyToUpdateOrAdd)) {
-      reject('Invalid calculator ' + lodashMethod + ' request, please check your input params!');
-    } else {
-      collection.forEach(function(element) {
-        //Users can pass a property name or a number to be added
-        let v1 = _.isString(firstPropOrVal) && _.has(element, firstPropOrVal) ? element[firstPropOrVal] : Number(firstPropOrVal);
-        let v2 = _.isString(secondPropOrVal) && _.has(element, secondPropOrVal) ? element[secondPropOrVal] : Number(secondPropOrVal);
+    calculatorPlugin
+      .setupTaskEngine()
+      .then(calculatorPlugin.startTask(taskName))
+      .then(function() {
+        collection.forEach(function(element) {
+          //Users can pass a property name or a number to be added
+          let v1 = _.isString(firstPropOrVal) && _.has(element, firstPropOrVal) ? element[firstPropOrVal] : Number(firstPropOrVal);
+          let v2 = _.isString(secondPropOrVal) && _.has(element, secondPropOrVal) ? element[secondPropOrVal] : Number(secondPropOrVal);
 
-        if (_.isUndefined(v1) || _.isUndefined(v2)) {
-          reject('Invalid calculator ' + lodashMethod + ' request, please check your input params!');
-        } else {
-          //Set or update with new value
-          element[propertyToUpdateOrAdd] = _[lodashMethod](v1, v2);
-        }
+          if (_.isUndefined(v1) || _.isUndefined(v2)) {
+            reject('Invalid calculator ' + lodashMethod + ' request, please check your input params!');
+          } else {
+            //Set or update with new value
+            element[propertyToUpdateOrAdd] = _[lodashMethod](v1, v2);
+          }
+        });
+
+        return collection;
+      })
+      .then(function(collection) {
+        updatedCollection = collection;
+      })
+      .then(calculatorPlugin.endTask(taskName))
+      .then(function() {
+        resolve(updatedCollection);
       });
-
-      resolve(collection);
-    }
   });
 }
 
@@ -129,24 +143,35 @@ module.exports = {
    * @return {Promise} Promise resolved with the updated collection
    */
   concat: function(collection, propsOrValsToConcat, delimiter = '', propertyToUpdateOrAdd) {
+    let taskName = 'concat';
+    let updatedCollection;
+
     return new Promise(function (resolve, reject) {
-      if (!_.isArray(propsOrValsToConcat)) {
-        reject('Invalid calculator request, please check your input params!');
-      } else {
-        collection.forEach(function(element) {
-          //First assume each string is a key in the object, if not treat as a normal string
-          let valuesToConcat = [];
-          propsOrValsToConcat.forEach(function(p) {
-            let v = _.has(element, p) === true ? element[p].toString() : p.toString();
-            valuesToConcat[valuesToConcat.length] = v;
+      calculatorPlugin
+        .setupTaskEngine()
+        .then(calculatorPlugin.startTask(taskName))
+        .then(function() {
+          collection.forEach(function(element) {
+            //First assume each string is a key in the object, if not treat as a normal string
+            let valuesToConcat = [];
+            propsOrValsToConcat.forEach(function(p) {
+              let v = _.has(element, p) === true ? element[p].toString() : p.toString();
+              valuesToConcat[valuesToConcat.length] = v;
+            });
+
+            //Set or update with new value
+            element[propertyToUpdateOrAdd] = valuesToConcat.join(delimiter);
           });
 
-          //Set or update with new value
-          element[propertyToUpdateOrAdd] = valuesToConcat.join(delimiter);
+          return collection;
+        })
+        .then(function(collection) {
+          updatedCollection = collection;
+        })
+        .then(calculatorPlugin.endTask(taskName))
+        .then(function() {
+          resolve(updatedCollection);
         });
-
-        resolve(collection);
-      }
     });
   },
 

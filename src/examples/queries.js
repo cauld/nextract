@@ -8,9 +8,9 @@ var path         = require('path'),
 
 
 /* Main */
-var ETL = new Nextract();
+var etlJob = new Nextract();
 
-ETL.loadPlugin('Core', ['Database', 'Filter', 'Calculator', 'Logger'])
+etlJob.loadPlugins('Core', ['Database', 'Filter', 'Calculator', 'Logger'])
     .then(function() {
       //Lets generate a bunch of new employees and create a collection (i.e.) an array of objects
       var collectionsToInsert = [];
@@ -28,55 +28,55 @@ ETL.loadPlugin('Core', ['Database', 'Filter', 'Calculator', 'Logger'])
       var columnsToInsert = ['first_name', 'last_name', 'age', 'salary']; //or Object.keys(collectionsToInsert[0]);
 
       //Insert our collection
-      return ETL.Plugins.Core.Database.insertQuery('nextract_sample', 'employees', collectionsToInsert, columnsToInsert);
+      return etlJob.Plugins.Core.Database.insertQuery('nextract_sample', 'employees', collectionsToInsert, columnsToInsert);
     })
     .then(function() {
       //Now that we've loaded some new employees into the employees table, lets find them all and give them all a raise.
       var selectSql = 'select id, first_name, last_name, age, salary from employees';
-      return ETL.Plugins.Core.Database.selectQuery('nextract_sample', selectSql);
+      return etlJob.Plugins.Core.Database.selectQuery('nextract_sample', selectSql);
     })
     .then(function(queryResults) {
-      //ETL operations are most often performed on the entire collection. Here we are taking the salary of each collection item
+      //etlJob operations are most often performed on the entire collection. Here we are taking the salary of each collection item
       //and raising it by 1000.  We could choose to store this new value in new collection properity or simply overwrite the existing one.
       //Here we'll just overwrite the existing one.
-      return ETL.Plugins.Core.Calculator.add(queryResults, 'salary', 1000, 'salary');
+      return etlJob.Plugins.Core.Calculator.add(queryResults, 'salary', 1000, 'salary');
     })
     .then(function(manipulatedCollection) {
       //manipulatedCollection now contains our collection with the updated salary. I left age out of selectQuery
       //call so that I could demonstrate a collection join.  Lets find the age of all these employees.
       var joinSQL = 'select age from employees where id = :id';
-      return ETL.Plugins.Core.Database.joinQuery('nextract_sample', joinSQL, manipulatedCollection, false);
+      return etlJob.Plugins.Core.Database.joinQuery('nextract_sample', joinSQL, manipulatedCollection, false);
     })
     .then(function(manipulatedCollection) {
       //manipulatedCollection now also contains the age for each matching row. Lets give them
       //all back 10 years of their life.
-      return ETL.Plugins.Core.Calculator.subtract(manipulatedCollection, 'age', 10, 'age');
+      return etlJob.Plugins.Core.Calculator.subtract(manipulatedCollection, 'age', 10, 'age');
     })
     .then(function(manipulatedCollection) {
       //That looks good, lets print the first one as an example...
-       ETL.Plugins.Core.Logger.debug('Manipulated collection item sample:', manipulatedCollection[0]);
+       etlJob.Plugins.Core.Logger.debug('Manipulated collection item sample:', manipulatedCollection[0]);
 
       //Define the match matchCriteria which in this case is a simple primary key match on id. Can
       //be made up of the several fields if needed.
       var matchCriteria = [{ tableColumn: 'id', comparator: '=', collectionField: 'id' }];
       var columnsWeWantToUpdate = ['salary', 'age'];
-      return ETL.Plugins.Core.Database.updateQuery('nextract_sample', 'employees', manipulatedCollection, columnsWeWantToUpdate, matchCriteria);
+      return etlJob.Plugins.Core.Database.updateQuery('nextract_sample', 'employees', manipulatedCollection, columnsWeWantToUpdate, matchCriteria);
     })
     .then(function(manipulatedCollection) {
       //The company has decided to reduce overhead. We need to find all employees making over 60k.
       //For this we filter the collection down and call deleteQuery for each remaining row.
-      return ETL.Plugins.Core.Filter.greaterThan(manipulatedCollection, 'salary', 59999);
+      return etlJob.Plugins.Core.Filter.greaterThan(manipulatedCollection, 'salary', 59999);
     })
     .then(function(filteredCollection) {
-      ETL.Plugins.Core.Logger.info('The filtered collection now contains', filteredCollection.length, 'records');
+      etlJob.Plugins.Core.Logger.info('The filtered collection now contains', filteredCollection.length, 'records');
 
       //We need to remove all employees making over 60k.
       var matchCriteria = [{ tableColumn: 'id', comparator: '=', collectionField: 'id' }];
-      return ETL.Plugins.Core.Database.deleteQuery('nextract_sample', 'employees', filteredCollection, matchCriteria);
+      return etlJob.Plugins.Core.Database.deleteQuery('nextract_sample', 'employees', filteredCollection, matchCriteria);
     })
     .then(function() {
-      ETL.Plugins.Core.Logger.info('ETL job complete!');
+      etlJob.Plugins.Core.Logger.info('etlJob job complete!');
     })
     .catch(function(err) {
-      ETL.Plugins.Core.Logger.error('ETL process failed:', err);
+      etlJob.Plugins.Core.Logger.error('etlJob process failed:', err);
     });

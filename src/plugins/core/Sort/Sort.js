@@ -6,8 +6,39 @@
 
 import _ from 'lodash';
 import { orderBy, sortBy, isArray, isFunction } from 'lodash/fp';
-import pluginUtils from '../../pluginUtils';
+import pluginBase from '../../pluginBase';
 
+//Instantiate the plugin
+var sortPlugin = new pluginBase('Sort', 'Core');
+
+/* Plugin methods */
+sortPlugin.orderBy = function(collection, iteratees, orders) {
+  if (collection.length < sortPlugin.ETL.config.collections.sizeToBackground) {
+    return Promise.resolve(_.orderBy(collection, iteratees, orders));
+  } else {
+    var workerMsg = {
+      cmd: 'orderBy',
+      args: [collection, iteratees, orders]
+    };
+
+    return sortPlugin.runInWorker(workerMsg);
+  }
+};
+
+sortPlugin.sortBy = function(collection, iteratees) {
+  if (collection.length < sortPlugin.ETL.config.collections.sizeToBackground) {
+    return Promise.resolve(_.sortBy(collection, iteratees));
+  } else {
+    var workerMsg = {
+      cmd: 'sortBy',
+      args: [collection, iteratees]
+    };
+
+    return sortPlugin.runInWorker(workerMsg);
+  }
+};
+
+/* Plugin external interface */
 module.exports = {
 
   /**
@@ -23,28 +54,25 @@ module.exports = {
    *
    * @return {Promise} Promise resolved with the new sorted array
    */
-   orderBy: function(collection, iteratees = [], orders = []) {
-/*
-    if (collection.length < 1000) {
-      return Promise.resolve(_.orderBy(collection, iteratees, orders));
-    } else {
-      var workerMsg = {
-        cmd: 'orderBy',
-        args: [collection, iteratees, orders]
-      };
+  orderBy: function(collection, iteratees = [], orders = []) {
+    let taskName = 'orderBy';
+    let updatedCollection;
 
-      return pluginUtils.runInWorker('Core', workerName, workerMsg);
-    }
-*/
-
-
-    var workerMsg = {
-      cmd: 'orderBy',
-      args: [collection, iteratees, orders]
-    };
-
-    return pluginUtils.runInWorker('Core', 'Sort', workerMsg);
-
+    return new Promise(function (resolve, reject) {
+      sortPlugin
+        .setupTaskEngine()
+        .then(sortPlugin.startTask(taskName))
+        .then(function() {
+          return sortPlugin.orderBy(collection, iteratees, orders);
+        })
+        .then(function(collection) {
+          updatedCollection = collection;
+        })
+        .then(sortPlugin.endTask(taskName))
+        .then(function() {
+          resolve(updatedCollection);
+        });
+    });
   },
 
   /**
@@ -60,8 +88,25 @@ module.exports = {
    *
    * @return {Promise} Promise resolved with the new sorted array
    */
-   sortBy: function(collection, iteratees = []) {
-    return Promise.resolve(_.sortBy(collection, iteratees));
+  sortBy: function(collection, iteratees = []) {
+    let taskName = 'sortBy';
+    let updatedCollection;
+
+    return new Promise(function (resolve, reject) {
+      sortPlugin
+        .setupTaskEngine()
+        .then(sortPlugin.startTask(taskName))
+        .then(function() {
+          return sortPlugin.sortBy(collection, iteratees);
+        })
+        .then(function(collection) {
+          updatedCollection = collection;
+        })
+        .then(sortPlugin.endTask(taskName))
+        .then(function() {
+          resolve(updatedCollection);
+        });
+    });
   },
 
   /**
@@ -84,8 +129,17 @@ module.exports = {
       } else if (_.isArray(collection) === false) {
         reject("The custom method expects an array of data to sort!");
       } else {
-        var ordered = collection.sort(compareFunction);
-        resolve(ordered);
+        if (collection.length < sortPlugin.ETL.config.collections.sizeToBackground) {
+          var sortedCollection = collection.sort(compareFunction);
+          resolve(sortedCollection);
+        } else {
+          var workerMsg = {
+            cmd: 'orderBy',
+            args: [collection, compareFunction]
+          };
+
+          return sortPlugin.runInWorker(workerMsg);
+        }
       }
     });
   }

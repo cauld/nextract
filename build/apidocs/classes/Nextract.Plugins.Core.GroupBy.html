@@ -39,14 +39,15 @@
                         <div id="api-tabview-panel">
                             <ul id="api-classes" class="apis classes">
                                 <li><a href="../classes/Nextract.html">Nextract</a></li>
+                                <li><a href="../classes/Nextract.PluginBase.html">Nextract.PluginBase</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Calculator.html">Nextract.Plugins.Core.Calculator</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Database.html">Nextract.Plugins.Core.Database</a></li>
-                                <li><a href="../classes/Nextract.Plugins.Core.Filter.html">Nextract.Plugins.Core.Filter</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.GroupBy.html">Nextract.Plugins.Core.GroupBy</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Http.html">Nextract.Plugins.Core.Http</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Input.html">Nextract.Plugins.Core.Input</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Output.html">Nextract.Plugins.Core.Output</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Sort.html">Nextract.Plugins.Core.Sort</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Utils.html">Nextract.Plugins.Core.Utils</a></li>
-                                <li><a href="../classes/Nextract.pluginUtils.html">Nextract.pluginUtils</a></li>
                             </ul>
                 
                 
@@ -89,7 +90,7 @@
                       
                       
                               <div class="foundat">
-                                  Defined in: <a href="../files/build_plugins_core_GroupBy_GroupBy.js.html#l23"><code>build&#x2F;plugins&#x2F;core&#x2F;GroupBy&#x2F;GroupBy.js:23</code></a>
+                                  Defined in: <a href="../files/build_plugins_core_GroupBy_GroupBy.js.html#l13"><code>build&#x2F;plugins&#x2F;core&#x2F;GroupBy&#x2F;GroupBy.js:13</code></a>
                               </div>
                       
                       
@@ -118,6 +119,18 @@
                       
                                           <ul class="index-list methods">
                                                   <li class="index-item method">
+                                                      <a href="#method_equals">equals</a>
+                      
+                                                  </li>
+                                                  <li class="index-item method">
+                                                      <a href="#method_greaterThan">greaterThan</a>
+                      
+                                                  </li>
+                                                  <li class="index-item method">
+                                                      <a href="#method_lessThan">lessThan</a>
+                      
+                                                  </li>
+                                                  <li class="index-item method">
                                                       <a href="#method_maxBy">maxBy</a>
                       
                                                   </li>
@@ -133,6 +146,10 @@
                                                       <a href="#method_sumBy">sumBy</a>
                       
                                                   </li>
+                                                  <li class="index-item method">
+                                                      <a href="#method_uniqBy">uniqBy</a>
+                      
+                                                  </li>
                                           </ul>
                                       </div>
                       
@@ -143,10 +160,22 @@
                                   <div id="methods" class="api-class-tabpanel">
                                       <h2 class="off-left">Methods</h2>
                       
-                      <div id="method_maxBy" class="method item">
-                          <h3 class="name"><code>maxBy</code></h3>
+                      <div id="method_equals" class="method item">
+                          <h3 class="name"><code>equals</code></h3>
                       
-                              <span class="paren">()</span>
+                              <div class="args">
+                                  <span class="paren">(</span><ul class="args-list inline commas">
+                                      <li class="arg">
+                                              <code>collection</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>valueToTest</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>propertyToTest</code>
+                                      </li>
+                                  </ul><span class="paren">)</span>
+                              </div>
                       
                               <span class="returns-inline">
                                   <span class="type">Promise</span>
@@ -161,7 +190,313 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_core_GroupBy_GroupBy.js.html#l31"><code>build&#x2F;plugins&#x2F;core&#x2F;GroupBy&#x2F;GroupBy.js:31</code></a>
+                              <a href="../files/build_plugins_core_Filter_Filter.js.html#l26"><code>build&#x2F;plugins&#x2F;core&#x2F;Filter&#x2F;Filter.js:26</code></a>
+                              </p>
+                      
+                      
+                      
+                          </div>
+                      
+                          <div class="description">
+                              <p>Iterates over elements of collection, returning an array of all elements
+                      that equal the given testValue.</p>
+                      
+                          </div>
+                      
+                              <div class="params">
+                                  <h4>Parameters:</h4>
+                      
+                                  <ul class="params-list">
+                                      <li class="param">
+                                              <code class="param-name">collection</code>
+                                              <span class="type">Array | Object</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>The collection to iterate over</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">valueToTest</code>
+                                              <span class="type">String | Number</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>The value being against during each iteration</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">propertyToTest</code>
+                                              <span class="type">String</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>The object property name being tested against during each iteration</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                  </ul>
+                              </div>
+                      
+                              <div class="returns">
+                                  <h4>Returns:</h4>
+                      
+                                  <div class="returns-description">
+                                              <span class="type">Promise</span>:
+                                          <p>Promise resolved with an array of all elements that equal the testValue</p>
+                      
+                                  </div>
+                              </div>
+                      
+                      
+                              <div class="example">
+                                  <h4>Example:</h4>
+                      
+                                  <div class="example-content">
+                                      <pre class="code prettyprint"><code>ETL.Plugins.Core.Filter.equals(collection, 'foo', 'name');</code></pre>
+                      
+                                  </div>
+                              </div>
+                      </div>
+                      <div id="method_greaterThan" class="method item">
+                          <h3 class="name"><code>greaterThan</code></h3>
+                      
+                              <div class="args">
+                                  <span class="paren">(</span><ul class="args-list inline commas">
+                                      <li class="arg">
+                                              <code>collection</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>valueToTest</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>propertyToTest</code>
+                                      </li>
+                                  </ul><span class="paren">)</span>
+                              </div>
+                      
+                              <span class="returns-inline">
+                                  <span class="type">Promise</span>
+                              </span>
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                          <div class="meta">
+                                      <p>
+                                      Defined in
+                              <a href="../files/build_plugins_core_Filter_Filter.js.html#l54"><code>build&#x2F;plugins&#x2F;core&#x2F;Filter&#x2F;Filter.js:54</code></a>
+                              </p>
+                      
+                      
+                      
+                          </div>
+                      
+                          <div class="description">
+                              <p>Iterates over elements of collection, returning an array of all elements
+                      that are greater than the given number.</p>
+                      
+                          </div>
+                      
+                              <div class="params">
+                                  <h4>Parameters:</h4>
+                      
+                                  <ul class="params-list">
+                                      <li class="param">
+                                              <code class="param-name">collection</code>
+                                              <span class="type">Array | Object</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>The collection to iterate over</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">valueToTest</code>
+                                              <span class="type">String | Number</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>The value being against during each iteration</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">propertyToTest</code>
+                                              <span class="type">String</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>The object property name being tested against during each iteration</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                  </ul>
+                              </div>
+                      
+                              <div class="returns">
+                                  <h4>Returns:</h4>
+                      
+                                  <div class="returns-description">
+                                              <span class="type">Promise</span>:
+                                          <p>Promise resolved with an array of all elements that are greater than the testValue</p>
+                      
+                                  </div>
+                              </div>
+                      
+                      
+                              <div class="example">
+                                  <h4>Example:</h4>
+                      
+                                  <div class="example-content">
+                                      <pre class="code prettyprint"><code>ETL.Plugins.Core.Filter.greaterThan(collection, 10);</code></pre>
+                      
+                                  </div>
+                              </div>
+                      </div>
+                      <div id="method_lessThan" class="method item">
+                          <h3 class="name"><code>lessThan</code></h3>
+                      
+                              <div class="args">
+                                  <span class="paren">(</span><ul class="args-list inline commas">
+                                      <li class="arg">
+                                              <code>collection</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>valueToTest</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>propertyToTest</code>
+                                      </li>
+                                  </ul><span class="paren">)</span>
+                              </div>
+                      
+                              <span class="returns-inline">
+                                  <span class="type">Promise</span>
+                              </span>
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                          <div class="meta">
+                                      <p>
+                                      Defined in
+                              <a href="../files/build_plugins_core_Filter_Filter.js.html#l82"><code>build&#x2F;plugins&#x2F;core&#x2F;Filter&#x2F;Filter.js:82</code></a>
+                              </p>
+                      
+                      
+                      
+                          </div>
+                      
+                          <div class="description">
+                              <p>Iterates over elements of collection, returning an array of all elements
+                      that are less than the given number.</p>
+                      
+                          </div>
+                      
+                              <div class="params">
+                                  <h4>Parameters:</h4>
+                      
+                                  <ul class="params-list">
+                                      <li class="param">
+                                              <code class="param-name">collection</code>
+                                              <span class="type">Array | Object</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>The collection to iterate over</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">valueToTest</code>
+                                              <span class="type">String | Number</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>The value being against during each iteration</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">propertyToTest</code>
+                                              <span class="type">String</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>The object property name being tested against during each iteration</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                  </ul>
+                              </div>
+                      
+                              <div class="returns">
+                                  <h4>Returns:</h4>
+                      
+                                  <div class="returns-description">
+                                              <span class="type">Promise</span>:
+                                          <p>Promise resolved with an array of all elements that are less than the testValue</p>
+                      
+                                  </div>
+                              </div>
+                      
+                      
+                              <div class="example">
+                                  <h4>Example:</h4>
+                      
+                                  <div class="example-content">
+                                      <pre class="code prettyprint"><code>ETL.Plugins.Core.Filter.lessThan(collection, 10);</code></pre>
+                      
+                                  </div>
+                              </div>
+                      </div>
+                      <div id="method_maxBy" class="method item">
+                          <h3 class="name"><code>maxBy</code></h3>
+                      
+                              <div class="args">
+                                  <span class="paren">(</span><ul class="args-list inline commas">
+                                      <li class="arg">
+                                              <code>collection</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>prop</code>
+                                      </li>
+                                  </ul><span class="paren">)</span>
+                              </div>
+                      
+                              <span class="returns-inline">
+                                  <span class="type">Promise</span>
+                              </span>
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                          <div class="meta">
+                                      <p>
+                                      Defined in
+                              <a href="../files/build_plugins_core_GroupBy_GroupBy.js.html#l38"><code>build&#x2F;plugins&#x2F;core&#x2F;GroupBy&#x2F;GroupBy.js:38</code></a>
                               </p>
                       
                       
@@ -176,6 +511,34 @@
                       
                           </div>
                       
+                              <div class="params">
+                                  <h4>Parameters:</h4>
+                      
+                                  <ul class="params-list">
+                                      <li class="param">
+                                              <code class="param-name">collection</code>
+                                              <span class="type">Object</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>The collection to iterate over</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">prop</code>
+                                              <span class="type">String</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>The property to use in this operation</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                  </ul>
+                              </div>
                       
                               <div class="returns">
                                   <h4>Returns:</h4>
@@ -200,7 +563,16 @@
                       <div id="method_meanBy" class="method item">
                           <h3 class="name"><code>meanBy</code></h3>
                       
-                              <span class="paren">()</span>
+                              <div class="args">
+                                  <span class="paren">(</span><ul class="args-list inline commas">
+                                      <li class="arg">
+                                              <code>collection</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>prop</code>
+                                      </li>
+                                  </ul><span class="paren">)</span>
+                              </div>
                       
                               <span class="returns-inline">
                                   <span class="type">Promise</span>
@@ -215,7 +587,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_core_GroupBy_GroupBy.js.html#l65"><code>build&#x2F;plugins&#x2F;core&#x2F;GroupBy&#x2F;GroupBy.js:65</code></a>
+                              <a href="../files/build_plugins_core_GroupBy_GroupBy.js.html#l78"><code>build&#x2F;plugins&#x2F;core&#x2F;GroupBy&#x2F;GroupBy.js:78</code></a>
                               </p>
                       
                       
@@ -230,6 +602,34 @@
                       
                           </div>
                       
+                              <div class="params">
+                                  <h4>Parameters:</h4>
+                      
+                                  <ul class="params-list">
+                                      <li class="param">
+                                              <code class="param-name">collection</code>
+                                              <span class="type">Object</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>The collection to iterate over</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">prop</code>
+                                              <span class="type">String</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>The property to use in this operation</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                  </ul>
+                              </div>
                       
                               <div class="returns">
                                   <h4>Returns:</h4>
@@ -254,7 +654,16 @@
                       <div id="method_minBy" class="method item">
                           <h3 class="name"><code>minBy</code></h3>
                       
-                              <span class="paren">()</span>
+                              <div class="args">
+                                  <span class="paren">(</span><ul class="args-list inline commas">
+                                      <li class="arg">
+                                              <code>collection</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>prop</code>
+                                      </li>
+                                  </ul><span class="paren">)</span>
+                              </div>
                       
                               <span class="returns-inline">
                                   <span class="type">Promise</span>
@@ -269,7 +678,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_core_GroupBy_GroupBy.js.html#l48"><code>build&#x2F;plugins&#x2F;core&#x2F;GroupBy&#x2F;GroupBy.js:48</code></a>
+                              <a href="../files/build_plugins_core_GroupBy_GroupBy.js.html#l58"><code>build&#x2F;plugins&#x2F;core&#x2F;GroupBy&#x2F;GroupBy.js:58</code></a>
                               </p>
                       
                       
@@ -284,6 +693,34 @@
                       
                           </div>
                       
+                              <div class="params">
+                                  <h4>Parameters:</h4>
+                      
+                                  <ul class="params-list">
+                                      <li class="param">
+                                              <code class="param-name">collection</code>
+                                              <span class="type">Object</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>The collection to iterate over</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">prop</code>
+                                              <span class="type">String</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>The property to use in this operation</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                  </ul>
+                              </div>
                       
                               <div class="returns">
                                   <h4>Returns:</h4>
@@ -308,7 +745,16 @@
                       <div id="method_sumBy" class="method item">
                           <h3 class="name"><code>sumBy</code></h3>
                       
-                              <span class="paren">()</span>
+                              <div class="args">
+                                  <span class="paren">(</span><ul class="args-list inline commas">
+                                      <li class="arg">
+                                              <code>collection</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>prop</code>
+                                      </li>
+                                  </ul><span class="paren">)</span>
+                              </div>
                       
                               <span class="returns-inline">
                                   <span class="type">Promise</span>
@@ -323,7 +769,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_core_GroupBy_GroupBy.js.html#l82"><code>build&#x2F;plugins&#x2F;core&#x2F;GroupBy&#x2F;GroupBy.js:82</code></a>
+                              <a href="../files/build_plugins_core_GroupBy_GroupBy.js.html#l98"><code>build&#x2F;plugins&#x2F;core&#x2F;GroupBy&#x2F;GroupBy.js:98</code></a>
                               </p>
                       
                       
@@ -337,6 +783,34 @@
                       
                           </div>
                       
+                              <div class="params">
+                                  <h4>Parameters:</h4>
+                      
+                                  <ul class="params-list">
+                                      <li class="param">
+                                              <code class="param-name">collection</code>
+                                              <span class="type">Object</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>The collection to iterate over</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">prop</code>
+                                              <span class="type">String</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>The property to use in this operation</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                  </ul>
+                              </div>
                       
                               <div class="returns">
                                   <h4>Returns:</h4>
@@ -354,6 +828,96 @@
                       
                                   <div class="example-content">
                                       <pre class="code prettyprint"><code>ETL.Plugins.Core.GroupBy.sumBy(objects, 'n');</code></pre>
+                      
+                                  </div>
+                              </div>
+                      </div>
+                      <div id="method_uniqBy" class="method item">
+                          <h3 class="name"><code>uniqBy</code></h3>
+                      
+                              <div class="args">
+                                  <span class="paren">(</span><ul class="args-list inline commas">
+                                      <li class="arg">
+                                              <code>collection</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>propertyToTest</code>
+                                      </li>
+                                  </ul><span class="paren">)</span>
+                              </div>
+                      
+                              <span class="returns-inline">
+                                  <span class="type">Promise</span>
+                              </span>
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                          <div class="meta">
+                                      <p>
+                                      Defined in
+                              <a href="../files/build_plugins_core_Filter_Filter.js.html#l110"><code>build&#x2F;plugins&#x2F;core&#x2F;Filter&#x2F;Filter.js:110</code></a>
+                              </p>
+                      
+                      
+                      
+                          </div>
+                      
+                          <div class="description">
+                              <p>Creates a duplicate-free version of a collection, using SameValueZero for equality comparisons, in which
+                      only the first occurrence of each element is kept.</p>
+                      <p>For usage reference - <a href="https://lodash.com/docs#uniqBy">https://lodash.com/docs#uniqBy</a></p>
+                      
+                          </div>
+                      
+                              <div class="params">
+                                  <h4>Parameters:</h4>
+                      
+                                  <ul class="params-list">
+                                      <li class="param">
+                                              <code class="param-name">collection</code>
+                                              <span class="type">Array | Object</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>The collection to iterate over</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">propertyToTest</code>
+                                              <span class="type">String</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>The object property name being tested against during each iteration</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                  </ul>
+                              </div>
+                      
+                              <div class="returns">
+                                  <h4>Returns:</h4>
+                      
+                                  <div class="returns-description">
+                                              <span class="type">Promise</span>:
+                                          <p>Promise resolved with the new duplicate free array</p>
+                      
+                                  </div>
+                              </div>
+                      
+                      
+                              <div class="example">
+                                  <h4>Example:</h4>
+                      
+                                  <div class="example-content">
+                                      <pre class="code prettyprint"><code>ETL.Plugins.Core.Filter.uniqBy(collection, 'last_name');</code></pre>
                       
                                   </div>
                               </div>

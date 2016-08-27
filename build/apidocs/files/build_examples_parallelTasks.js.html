@@ -39,14 +39,15 @@
                         <div id="api-tabview-panel">
                             <ul id="api-classes" class="apis classes">
                                 <li><a href="../classes/Nextract.html">Nextract</a></li>
+                                <li><a href="../classes/Nextract.PluginBase.html">Nextract.PluginBase</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Calculator.html">Nextract.Plugins.Core.Calculator</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Database.html">Nextract.Plugins.Core.Database</a></li>
-                                <li><a href="../classes/Nextract.Plugins.Core.Filter.html">Nextract.Plugins.Core.Filter</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.GroupBy.html">Nextract.Plugins.Core.GroupBy</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Http.html">Nextract.Plugins.Core.Http</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Input.html">Nextract.Plugins.Core.Input</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Output.html">Nextract.Plugins.Core.Output</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Sort.html">Nextract.Plugins.Core.Sort</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Utils.html">Nextract.Plugins.Core.Utils</a></li>
-                                <li><a href="../classes/Nextract.pluginUtils.html">Nextract.pluginUtils</a></li>
                             </ul>
                 
                 
@@ -91,38 +92,38 @@
                       &#x27;use strict&#x27;;
                       
                       /**
-                       * Example: Running some ETL tasks in parallel
+                       * Example: Running some etlJob tasks in parallel
                        */
                       
                       var path = require(&#x27;path&#x27;),
                           Nextract = require(path.resolve(__dirname, &#x27;../nextract&#x27;));
                       
-                      var ETL = new Nextract();
+                      var etlJob = new Nextract();
                       
-                      ETL.loadPlugin(&#x27;Core&#x27;, [&#x27;Database&#x27;, &#x27;Utils&#x27;, &#x27;Logger&#x27;]).then(function () {
+                      etlJob.loadPlugins(&#x27;Core&#x27;, [&#x27;Database&#x27;, &#x27;Utils&#x27;, &#x27;Logger&#x27;]).then(function () {
                         var task1, task2;
                       
-                        //ETL tasks don&#x27;t always have to be run serially. What we needed the results of 2 different queries
+                        //etlJob tasks don&#x27;t always have to be run serially. What we needed the results of 2 different queries
                         //before we could run a 3rd calculation step.  We could run 1, then the next, and then do teh calc.
                         //However, since both queries are indiependt we could run them at the same time getting us back some
                         //precious run time.  To do this we start by getting a handle on the Promise returned for each task.
-                        task1 = ETL.Plugins.Core.Database.select(&#x27;nextract_sample&#x27;, &#x27;select salary from users where id = 1&#x27;);
-                        task2 = ETL.Plugins.Core.Database.select(&#x27;nextract_sample&#x27;, &#x27;select salary from users where id = 2&#x27;);
+                        task1 = etlJob.Plugins.Core.Database.selectQuery(&#x27;nextract_sample&#x27;, &#x27;select salary from employees order by id asc limit 1&#x27;);
+                        task2 = etlJob.Plugins.Core.Database.selectQuery(&#x27;nextract_sample&#x27;, &#x27;select salary from employees order by id desc limit 1&#x27;);
                       
                         //Now we build an array of tasks that we want to run in parallel
                         var parallelTasks = [task1, task2];
                       
                         //Finally we call runAll which will trigger each task.  RunAll returns a Promise that will only be
                         //resolved once all tasks have completed.
-                        return ETL.Plugins.Core.Utils.runAll(parallelTasks);
+                        return etlJob.Plugins.Core.Utils.runAll(parallelTasks);
                       }).then(function (runAllResponse) {
                         //runAllResponse will contain an array with the resolved result of each task
                         var task1Salary = runAllResponse[0][0].salary;
                         var task2Salary = runAllResponse[1][0].salary;
                       
-                        ETL.Plugins.Core.Logger.info(&#x27;Together these people make:&#x27;, task1Salary + task2Salary);
+                        etlJob.Plugins.Core.Logger.info(&#x27;Together these people make:&#x27;, task1Salary + task2Salary);
                       }).catch(function (err) {
-                        ETL.Plugins.Core.Logger.error(&#x27;ETL process failed: &#x27;, err);
+                        etlJob.Plugins.Core.Logger.error(&#x27;etlJob process failed: &#x27;, err);
                       });
                       
                           </pre>

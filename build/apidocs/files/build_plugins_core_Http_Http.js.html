@@ -39,14 +39,15 @@
                         <div id="api-tabview-panel">
                             <ul id="api-classes" class="apis classes">
                                 <li><a href="../classes/Nextract.html">Nextract</a></li>
+                                <li><a href="../classes/Nextract.PluginBase.html">Nextract.PluginBase</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Calculator.html">Nextract.Plugins.Core.Calculator</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Database.html">Nextract.Plugins.Core.Database</a></li>
-                                <li><a href="../classes/Nextract.Plugins.Core.Filter.html">Nextract.Plugins.Core.Filter</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.GroupBy.html">Nextract.Plugins.Core.GroupBy</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Http.html">Nextract.Plugins.Core.Http</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Input.html">Nextract.Plugins.Core.Input</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Output.html">Nextract.Plugins.Core.Output</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Sort.html">Nextract.Plugins.Core.Sort</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Utils.html">Nextract.Plugins.Core.Utils</a></li>
-                                <li><a href="../classes/Nextract.pluginUtils.html">Nextract.pluginUtils</a></li>
                             </ul>
                 
                 
@@ -88,21 +89,74 @@
                       
                       <div class="file">
                           <pre class="code prettyprint linenums">
-                      &quot;use strict&quot;;
+                      &#x27;use strict&#x27;;
                       
+                      var _request = require(&#x27;request&#x27;);
+                      
+                      var _request2 = _interopRequireDefault(_request);
+                      
+                      var _pluginBase = require(&#x27;../../pluginBase&#x27;);
+                      
+                      var _pluginBase2 = _interopRequireDefault(_pluginBase);
+                      
+                      function _interopRequireDefault(obj) { return obj &amp;&amp; obj.__esModule ? obj : { default: obj }; }
+                      
+                      //Instantiate the plugin
                       /**
-                       * Custom module used to ...
+                       * Mixes in methods used make HTTP requests
+                       *
+                       * @class Nextract.Plugins.Core.Http
                        */
                       
-                      //import pluginUtils from &#x27;../../pluginUtils&#x27;;
+                      /*
+                      TODO:
+                      1) Support making requests for each item in a collection...
+                      2) Migrate to setupTaskEngine, startTask, endTask format
+                      */
+                      
+                      var httpPlugin = new _pluginBase2.default(&#x27;Http&#x27;, &#x27;Core&#x27;);
                       
                       module.exports = {
                       
-                        //TODO: Implement...
-                        /*
-                          GET
-                          POST
-                        */
+                        /**
+                         * Make http calls. It supports HTTPS and follows redirects by default.
+                         *
+                         * @method makeRequest
+                         * @for Nextract.Plugins.Core.Http
+                         *
+                         * @example
+                         *     var requestConfig = {
+                         *       url: &#x27;http://example.com&#x27;,
+                         *       qs: { searchString: &#x27;foo&#x27;, page: 1 },
+                         *       method: &#x27;GET&#x27;,
+                         *       headers: { &#x27;Content-Type&#x27;: &#x27;MyContentType&#x27;, &#x27;Custom-Header&#x27;: &#x27;Custom Value&#x27; }
+                         *      };
+                         * @example
+                         *     ETL.Plugins.Core.Http.makeRequest(requestConfig);
+                         *
+                         * @param {Object} requestConfig A request configuration made up of key/value pairs. Wraps
+                         * the popular npm request module so any request config supported by this module will work.
+                         * See - https://www.npmjs.com/package/request#requestoptions-callback.
+                         *
+                         * @return {Promise} Promise resolved with an object like so { statusCode: 200, body: &#x27;Hello World&#x27; }
+                         */
+                        makeRequest: function makeRequest(requestConfig) {
+                          return new Promise(function (resolve, reject) {
+                            (0, _request2.default)(requestConfig, function (err, response, body) {
+                              if (err) {
+                                httpPlugin.logger.error(err);
+                                reject(err);
+                              } else {
+                                var result = {
+                                  statusCode: response.statusCode,
+                                  body: body
+                                };
+                      
+                                resolve(result);
+                              }
+                            });
+                          });
+                        }
                       
                       };
                       

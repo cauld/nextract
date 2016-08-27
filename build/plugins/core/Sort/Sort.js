@@ -12,12 +12,53 @@ var _sortBy2 = require('lodash/sortBy');
 
 var _sortBy3 = _interopRequireDefault(_sortBy2);
 
-var _pluginUtils = require('../../pluginUtils');
+var _orderBy2 = require('lodash/orderBy');
 
-var _pluginUtils2 = _interopRequireDefault(_pluginUtils);
+var _orderBy3 = _interopRequireDefault(_orderBy2);
+
+var _pluginBase = require('../../pluginBase');
+
+var _pluginBase2 = _interopRequireDefault(_pluginBase);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+//Instantiate the plugin
+var sortPlugin = new _pluginBase2.default('Sort', 'Core');
+
+/* Plugin methods */
+/**
+ * Mixes in methods used to sort data
+ *
+ * @class Nextract.Plugins.Core.Sort
+ */
+
+sortPlugin.orderBy = function (collection, iteratees, orders) {
+  if (collection.length < sortPlugin.ETL.config.collections.sizeToBackground) {
+    return Promise.resolve((0, _orderBy3.default)(collection, iteratees, orders));
+  } else {
+    var workerMsg = {
+      cmd: 'orderBy',
+      args: [collection, iteratees, orders]
+    };
+
+    return sortPlugin.runInWorker(workerMsg);
+  }
+};
+
+sortPlugin.sortBy = function (collection, iteratees) {
+  if (collection.length < sortPlugin.ETL.config.collections.sizeToBackground) {
+    return Promise.resolve((0, _sortBy3.default)(collection, iteratees));
+  } else {
+    var workerMsg = {
+      cmd: 'sortBy',
+      args: [collection, iteratees]
+    };
+
+    return sortPlugin.runInWorker(workerMsg);
+  }
+};
+
+/* Plugin external interface */
 module.exports = {
 
   /**
@@ -37,25 +78,18 @@ module.exports = {
     var iteratees = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
     var orders = arguments.length <= 2 || arguments[2] === undefined ? [] : arguments[2];
 
-    /*
-        if (collection.length < 1000) {
-          return Promise.resolve(_.orderBy(collection, iteratees, orders));
-        } else {
-          var workerMsg = {
-            cmd: 'orderBy',
-            args: [collection, iteratees, orders]
-          };
-    
-          return pluginUtils.runInWorker('Core', workerName, workerMsg);
-        }
-    */
+    var taskName = 'orderBy';
+    var updatedCollection = void 0;
 
-    var workerMsg = {
-      cmd: 'orderBy',
-      args: [collection, iteratees, orders]
-    };
-
-    return _pluginUtils2.default.runInWorker('Core', 'Sort', workerMsg);
+    return new Promise(function (resolve, reject) {
+      sortPlugin.setupTaskEngine().then(sortPlugin.startTask(taskName)).then(function () {
+        return sortPlugin.orderBy(collection, iteratees, orders);
+      }).then(function (collection) {
+        updatedCollection = collection;
+      }).then(sortPlugin.endTask(taskName)).then(function () {
+        resolve(updatedCollection);
+      });
+    });
   },
 
   /**
@@ -74,7 +108,18 @@ module.exports = {
   sortBy: function sortBy(collection) {
     var iteratees = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
 
-    return Promise.resolve((0, _sortBy3.default)(collection, iteratees));
+    var taskName = 'sortBy';
+    var updatedCollection = void 0;
+
+    return new Promise(function (resolve, reject) {
+      sortPlugin.setupTaskEngine().then(sortPlugin.startTask(taskName)).then(function () {
+        return sortPlugin.sortBy(collection, iteratees);
+      }).then(function (collection) {
+        updatedCollection = collection;
+      }).then(sortPlugin.endTask(taskName)).then(function () {
+        resolve(updatedCollection);
+      });
+    });
   },
 
   /**
@@ -97,14 +142,19 @@ module.exports = {
       } else if ((0, _isArray3.default)(collection) === false) {
         reject("The custom method expects an array of data to sort!");
       } else {
-        var ordered = collection.sort(compareFunction);
-        resolve(ordered);
+        if (collection.length < sortPlugin.ETL.config.collections.sizeToBackground) {
+          var sortedCollection = collection.sort(compareFunction);
+          resolve(sortedCollection);
+        } else {
+          var workerMsg = {
+            cmd: 'orderBy',
+            args: [collection, compareFunction]
+          };
+
+          return sortPlugin.runInWorker(workerMsg);
+        }
       }
     });
   }
 
-}; /**
-    * Mixes in methods used to sort data
-    *
-    * @class Nextract.Plugins.Core.Sort
-    */
+};

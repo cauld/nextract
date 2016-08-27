@@ -12,17 +12,26 @@ var _csv = require('csv');
 
 var _csv2 = _interopRequireDefault(_csv);
 
-var _pluginUtils = require('../../pluginUtils');
+var _pluginBase = require('../../pluginBase');
 
-var _pluginUtils2 = _interopRequireDefault(_pluginUtils);
+var _pluginBase2 = _interopRequireDefault(_pluginBase);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+//Instantiate the plugin
 /**
  * Mixes in methods used to read files
  *
  * @class Nextract.Plugins.Core.Input
  */
+
+/*
+TODO:
+1) Migrate to setupTaskEngine, startTask, endTask format
+2) Implement excel
+*/
+
+var inputPlugin = new _pluginBase2.default('Input', 'Core');
 
 function readJsonFile(filePath) {
   return new Promise(function (resolve, reject) {
@@ -30,7 +39,7 @@ function readJsonFile(filePath) {
       console.log("fileData", fileData);
 
       if (err) {
-        _pluginUtils2.default.logger.error('readJsonFile', err);
+        inputPlugin.logger.error('readJsonFile', err);
         reject(err);
       } else {
         resolve(fileData);
@@ -54,7 +63,7 @@ function readCsvFile(filePath) {
     //Read the contents of the file into memory
     _fs2.default.readFile(filePath, function (err, fileData) {
       if (err) {
-        _pluginUtils2.default.logger.error('readTextFile', err);
+        inputPlugin.logger.error('readTextFile', err);
         reject(err);
       }
 
@@ -64,7 +73,7 @@ function readCsvFile(filePath) {
       //Ref: http://csv.adaltas.com/parse/
       _csv2.default.parse(input, parserConfig, function (err, output) {
         if (err) {
-          _pluginUtils2.default.logger.error('readTextFile csv parse', err);
+          inputPlugin.logger.error('readTextFile csv parse', err);
           reject(err);
         } else {
           resolve(output);

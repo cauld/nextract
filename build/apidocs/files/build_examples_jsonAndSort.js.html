@@ -39,14 +39,15 @@
                         <div id="api-tabview-panel">
                             <ul id="api-classes" class="apis classes">
                                 <li><a href="../classes/Nextract.html">Nextract</a></li>
+                                <li><a href="../classes/Nextract.PluginBase.html">Nextract.PluginBase</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Calculator.html">Nextract.Plugins.Core.Calculator</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Database.html">Nextract.Plugins.Core.Database</a></li>
-                                <li><a href="../classes/Nextract.Plugins.Core.Filter.html">Nextract.Plugins.Core.Filter</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.GroupBy.html">Nextract.Plugins.Core.GroupBy</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Http.html">Nextract.Plugins.Core.Http</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Input.html">Nextract.Plugins.Core.Input</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Output.html">Nextract.Plugins.Core.Output</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Sort.html">Nextract.Plugins.Core.Sort</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Utils.html">Nextract.Plugins.Core.Utils</a></li>
-                                <li><a href="../classes/Nextract.pluginUtils.html">Nextract.pluginUtils</a></li>
                             </ul>
                 
                 
@@ -97,23 +98,23 @@
                       var path = require(&#x27;path&#x27;),
                           Nextract = require(path.resolve(__dirname, &#x27;../nextract&#x27;));
                       
-                      var ETL = new Nextract();
+                      var etlJob = new Nextract();
                       
-                      var sampleUsersInputFilePath = path.resolve(process.cwd(), &#x27;data/users.json&#x27;),
-                          sampleUsersOutputFilePath = path.resolve(process.cwd(), &#x27;data/users_output.json&#x27;);
+                      var sampleEmployeesInputFilePath = path.resolve(process.cwd(), &#x27;data/employees.json&#x27;),
+                          sampleEmployeesOutputFilePath = path.resolve(process.cwd(), &#x27;data/employees_output.json&#x27;);
                       
-                      ETL.loadPlugin(&#x27;Core&#x27;, [&#x27;Input&#x27;, &#x27;Output&#x27;, &#x27;Sort&#x27;, &#x27;Logger&#x27;]).then(function () {
-                        return ETL.Plugins.Core.Input.readFile(&#x27;json&#x27;, sampleUsersInputFilePath);
+                      etlJob.loadPlugins(&#x27;Core&#x27;, [&#x27;Input&#x27;, &#x27;Output&#x27;, &#x27;Sort&#x27;, &#x27;Logger&#x27;]).then(function () {
+                        return etlJob.Plugins.Core.Input.readFile(&#x27;json&#x27;, sampleEmployeesInputFilePath);
                       }).then(function (jsonData) {
-                        var userData = jsonData.data.users;
-                        return ETL.Plugins.Core.Sort.by(userData, [&#x27;last_name&#x27;], [&#x27;asc&#x27;]);
+                        var employeesData = jsonData.data.employees;
+                        return etlJob.Plugins.Core.Sort.orderBy(employeesData, [&#x27;last_name&#x27;], [&#x27;desc&#x27;]);
                       }).then(function (data) {
-                        ETL.Plugins.Core.Logger.info(&#x27;Sorted queryResults: &#x27;, data);
-                        return ETL.Plugins.Core.Output.writeFile(&#x27;json&#x27;, data, sampleUsersOutputFilePath, { spaces: 2 });
+                        etlJob.Plugins.Core.Logger.info(&#x27;Sorted queryResults:&#x27;, data);
+                        return etlJob.Plugins.Core.Output.writeFile(&#x27;json&#x27;, data, sampleEmployeesOutputFilePath, { spaces: 2 });
                       }).then(function () {
-                        ETL.Plugins.Core.Logger.info(sampleUsersOutputFilePath, &#x27;has been written&#x27;);
+                        etlJob.Plugins.Core.Logger.info(sampleEmployeesOutputFilePath, &#x27;has been written&#x27;);
                       }).catch(function (err) {
-                        ETL.Plugins.Core.Logger.error(&#x27;ETL process failed: &#x27;, err);
+                        etlJob.Plugins.Core.Logger.error(&#x27;etlJob process failed:&#x27;, err);
                       });
                       
                           </pre>

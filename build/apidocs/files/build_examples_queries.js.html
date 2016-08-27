@@ -39,14 +39,15 @@
                         <div id="api-tabview-panel">
                             <ul id="api-classes" class="apis classes">
                                 <li><a href="../classes/Nextract.html">Nextract</a></li>
+                                <li><a href="../classes/Nextract.PluginBase.html">Nextract.PluginBase</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Calculator.html">Nextract.Plugins.Core.Calculator</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Database.html">Nextract.Plugins.Core.Database</a></li>
-                                <li><a href="../classes/Nextract.Plugins.Core.Filter.html">Nextract.Plugins.Core.Filter</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.GroupBy.html">Nextract.Plugins.Core.GroupBy</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Http.html">Nextract.Plugins.Core.Http</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Input.html">Nextract.Plugins.Core.Input</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Output.html">Nextract.Plugins.Core.Output</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Sort.html">Nextract.Plugins.Core.Sort</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Utils.html">Nextract.Plugins.Core.Utils</a></li>
-                                <li><a href="../classes/Nextract.pluginUtils.html">Nextract.pluginUtils</a></li>
                             </ul>
                 
                 
@@ -99,9 +100,9 @@
                           exampleUtils = require(path.resolve(__dirname, &#x27;./exampleUtils&#x27;));
                       
                       /* Main */
-                      var ETL = new Nextract();
+                      var etlJob = new Nextract();
                       
-                      ETL.loadPlugin(&#x27;Core&#x27;, [&#x27;Database&#x27;, &#x27;Filter&#x27;, &#x27;Calculator&#x27;, &#x27;Logger&#x27;]).then(function () {
+                      etlJob.loadPlugins(&#x27;Core&#x27;, [&#x27;Database&#x27;, &#x27;Filter&#x27;, &#x27;Calculator&#x27;, &#x27;Logger&#x27;]).then(function () {
                         //Lets generate a bunch of new employees and create a collection (i.e.) an array of objects
                         var collectionsToInsert = [];
                         for (var i = 0; i &lt; 50; i++) {
@@ -118,48 +119,48 @@
                         var columnsToInsert = [&#x27;first_name&#x27;, &#x27;last_name&#x27;, &#x27;age&#x27;, &#x27;salary&#x27;]; //or Object.keys(collectionsToInsert[0]);
                       
                         //Insert our collection
-                        return ETL.Plugins.Core.Database.insertQuery(&#x27;nextract_sample&#x27;, &#x27;employees&#x27;, collectionsToInsert, columnsToInsert);
+                        return etlJob.Plugins.Core.Database.insertQuery(&#x27;nextract_sample&#x27;, &#x27;employees&#x27;, collectionsToInsert, columnsToInsert);
                       }).then(function () {
                         //Now that we&#x27;ve loaded some new employees into the employees table, lets find them all and give them all a raise.
                         var selectSql = &#x27;select id, first_name, last_name, age, salary from employees&#x27;;
-                        return ETL.Plugins.Core.Database.selectQuery(&#x27;nextract_sample&#x27;, selectSql);
+                        return etlJob.Plugins.Core.Database.selectQuery(&#x27;nextract_sample&#x27;, selectSql);
                       }).then(function (queryResults) {
-                        //ETL operations are most often performed on the entire collection. Here we are taking the salary of each collection item
+                        //etlJob operations are most often performed on the entire collection. Here we are taking the salary of each collection item
                         //and raising it by 1000.  We could choose to store this new value in new collection properity or simply overwrite the existing one.
                         //Here we&#x27;ll just overwrite the existing one.
-                        return ETL.Plugins.Core.Calculator.add(queryResults, &#x27;salary&#x27;, 1000, &#x27;salary&#x27;);
+                        return etlJob.Plugins.Core.Calculator.add(queryResults, &#x27;salary&#x27;, 1000, &#x27;salary&#x27;);
                       }).then(function (manipulatedCollection) {
                         //manipulatedCollection now contains our collection with the updated salary. I left age out of selectQuery
                         //call so that I could demonstrate a collection join.  Lets find the age of all these employees.
                         var joinSQL = &#x27;select age from employees where id = :id&#x27;;
-                        return ETL.Plugins.Core.Database.joinQuery(&#x27;nextract_sample&#x27;, joinSQL, manipulatedCollection, false);
+                        return etlJob.Plugins.Core.Database.joinQuery(&#x27;nextract_sample&#x27;, joinSQL, manipulatedCollection, false);
                       }).then(function (manipulatedCollection) {
                         //manipulatedCollection now also contains the age for each matching row. Lets give them
                         //all back 10 years of their life.
-                        return ETL.Plugins.Core.Calculator.subtract(manipulatedCollection, &#x27;age&#x27;, 10, &#x27;age&#x27;);
+                        return etlJob.Plugins.Core.Calculator.subtract(manipulatedCollection, &#x27;age&#x27;, 10, &#x27;age&#x27;);
                       }).then(function (manipulatedCollection) {
                         //That looks good, lets print the first one as an example...
-                        ETL.Plugins.Core.Logger.debug(&#x27;Manipulated collection item sample:&#x27;, manipulatedCollection[0]);
+                        etlJob.Plugins.Core.Logger.debug(&#x27;Manipulated collection item sample:&#x27;, manipulatedCollection[0]);
                       
                         //Define the match matchCriteria which in this case is a simple primary key match on id. Can
                         //be made up of the several fields if needed.
                         var matchCriteria = [{ tableColumn: &#x27;id&#x27;, comparator: &#x27;=&#x27;, collectionField: &#x27;id&#x27; }];
                         var columnsWeWantToUpdate = [&#x27;salary&#x27;, &#x27;age&#x27;];
-                        return ETL.Plugins.Core.Database.updateQuery(&#x27;nextract_sample&#x27;, &#x27;employees&#x27;, manipulatedCollection, columnsWeWantToUpdate, matchCriteria);
+                        return etlJob.Plugins.Core.Database.updateQuery(&#x27;nextract_sample&#x27;, &#x27;employees&#x27;, manipulatedCollection, columnsWeWantToUpdate, matchCriteria);
                       }).then(function (manipulatedCollection) {
                         //The company has decided to reduce overhead. We need to find all employees making over 60k.
                         //For this we filter the collection down and call deleteQuery for each remaining row.
-                        return ETL.Plugins.Core.Filter.greaterThan(manipulatedCollection, &#x27;salary&#x27;, 59999);
+                        return etlJob.Plugins.Core.Filter.greaterThan(manipulatedCollection, &#x27;salary&#x27;, 59999);
                       }).then(function (filteredCollection) {
-                        ETL.Plugins.Core.Logger.info(&#x27;The filtered collection now contains&#x27;, filteredCollection.length, &#x27;records&#x27;);
+                        etlJob.Plugins.Core.Logger.info(&#x27;The filtered collection now contains&#x27;, filteredCollection.length, &#x27;records&#x27;);
                       
                         //We need to remove all employees making over 60k.
                         var matchCriteria = [{ tableColumn: &#x27;id&#x27;, comparator: &#x27;=&#x27;, collectionField: &#x27;id&#x27; }];
-                        return ETL.Plugins.Core.Database.deleteQuery(&#x27;nextract_sample&#x27;, &#x27;employees&#x27;, filteredCollection, matchCriteria);
+                        return etlJob.Plugins.Core.Database.deleteQuery(&#x27;nextract_sample&#x27;, &#x27;employees&#x27;, filteredCollection, matchCriteria);
                       }).then(function () {
-                        ETL.Plugins.Core.Logger.info(&#x27;ETL job complete!&#x27;);
+                        etlJob.Plugins.Core.Logger.info(&#x27;etlJob job complete!&#x27;);
                       }).catch(function (err) {
-                        ETL.Plugins.Core.Logger.error(&#x27;ETL process failed:&#x27;, err);
+                        etlJob.Plugins.Core.Logger.error(&#x27;etlJob process failed:&#x27;, err);
                       });
                       
                           </pre>

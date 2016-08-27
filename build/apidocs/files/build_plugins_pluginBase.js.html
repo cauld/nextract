@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>build/plugins/pluginUtils.js - nextract</title>
+    <title>build/plugins/pluginBase.js - nextract</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -39,14 +39,15 @@
                         <div id="api-tabview-panel">
                             <ul id="api-classes" class="apis classes">
                                 <li><a href="../classes/Nextract.html">Nextract</a></li>
+                                <li><a href="../classes/Nextract.PluginBase.html">Nextract.PluginBase</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Calculator.html">Nextract.Plugins.Core.Calculator</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Database.html">Nextract.Plugins.Core.Database</a></li>
-                                <li><a href="../classes/Nextract.Plugins.Core.Filter.html">Nextract.Plugins.Core.Filter</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.GroupBy.html">Nextract.Plugins.Core.GroupBy</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Http.html">Nextract.Plugins.Core.Http</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Input.html">Nextract.Plugins.Core.Input</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Output.html">Nextract.Plugins.Core.Output</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Sort.html">Nextract.Plugins.Core.Sort</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Utils.html">Nextract.Plugins.Core.Utils</a></li>
-                                <li><a href="../classes/Nextract.pluginUtils.html">Nextract.pluginUtils</a></li>
                             </ul>
                 
                 
@@ -84,7 +85,7 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                      <h1 class="file-heading">File: build/plugins/pluginUtils.js</h1>
+                      <h1 class="file-heading">File: build/plugins/pluginBase.js</h1>
                       
                       <div class="file">
                           <pre class="code prettyprint linenums">
@@ -114,32 +115,64 @@
                       
                       function _interopRequireDefault(obj) { return obj &amp;&amp; obj.__esModule ? obj : { default: obj }; }
                       
-                      module.exports = {
+                      var PluginBase = function PluginBase() {
+                        var pluginName = arguments.length &lt;= 0 || arguments[0] === undefined ? null : arguments[0];
+                        var pluginType = arguments.length &lt;= 1 || arguments[1] === undefined ? null : arguments[1];
+                      
+                        var self = this;
+                      
+                        if (pluginName === null) {
+                          throw &quot;A plugin name must be provided to initPlugin!&quot;;
+                        }
+                      
+                        if (pluginType === null) {
+                          throw &quot;A plugin type (Core or Vendor) must be provided to initPlugin!&quot;;
+                        }
                       
                         /**
-                         * Provides access to the current config from inside a plugin. Useful if a plugin requires access to
-                         * dynamic configuration details (e.g.) the database plugin uses this to lookup database creds
-                         * for a given database name.
+                         * Plugin name
                          *
-                         * @method config
-                         * @for Nextract.pluginUtils
-                         *
-                         * @return {Promise} Promise resolved with current Nextract config object
+                         * @property pluginName
+                         * @for Nextract.PluginBase
+                         * @type String
                          */
-                        config: _default2.default,
+                        this.pluginName = pluginName;
                       
                         /**
-                         * Provides access to the Core logger from inside a plugin
+                         * Plugin type (Core or Vendor)
                          *
-                         * @method logger
-                         * @for Nextract.pluginUtils
-                         *
-                         * @example
-                         *    pluginUtils.logger.error(&#x27;Houston we have a problem&#x27;, err);
-                         *
-                         * @return {Promise} Promise resolved with current Nextract config object
+                         * @property pluginType
+                         * @for Nextract.PluginBase
+                         * @type String
                          */
-                        logger: logger,
+                        this.pluginType = pluginType;
+                      
+                        /**
+                         * Core system functionality is namespaced under this ETL object
+                         *
+                         * @property ETL
+                         * @for Nextract.PluginBase
+                         * @type Object
+                         */
+                        this.ETL = {
+                          /**
+                           * Provides convient access to the core system config variables
+                           *
+                           * @property ETL.config
+                           * @for Nextract.PluginBase
+                           * @type Object
+                           */
+                          config: _default2.default,
+                      
+                          /**
+                           * Provides convient access to core logging functionality
+                           *
+                           * @property ELT.logger
+                           * @for Nextract.PluginBase
+                           * @type Object
+                           */
+                          logger: logger
+                        };
                       
                         /**
                          * Convinence method used by plugins to run code in a background web worker thread. A worker
@@ -148,30 +181,27 @@
                          * (see src/plugins/core/Sort/Worker.js);
                          *
                          * @method runInWorker
-                         * @for Nextract.pluginUtils
+                         * @for Nextract.PluginBase
                          *
                          * @example
                          *     var workerMsg = { cmd: &#x27;orderBy&#x27;, args: [collection, iteratees, orders] };
                          *
                          * @example
-                         *     return pluginUtils.runInWorker(&#x27;Core&#x27;, &#x27;Sort&#x27;, workerMsg);
+                         *     return pluginUtils.runInWorker(workerMsg);
                          *
-                         * @param {String} pluginType Plugin type (Core or Vendor)
-                         * @param {String} pluginName Plugin name (e.g.) Sort
                          * @param {Object} workerMsg The message to be passed to the worker. The object contains
                          * two properties; 1) cmd - The command/method to run inside the Worker &amp; 2) args - The
                          * arguments being passed to the methiod defined in command via apply().
                          *
-                         * @return {Promise} Promise resolved with an array of database rows that match the given select statement
+                         * @return {Promise} Promise resolved with collection
                          */
-                        runInWorker: function runInWorker(pluginType, pluginName, workerMsg) {
+                        this.runInWorker = function (workerMsg) {
                           return new Promise(function (resolve, reject) {
-                      
                             //Verify a web worker script for this plugin exists
-                            var workerScript = _path2.default.resolve(__dirname, &#x27;./&#x27; + pluginType.toLowerCase() + &#x27;/&#x27; + pluginName + &#x27;/Worker.js&#x27;);
+                            var workerScript = _path2.default.resolve(__dirname, &#x27;./&#x27; + self.pluginType.toLowerCase() + &#x27;/&#x27; + self.pluginName + &#x27;/Worker.js&#x27;);
                             _fs2.default.stat(workerScript, function (err, stat) {
                               if (err) {
-                                reject(&#x27;Plugin worker file not found for&#x27;, pluginName);
+                                reject(&#x27;Plugin worker file not found for&#x27;, self.pluginName);
                               } else {
                                 var worker = new _workerjs2.default(workerScript, true);
                                 worker.onmessage = function (collection) {
@@ -183,13 +213,71 @@
                               }
                             });
                           });
-                        }
+                        };
                       
+                        /**
+                         * Plugin tasks are a series of chained Promises. setupTaskEngine is used to start the chain.
+                         * Since the plugin instance itself is an object and not a promise we cannot immediately chain
+                         * (then) off it.
+                         *
+                         * @method runInWorker
+                         * @for Nextract.PluginBase
+                         *
+                         * @example
+                         *     pluginName.setupTaskEngine().then(...).then(...)
+                         *
+                         * @return {Promise} An immediately resolved Promise
+                         */
+                        this.setupTaskEngine = function () {
+                          return Promise.resolve(null);
+                        };
+                      
+                        /**
+                         * This should be the 2nd method called by a plugin (after setupTaskEngine) when
+                         * performing a task.  Takes care of internal proceses required when starting a new
+                         * starts.  Might be something as simple as logging or might be more complex.
+                         *
+                         * @method runInWorker
+                         * @for Nextract.PluginBase
+                         *
+                         * @example
+                         *     pluginName.setupTaskEngine().startTask(&quot;foo&quot;).then(...).then(...)
+                         *
+                         * @return {Promise} An immediately resolved Promise
+                         */
+                        this.startTask = function (taskName) {
+                          return new Promise(function (resolve) {
+                            self.ETL.logger.info(taskName, &#x27;started for plugin&#x27;, self.pluginName);
+                            resolve();
+                          });
+                        };
+                      
+                        /**
+                         * This should be the last method called by a plugin (after setupTaskEngine) when
+                         * done performing a task.  Takes care of internal proceses required when end a
+                         * task.  Might be something as simple as logging or might be more complex.
+                         *
+                         * @method endTask
+                         * @for Nextract.PluginBase
+                         *
+                         * @example
+                         *     pluginName.setupTaskEngine().startTask(&quot;foo&quot;).then(...).then(...)..endTask(&quot;foo&quot;)
+                         *
+                         * @return {Promise} An immediately resolved Promise
+                         */
+                        this.endTask = function (taskName) {
+                          return new Promise(function (resolve) {
+                            self.ETL.logger.info(taskName, &#x27;ended for plugin&#x27;, self.pluginName);
+                            resolve();
+                          });
+                        };
                       }; /**
-                          * Plugin utils useful when building plugins
+                          * The base plugin class that all plugins inherit from
                           *
-                          * @class Nextract.pluginUtils
+                          * @class Nextract.PluginBase
                           */
+                      
+                      module.exports = PluginBase;
                       
                           </pre>
                       </div>

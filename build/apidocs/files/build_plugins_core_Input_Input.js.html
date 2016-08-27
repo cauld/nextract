@@ -39,14 +39,15 @@
                         <div id="api-tabview-panel">
                             <ul id="api-classes" class="apis classes">
                                 <li><a href="../classes/Nextract.html">Nextract</a></li>
+                                <li><a href="../classes/Nextract.PluginBase.html">Nextract.PluginBase</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Calculator.html">Nextract.Plugins.Core.Calculator</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Database.html">Nextract.Plugins.Core.Database</a></li>
-                                <li><a href="../classes/Nextract.Plugins.Core.Filter.html">Nextract.Plugins.Core.Filter</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.GroupBy.html">Nextract.Plugins.Core.GroupBy</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Http.html">Nextract.Plugins.Core.Http</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Input.html">Nextract.Plugins.Core.Input</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Output.html">Nextract.Plugins.Core.Output</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Sort.html">Nextract.Plugins.Core.Sort</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Utils.html">Nextract.Plugins.Core.Utils</a></li>
-                                <li><a href="../classes/Nextract.pluginUtils.html">Nextract.pluginUtils</a></li>
                             </ul>
                 
                 
@@ -102,17 +103,26 @@
                       
                       var _csv2 = _interopRequireDefault(_csv);
                       
-                      var _pluginUtils = require(&#x27;../../pluginUtils&#x27;);
+                      var _pluginBase = require(&#x27;../../pluginBase&#x27;);
                       
-                      var _pluginUtils2 = _interopRequireDefault(_pluginUtils);
+                      var _pluginBase2 = _interopRequireDefault(_pluginBase);
                       
                       function _interopRequireDefault(obj) { return obj &amp;&amp; obj.__esModule ? obj : { default: obj }; }
                       
+                      //Instantiate the plugin
                       /**
                        * Mixes in methods used to read files
                        *
                        * @class Nextract.Plugins.Core.Input
                        */
+                      
+                      /*
+                      TODO:
+                      1) Migrate to setupTaskEngine, startTask, endTask format
+                      2) Implement excel
+                      */
+                      
+                      var inputPlugin = new _pluginBase2.default(&#x27;Input&#x27;, &#x27;Core&#x27;);
                       
                       function readJsonFile(filePath) {
                         return new Promise(function (resolve, reject) {
@@ -120,7 +130,7 @@
                             console.log(&quot;fileData&quot;, fileData);
                       
                             if (err) {
-                              _pluginUtils2.default.logger.error(&#x27;readJsonFile&#x27;, err);
+                              inputPlugin.logger.error(&#x27;readJsonFile&#x27;, err);
                               reject(err);
                             } else {
                               resolve(fileData);
@@ -144,7 +154,7 @@
                           //Read the contents of the file into memory
                           _fs2.default.readFile(filePath, function (err, fileData) {
                             if (err) {
-                              _pluginUtils2.default.logger.error(&#x27;readTextFile&#x27;, err);
+                              inputPlugin.logger.error(&#x27;readTextFile&#x27;, err);
                               reject(err);
                             }
                       
@@ -154,7 +164,7 @@
                             //Ref: http://csv.adaltas.com/parse/
                             _csv2.default.parse(input, parserConfig, function (err, output) {
                               if (err) {
-                                _pluginUtils2.default.logger.error(&#x27;readTextFile csv parse&#x27;, err);
+                                inputPlugin.logger.error(&#x27;readTextFile csv parse&#x27;, err);
                                 reject(err);
                               } else {
                                 resolve(output);

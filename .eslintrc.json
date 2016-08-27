@@ -9,7 +9,8 @@
   "globals": {
     "_path2": true,
     "self": true,
-    "postMessage": true
+    "postMessage": true,
+    "EP": true
   },
   "env": {
     "node": true,

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Nextract.pluginUtils - nextract</title>
+    <title>Nextract.Plugins.Core.Sort - nextract</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -39,14 +39,15 @@
                         <div id="api-tabview-panel">
                             <ul id="api-classes" class="apis classes">
                                 <li><a href="../classes/Nextract.html">Nextract</a></li>
+                                <li><a href="../classes/Nextract.PluginBase.html">Nextract.PluginBase</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Calculator.html">Nextract.Plugins.Core.Calculator</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Database.html">Nextract.Plugins.Core.Database</a></li>
-                                <li><a href="../classes/Nextract.Plugins.Core.Filter.html">Nextract.Plugins.Core.Filter</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.GroupBy.html">Nextract.Plugins.Core.GroupBy</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Http.html">Nextract.Plugins.Core.Http</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Input.html">Nextract.Plugins.Core.Input</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Output.html">Nextract.Plugins.Core.Output</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Sort.html">Nextract.Plugins.Core.Sort</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Utils.html">Nextract.Plugins.Core.Utils</a></li>
-                                <li><a href="../classes/Nextract.pluginUtils.html">Nextract.pluginUtils</a></li>
                             </ul>
                 
                 
@@ -84,17 +85,21 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                      <h1>Nextract.pluginUtils Class</h1>
+                      <h1>Nextract.Plugins.Core.Sort Class</h1>
                       <div class="box meta">
                       
                       
+                              <div class="foundat">
+                                  Defined in: <a href="../files/build_plugins_core_Sort_Sort.js.html#l29"><code>build&#x2F;plugins&#x2F;core&#x2F;Sort&#x2F;Sort.js:29</code></a>
+                              </div>
                       
                       
                       </div>
                       
                       
                       <div class="box intro">
-                          
+                          <p>Mixes in methods used to sort data</p>
+                      
                       </div>
                       
                       
@@ -114,15 +119,15 @@
                       
                                           <ul class="index-list methods">
                                                   <li class="index-item method">
-                                                      <a href="#method_config">config</a>
+                                                      <a href="#method_customCompare">customCompare</a>
                       
                                                   </li>
                                                   <li class="index-item method">
-                                                      <a href="#method_logger">logger</a>
+                                                      <a href="#method_orderBy">orderBy</a>
                       
                                                   </li>
                                                   <li class="index-item method">
-                                                      <a href="#method_runInWorker">runInWorker</a>
+                                                      <a href="#method_sortBy">sortBy</a>
                       
                                                   </li>
                                           </ul>
@@ -135,115 +140,16 @@
                                   <div id="methods" class="api-class-tabpanel">
                                       <h2 class="off-left">Methods</h2>
                       
-                      <div id="method_config" class="method item">
-                          <h3 class="name"><code>config</code></h3>
-                      
-                              <span class="paren">()</span>
-                      
-                              <span class="returns-inline">
-                                  <span class="type">Promise</span>
-                              </span>
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                          <div class="meta">
-                                      <p>
-                                      Defined in
-                              <a href="../files/build_plugins_pluginUtils.js.html#l29"><code>build&#x2F;plugins&#x2F;pluginUtils.js:29</code></a>
-                              </p>
-                      
-                      
-                      
-                          </div>
-                      
-                          <div class="description">
-                              <p>Provides access to the current config from inside a plugin. Useful if a plugin requires access to
-                      dynamic configuration details (e.g.) the database plugin uses this to lookup database creds
-                      for a given database name.</p>
-                      
-                          </div>
-                      
-                      
-                              <div class="returns">
-                                  <h4>Returns:</h4>
-                      
-                                  <div class="returns-description">
-                                              <span class="type">Promise</span>:
-                                          <p>Promise resolved with current Nextract config object</p>
-                      
-                                  </div>
-                              </div>
-                      
-                      
-                      </div>
-                      <div id="method_logger" class="method item">
-                          <h3 class="name"><code>logger</code></h3>
-                      
-                              <span class="paren">()</span>
-                      
-                              <span class="returns-inline">
-                                  <span class="type">Promise</span>
-                              </span>
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                          <div class="meta">
-                                      <p>
-                                      Defined in
-                              <a href="../files/build_plugins_pluginUtils.js.html#l41"><code>build&#x2F;plugins&#x2F;pluginUtils.js:41</code></a>
-                              </p>
-                      
-                      
-                      
-                          </div>
-                      
-                          <div class="description">
-                              <p>Provides access to the Core logger from inside a plugin</p>
-                      
-                          </div>
-                      
-                      
-                              <div class="returns">
-                                  <h4>Returns:</h4>
-                      
-                                  <div class="returns-description">
-                                              <span class="type">Promise</span>:
-                                          <p>Promise resolved with current Nextract config object</p>
-                      
-                                  </div>
-                              </div>
-                      
-                      
-                              <div class="example">
-                                  <h4>Example:</h4>
-                      
-                                  <div class="example-content">
-                                      <p>pluginUtils.logger.error('Houston we have a problem', err);</p>
-                      
-                                  </div>
-                              </div>
-                      </div>
-                      <div id="method_runInWorker" class="method item">
-                          <h3 class="name"><code>runInWorker</code></h3>
+                      <div id="method_customCompare" class="method item">
+                          <h3 class="name"><code>customCompare</code></h3>
                       
                               <div class="args">
                                   <span class="paren">(</span><ul class="args-list inline commas">
                                       <li class="arg">
-                                              <code>pluginType</code>
+                                              <code>collection</code>
                                       </li>
                                       <li class="arg">
-                                              <code>pluginName</code>
-                                      </li>
-                                      <li class="arg">
-                                              <code>workerMsg</code>
+                                              <code>Specifies</code>
                                       </li>
                                   </ul><span class="paren">)</span>
                               </div>
@@ -261,7 +167,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_pluginUtils.js.html#l54"><code>build&#x2F;plugins&#x2F;pluginUtils.js:54</code></a>
+                              <a href="../files/build_plugins_core_Sort_Sort.js.html#l125"><code>build&#x2F;plugins&#x2F;core&#x2F;Sort&#x2F;Sort.js:125</code></a>
                               </p>
                       
                       
@@ -269,10 +175,8 @@
                           </div>
                       
                           <div class="description">
-                              <p>Convinence method used by plugins to run code in a background web worker thread. A worker
-                      script must exist in the same directory as the plugin itself with a name of Worker.js. The
-                      format of the worker script must match the one defined in the Sort plugin for example
-                      (see src/plugins/core/Sort/Worker.js);</p>
+                              <p>Sorts the elements of an array in place via a custom compare function</p>
+                      <p>For usage reference - <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort</a></p>
                       
                           </div>
                       
@@ -281,36 +185,23 @@
                       
                                   <ul class="params-list">
                                       <li class="param">
-                                              <code class="param-name">pluginType</code>
-                                              <span class="type">String</span>
+                                              <code class="param-name">collection</code>
+                                              <span class="type">Array | Object</span>
                       
                       
                                           <div class="param-description">
-                                              <p>Plugin type (Core or Vendor)</p>
+                                              <p>The collection to iterate over</p>
                       
                                           </div>
                       
                                       </li>
                                       <li class="param">
-                                              <code class="param-name">pluginName</code>
-                                              <span class="type">String</span>
+                                              <code class="param-name">Specifies</code>
+                                              <span class="type">Function</span>
                       
                       
                                           <div class="param-description">
-                                              <p>Plugin name (e.g.) Sort</p>
-                      
-                                          </div>
-                      
-                                      </li>
-                                      <li class="param">
-                                              <code class="param-name">workerMsg</code>
-                                              <span class="type">Object</span>
-                      
-                      
-                                          <div class="param-description">
-                                              <p>The message to be passed to the worker. The object contains
-                      two properties; 1) cmd - The command/method to run inside the Worker &amp; 2) args - The
-                      arguments being passed to the methiod defined in command via apply().</p>
+                                              <p>a function that defines the sort order</p>
                       
                                           </div>
                       
@@ -323,7 +214,7 @@
                       
                                   <div class="returns-description">
                                               <span class="type">Promise</span>:
-                                          <p>Promise resolved with an array of database rows that match the given select statement</p>
+                                          <p>Promise resolved with the new sorted array</p>
                       
                                   </div>
                               </div>
@@ -333,8 +224,115 @@
                                   <h4>Example:</h4>
                       
                                   <div class="example-content">
-                                      <pre class="code prettyprint"><code>var workerMsg = { cmd: 'orderBy', args: [collection, iteratees, orders] };</code></pre>
-                      <pre class="code prettyprint"><code>return pluginUtils.runInWorker('Core', 'Sort', workerMsg);</code></pre>
+                                      <pre class="code prettyprint"><code>ETL.Plugins.Core.Sort.customCompare(users, compareFunction);</code></pre>
+                      
+                                  </div>
+                              </div>
+                      </div>
+                      <div id="method_orderBy" class="method item">
+                          <h3 class="name"><code>orderBy</code></h3>
+                      
+                              <span class="paren">()</span>
+                      
+                              <span class="returns-inline">
+                                  <span class="type">Promise</span>
+                              </span>
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                          <div class="meta">
+                                      <p>
+                                      Defined in
+                              <a href="../files/build_plugins_core_Sort_Sort.js.html#l64"><code>build&#x2F;plugins&#x2F;core&#x2F;Sort&#x2F;Sort.js:64</code></a>
+                              </p>
+                      
+                      
+                      
+                          </div>
+                      
+                          <div class="description">
+                              <p>This method is like _.sortBy except that it allows specifying the sort orders of the iteratees to sort by.
+                      If orders is unspecified, all values are sorted in ascending order. Otherwise, specify an order of &quot;desc&quot;
+                      for descending or &quot;asc&quot; for ascending sort order of corresponding values.</p>
+                      <p>For usage reference - <a href="https://lodash.com/docs#orderBy">https://lodash.com/docs#orderBy</a></p>
+                      
+                          </div>
+                      
+                      
+                              <div class="returns">
+                                  <h4>Returns:</h4>
+                      
+                                  <div class="returns-description">
+                                              <span class="type">Promise</span>:
+                                          <p>Promise resolved with the new sorted array</p>
+                      
+                                  </div>
+                              </div>
+                      
+                      
+                              <div class="example">
+                                  <h4>Example:</h4>
+                      
+                                  <div class="example-content">
+                                      <pre class="code prettyprint"><code>ETL.Plugins.Core.Sort.orderBy(users, ['user', 'age'], ['asc', 'desc']);</code></pre>
+                      
+                                  </div>
+                              </div>
+                      </div>
+                      <div id="method_sortBy" class="method item">
+                          <h3 class="name"><code>sortBy</code></h3>
+                      
+                              <span class="paren">()</span>
+                      
+                              <span class="returns-inline">
+                                  <span class="type">Promise</span>
+                              </span>
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                          <div class="meta">
+                                      <p>
+                                      Defined in
+                              <a href="../files/build_plugins_core_Sort_Sort.js.html#l95"><code>build&#x2F;plugins&#x2F;core&#x2F;Sort&#x2F;Sort.js:95</code></a>
+                              </p>
+                      
+                      
+                      
+                          </div>
+                      
+                          <div class="description">
+                              <p>Creates an array of elements, sorted in ascending order by the results of running each element in a collection thru each iteratee.
+                      This method performs a stable sort, that is, it preserves the original sort order of equal elements.
+                      The iteratees are invoked with one argument: (value).</p>
+                      <p>For usage reference - <a href="https://lodash.com/docs#sortBy">https://lodash.com/docs#sortBy</a></p>
+                      
+                          </div>
+                      
+                      
+                              <div class="returns">
+                                  <h4>Returns:</h4>
+                      
+                                  <div class="returns-description">
+                                              <span class="type">Promise</span>:
+                                          <p>Promise resolved with the new sorted array</p>
+                      
+                                  </div>
+                              </div>
+                      
+                      
+                              <div class="example">
+                                  <h4>Example:</h4>
+                      
+                                  <div class="example-content">
+                                      <pre class="code prettyprint"><code>ETL.Plugins.Core.Sort.sortBy(users, ['user', 'age']);</code></pre>
                       
                                   </div>
                               </div>

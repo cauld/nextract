@@ -4,31 +4,39 @@
  * @class Nextract.Plugins.Core.Database
  */
 
-//TODO: Transactions (http://docs.sequelizejs.com/en/v3/docs/transactions/)
+/*
+TODO:
+1) Transactions (http://docs.sequelizejs.com/en/v3/docs/transactions/)
+2) Migrate to setupTaskEngine, startTask, endTask format
+*/
 
 import _ from 'lodash';
 import { has, isArray, isUndefined, pull, repeat, values, flatten, map, merge } from 'lodash/fp';
-import pluginUtils from '../../pluginUtils';
+import pluginBase from '../../pluginBase';
 import eachOfSeries from 'async/eachOfSeries';
 import eachSeries from 'async/eachSeries';
 import eachOfLimit from 'async/eachOfLimit';
 import Sequelize from 'sequelize';
 
-var connectionInstances = {},
+var databasePlugin,
+    connectionInstances = {},
     queryLogging,
     enableQueryLogging = false;
 
 queryLogging = (enableQueryLogging === false) ? false : sequelizeQueryLogging;
 
+//Instantiate the plugin
+databasePlugin = new pluginBase('Database', 'Core');
+
 
 //Sequelize expects a function for logging or false for no logging
 function sequelizeQueryLogging(sql) {
-  pluginUtils.logger.info('SQL Debugging:', sql);
+  databasePlugin.logger.info('SQL Debugging:', sql);
 }
 
 function buildNewConnection(dbName) {
   //TODO: add error handling if db does not exist in pluginConfig
-  let dbpluginConfig = pluginUtils.config.databases[dbName];
+  let dbpluginConfig = databasePlugin.ETL.config.databases[dbName];
 
   connectionInstances[dbName] = new Sequelize(dbpluginConfig.name, dbpluginConfig.user, dbpluginConfig.password, {
     host: dbpluginConfig.host,
@@ -112,13 +120,13 @@ function runMany(dbName, queryType, baseQuery, collection, columnsToUpdate, matc
           callback(); //This query is done
         })
         .catch(function(err) {
-          pluginUtils.logger.error(err);
+          databasePlugin.logger.error(err);
           reject(err);
         });
       },
       function(err) {
         if (err) {
-          pluginUtils.logger.error('Invalid ' + queryType + ' request:', err);
+          databasePlugin.logger.error('Invalid ' + queryType + ' request:', err);
           reject('Invalid ' + queryType + ' request:', err);
         } else {
           //All queries are done.  Resolves with the original collection to enable
@@ -163,7 +171,7 @@ module.exports = {
       return data;
     })
     .catch(function(err) {
-      pluginUtils.logger.error('Invalid SELECT request:', err);
+      databasePlugin.logger.error('Invalid SELECT request:', err);
     });
   },
 
@@ -266,6 +274,8 @@ module.exports = {
         batchValues,
         sqlJobs;
 
+    //collection = [collection[0], collection[1]];
+
     //We'll batch INSERT to improve perfomance. Start by constructing a base INSERT statment.
     baseQuery = 'INSERT INTO ' + tableName + ' (';
     columnsToInsert.forEach(function(column, index) {
@@ -282,7 +292,7 @@ module.exports = {
     collectionLength = collection.length;
     sqlReplacementGroups = [];
     valuesPlaceholder = '(' + _.repeat('?', columnsToInsert.length).split('').join(',') +  ')';
-    batchGroupsRequired = (collectionLength > batchAmount) ?  Math.ceil(collectionLength / batchAmount) : 1;
+    batchGroupsRequired = (collectionLength > batchAmount) ? Math.ceil(collectionLength / batchAmount) : 1;
 
     //Using the values placeholder string we create an array of batch values for each batch group. This
     //will end up being a (?, ?, ...) block for each incoming collection row up to the max batch amount.
@@ -302,7 +312,15 @@ module.exports = {
     for (let i=0; i<batchGroupsRequired; i++) {
       let workingBatch = collection.splice(0, batchAmount);
       let collectionsToParams = _.map(workingBatch, function(batch) {
-        return _.values(batch);
+        //We can't gauruntee the order of JavaScript properties and its possible each collection
+        //item contains more properties than the ones being requested as part of the insert. So
+        //we must handpick them out in the right order here.
+        var inOrderVales = [];
+        columnsToInsert.forEach(function(col) {
+          inOrderVales[inOrderVales.length] = batch[col];
+        });
+
+        return inOrderVales;
       });
 
       sqlJobs[sqlJobs.length] = {
@@ -326,13 +344,13 @@ module.exports = {
             callback(); //Tells async that we are done with this item
           })
           .catch(function(err) {
-            pluginUtils.logger.error(err);
+            databasePlugin.logger.error(err);
             reject(err);
           });
         },
         function(err) {
           if (err) {
-            pluginUtils.logger.error('Invalid INSERT request:', err);
+            databasePlugin.logger.error('Invalid INSERT request:', err);
             reject('Invalid INSERT request:', err);
           } else {
             //All queries are done
@@ -407,13 +425,13 @@ module.exports = {
             callback(); //Tells async that we are done with this item
           })
           .catch(function(err) {
-            pluginUtils.logger.error(err);
+            databasePlugin.logger.error(err);
             reject(err);
           });
         },
         function(err) {
           if (err) {
-            pluginUtils.logger.error('Invalid join/lookup request:', err);
+            databasePlugin.logger.error('Invalid join/lookup request:', err);
             reject('Invalid join/lookup request:', err);
           } else {
             //All queries are done

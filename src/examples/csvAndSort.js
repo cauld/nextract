@@ -5,20 +5,20 @@
 var path     = require('path'),
     Nextract = require(path.resolve(__dirname, '../nextract'));
 
-var ETL = new Nextract();
+var sampleEmployeesInputFilePath = path.resolve(process.cwd(), 'data/employees.csv'),
+    sampleEmployeesOutputFilePath = path.resolve(process.cwd(), 'data/employees_output.csv');
 
-var sampleUsersInputFilePath = path.resolve(process.cwd(), 'data/users.csv'),
-    sampleUsersOutputFilePath = path.resolve(process.cwd(), 'data/users_output.csv');
+var etlJob = new Nextract();
 
-ETL.loadPlugin('Core', ['Input', 'Output', 'Sort', 'Logger'])
+etlJob.loadPlugins('Core', ['Input', 'Output', 'Sort', 'Logger'])
     .then(function() {
-      return ETL.Plugins.Core.Input.readFile('csv', sampleUsersInputFilePath);
+      return etlJob.Plugins.Core.Input.readFile('csv', sampleEmployeesInputFilePath);
     })
     .then(function(data) {
-      return ETL.Plugins.Core.Sort.orderBy(data, ['last_name'], ['asc']);
+      return etlJob.Plugins.Core.Sort.orderBy(data, ['last_name'], ['asc']);
     })
     .then(function(data) {
-      ETL.Plugins.Core.Logger.info('Sorted queryResults: ', data);
+      etlJob.Plugins.Core.Logger.info('Sorted queryResults: ', data);
 
       //Take the keys from the first record and use them to make a csv header
       var csvConfig = {
@@ -26,11 +26,11 @@ ETL.loadPlugin('Core', ['Input', 'Output', 'Sort', 'Logger'])
         columns: Object.keys(data[0])
       };
 
-      return ETL.Plugins.Core.Output.writeFile('csv', data, sampleUsersOutputFilePath, csvConfig);
+      return etlJob.Plugins.Core.Output.writeFile('csv', data, sampleEmployeesOutputFilePath, csvConfig);
     })
     .then(function() {
-      ETL.Plugins.Core.Logger.info(sampleUsersOutputFilePath, 'has been written');
+      etlJob.Plugins.Core.Logger.info(sampleEmployeesOutputFilePath, 'has been written');
     })
     .catch(function(err) {
-      ETL.Plugins.Core.Logger.error('ETL process failed: ', err);
+      etlJob.Plugins.Core.Logger.error('ETL process failed: ', err);
     });

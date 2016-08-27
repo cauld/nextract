@@ -39,14 +39,15 @@
                         <div id="api-tabview-panel">
                             <ul id="api-classes" class="apis classes">
                                 <li><a href="../classes/Nextract.html">Nextract</a></li>
+                                <li><a href="../classes/Nextract.PluginBase.html">Nextract.PluginBase</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Calculator.html">Nextract.Plugins.Core.Calculator</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Database.html">Nextract.Plugins.Core.Database</a></li>
-                                <li><a href="../classes/Nextract.Plugins.Core.Filter.html">Nextract.Plugins.Core.Filter</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.GroupBy.html">Nextract.Plugins.Core.GroupBy</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Http.html">Nextract.Plugins.Core.Http</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Input.html">Nextract.Plugins.Core.Input</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Output.html">Nextract.Plugins.Core.Output</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Sort.html">Nextract.Plugins.Core.Sort</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Utils.html">Nextract.Plugins.Core.Utils</a></li>
-                                <li><a href="../classes/Nextract.pluginUtils.html">Nextract.pluginUtils</a></li>
                             </ul>
                 
                 
@@ -106,17 +107,26 @@
                       
                       var _csv2 = _interopRequireDefault(_csv);
                       
-                      var _pluginUtils = require(&#x27;../../pluginUtils&#x27;);
+                      var _pluginBase = require(&#x27;../../pluginBase&#x27;);
                       
-                      var _pluginUtils2 = _interopRequireDefault(_pluginUtils);
+                      var _pluginBase2 = _interopRequireDefault(_pluginBase);
                       
                       function _interopRequireDefault(obj) { return obj &amp;&amp; obj.__esModule ? obj : { default: obj }; }
                       
+                      //Instantiate the plugin
                       /**
                        * Mixes in methods used to export files
                        *
                        * @class Nextract.Plugins.Core.Output
                        */
+                      
+                      /*
+                      TODO:
+                      1) Migrate to setupTaskEngine, startTask, endTask format
+                      2) Implement excel
+                      */
+                      
+                      var outputPlugin = new _pluginBase2.default(&#x27;Input&#x27;, &#x27;Core&#x27;);
                       
                       function writeCsvFile(filePath, data) {
                         var formattingConfig = arguments.length &lt;= 2 || arguments[2] === undefined ? {} : arguments[2];
@@ -126,13 +136,13 @@
                             //Ref: http://csv.adaltas.com/stringify/
                             _csv2.default.stringify(data, formattingConfig, function (err, output) {
                               if (err) {
-                                _pluginUtils2.default.logger.error(&#x27;writeTextFile&#x27;, err);
+                                outputPlugin.logger.error(&#x27;writeTextFile&#x27;, err);
                                 reject(err);
                               }
                       
                               _fs2.default.writeFile(filePath, output, function (err) {
                                 if (err) {
-                                  _pluginUtils2.default.logger.error(&#x27;writeTextFile&#x27;, err);
+                                  outputPlugin.logger.error(&#x27;writeTextFile&#x27;, err);
                                   reject(err);
                                 } else {
                                   resolve();
@@ -140,7 +150,7 @@
                               });
                             });
                           } else {
-                            _pluginUtils2.default.logger.error(&#x27;writeCsvFile&#x27;, &#x27;Input data is empty!&#x27;);
+                            outputPlugin.logger.error(&#x27;writeCsvFile&#x27;, &#x27;Input data is empty!&#x27;);
                             reject(&#x27;Input data is empty!&#x27;);
                           }
                         });
@@ -152,7 +162,7 @@
                       
                         return new Promise(function (resolve, reject) {
                       
-                          //Can remove one implemented, just prevent ununsed var build error
+                          //Can remove console.log once implemented, just preventing ununsed var build error
                           console.log(formattingConfig);
                       
                           reject(&#x27;Not implemented yet!&#x27;);
@@ -167,14 +177,14 @@
                           if (!(0, _isEmpty3.default)(data)) {
                             _jsonfile2.default.writeFile(filePath, { &quot;data&quot;: data }, formattingConfig, function (err) {
                               if (err) {
-                                _pluginUtils2.default.logger.error(&#x27;writeJsonFile&#x27;, err);
+                                outputPlugin.logger.error(&#x27;writeJsonFile&#x27;, err);
                                 reject(err);
                               } else {
                                 resolve();
                               }
                             });
                           } else {
-                            _pluginUtils2.default.logger.error(&#x27;writeJsonFile&#x27;, &#x27;Input data is empty!&#x27;);
+                            outputPlugin.logger.error(&#x27;writeJsonFile&#x27;, &#x27;Input data is empty!&#x27;);
                             reject(&#x27;Input data is empty!&#x27;);
                           }
                         });

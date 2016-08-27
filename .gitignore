@@ -5,10 +5,10 @@
 node_modules
 
 #Sample output files
-src/examples/data/users_output.csv
-src/examples/data/users_output.json
-build/examples/data/users_output.csv
-build/examples/data/users_output.json
+src/examples/data/employees_output.csv
+src/examples/data/employees_output.json
+build/examples/data/employees_output.csv
+build/examples/data/employees_output.json
 
 #Config files (probably have sensitive data)
 src/plugins/config/*

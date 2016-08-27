@@ -16,17 +16,26 @@ var _csv = require('csv');
 
 var _csv2 = _interopRequireDefault(_csv);
 
-var _pluginUtils = require('../../pluginUtils');
+var _pluginBase = require('../../pluginBase');
 
-var _pluginUtils2 = _interopRequireDefault(_pluginUtils);
+var _pluginBase2 = _interopRequireDefault(_pluginBase);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+//Instantiate the plugin
 /**
  * Mixes in methods used to export files
  *
  * @class Nextract.Plugins.Core.Output
  */
+
+/*
+TODO:
+1) Migrate to setupTaskEngine, startTask, endTask format
+2) Implement excel
+*/
+
+var outputPlugin = new _pluginBase2.default('Input', 'Core');
 
 function writeCsvFile(filePath, data) {
   var formattingConfig = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
@@ -36,13 +45,13 @@ function writeCsvFile(filePath, data) {
       //Ref: http://csv.adaltas.com/stringify/
       _csv2.default.stringify(data, formattingConfig, function (err, output) {
         if (err) {
-          _pluginUtils2.default.logger.error('writeTextFile', err);
+          outputPlugin.logger.error('writeTextFile', err);
           reject(err);
         }
 
         _fs2.default.writeFile(filePath, output, function (err) {
           if (err) {
-            _pluginUtils2.default.logger.error('writeTextFile', err);
+            outputPlugin.logger.error('writeTextFile', err);
             reject(err);
           } else {
             resolve();
@@ -50,7 +59,7 @@ function writeCsvFile(filePath, data) {
         });
       });
     } else {
-      _pluginUtils2.default.logger.error('writeCsvFile', 'Input data is empty!');
+      outputPlugin.logger.error('writeCsvFile', 'Input data is empty!');
       reject('Input data is empty!');
     }
   });
@@ -62,7 +71,7 @@ function writeExcelFile(filePath, data) {
 
   return new Promise(function (resolve, reject) {
 
-    //Can remove one implemented, just prevent ununsed var build error
+    //Can remove console.log once implemented, just preventing ununsed var build error
     console.log(formattingConfig);
 
     reject('Not implemented yet!');
@@ -77,14 +86,14 @@ function writeJsonFile(filePath, data) {
     if (!(0, _isEmpty3.default)(data)) {
       _jsonfile2.default.writeFile(filePath, { "data": data }, formattingConfig, function (err) {
         if (err) {
-          _pluginUtils2.default.logger.error('writeJsonFile', err);
+          outputPlugin.logger.error('writeJsonFile', err);
           reject(err);
         } else {
           resolve();
         }
       });
     } else {
-      _pluginUtils2.default.logger.error('writeJsonFile', 'Input data is empty!');
+      outputPlugin.logger.error('writeJsonFile', 'Input data is empty!');
       reject('Input data is empty!');
     }
   });
