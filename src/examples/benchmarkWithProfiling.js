@@ -91,7 +91,8 @@ etlJob.loadPlugins('Core', ['Database', 'Filter', 'Calculator', 'Sort', 'Utils',
       return runStep('STEP_7', stepPromise);
     })
     .then(function() {
-      etlJob.Plugins.Core.Logger.info('ETL job complete!');
+      var d = new Date();
+      etlJob.Plugins.Core.Logger.info('ETL job complete!', d);
 
       //Print the final profiling report
       EP.report(true);

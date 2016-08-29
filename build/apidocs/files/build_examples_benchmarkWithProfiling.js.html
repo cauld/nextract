@@ -174,7 +174,8 @@
                       
                         return runStep(&#x27;STEP_7&#x27;, stepPromise);
                       }).then(function () {
-                        etlJob.Plugins.Core.Logger.info(&#x27;ETL job complete!&#x27;);
+                        var d = new Date();
+                        etlJob.Plugins.Core.Logger.info(&#x27;ETL job complete!&#x27;, d);
                       
                         //Print the final profiling report
                         EP.report(true);
