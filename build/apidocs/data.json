@@ -1034,7 +1034,7 @@
         },
         {
             "file": "build/plugins/core/Input/Input.js",
-            "line": 86,
+            "line": 87,
             "description": "Used to read files",
             "itemtype": "method",
             "name": "readFile",
@@ -1068,7 +1068,7 @@
         },
         {
             "file": "build/plugins/core/Output/Output.js",
-            "line": 104,
+            "line": 105,
             "description": "Used to output files",
             "itemtype": "method",
             "name": "writeFile",

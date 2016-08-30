@@ -54,6 +54,7 @@ function readExcelFile(filePath) {
   });
 }
 
+//TODO: Make this stream... see - http://csv.adaltas.com/parse/examples/
 function readCsvFile(filePath) {
   var parserConfig = arguments.length <= 1 || arguments[1] === undefined ? { delimiter: ',', columns: true } : arguments[1];
 

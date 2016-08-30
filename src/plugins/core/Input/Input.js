@@ -40,6 +40,7 @@ function readExcelFile(filePath) {
   });
 }
 
+//TODO: Make this stream... see - http://csv.adaltas.com/parse/examples/
 function readCsvFile(filePath, parserConfig = { delimiter: ',', columns: true }) {
   return new Promise(function (resolve, reject) {
     //Read the contents of the file into memory

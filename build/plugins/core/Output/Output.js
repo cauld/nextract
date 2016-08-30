@@ -37,6 +37,7 @@ TODO:
 
 var outputPlugin = new _pluginBase2.default('Input', 'Core');
 
+//TODO: make this stream... see - http://csv.adaltas.com/stringify/examples/
 function writeCsvFile(filePath, data) {
   var formattingConfig = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
 

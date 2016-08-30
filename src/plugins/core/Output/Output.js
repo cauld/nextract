@@ -20,6 +20,7 @@ import pluginBase from '../../pluginBase';
 //Instantiate the plugin
 var outputPlugin = new pluginBase('Input', 'Core');
 
+//TODO: make this stream... see - http://csv.adaltas.com/stringify/examples/
 function writeCsvFile(filePath, data, formattingConfig = {}) {
   return new Promise(function (resolve, reject) {
     if (!_.isEmpty(data)) {
