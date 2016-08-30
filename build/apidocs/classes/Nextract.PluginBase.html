@@ -42,7 +42,7 @@
                                 <li><a href="../classes/Nextract.PluginBase.html">Nextract.PluginBase</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Calculator.html">Nextract.Plugins.Core.Calculator</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Database.html">Nextract.Plugins.Core.Database</a></li>
-                                <li><a href="../classes/Nextract.Plugins.Core.GroupBy.html">Nextract.Plugins.Core.GroupBy</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Filter.html">Nextract.Plugins.Core.Filter</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Http.html">Nextract.Plugins.Core.Http</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Input.html">Nextract.Plugins.Core.Input</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Output.html">Nextract.Plugins.Core.Output</a></li>
@@ -116,15 +116,7 @@
                       
                                           <ul class="index-list methods">
                                                   <li class="index-item method">
-                                                      <a href="#method_endTask">endTask</a>
-                      
-                                                  </li>
-                                                  <li class="index-item method">
-                                                      <a href="#method_runInWorker">runInWorker</a>
-                      
-                                                  </li>
-                                                  <li class="index-item method">
-                                                      <a href="#method_runInWorker">runInWorker</a>
+                                                      <a href="#method_buildStreamTransform">buildStreamTransform</a>
                       
                                                   </li>
                                                   <li class="index-item method">
@@ -167,13 +159,22 @@
                                   <div id="methods" class="api-class-tabpanel">
                                       <h2 class="off-left">Methods</h2>
                       
-                      <div id="method_endTask" class="method item">
-                          <h3 class="name"><code>endTask</code></h3>
+                      <div id="method_buildStreamTransform" class="method item">
+                          <h3 class="name"><code>buildStreamTransform</code></h3>
                       
-                              <span class="paren">()</span>
+                              <div class="args">
+                                  <span class="paren">(</span><ul class="args-list inline commas">
+                                      <li class="arg">
+                                              <code>streamFunction</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>streamFunctionType</code>
+                                      </li>
+                                  </ul><span class="paren">)</span>
+                              </div>
                       
                               <span class="returns-inline">
-                                  <span class="type">Promise</span>
+                                  <span class="type">Function</span>
                               </span>
                       
                       
@@ -185,7 +186,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_pluginBase.js.html#l173"><code>build&#x2F;plugins&#x2F;pluginBase.js:173</code></a>
+                              <a href="../files/build_plugins_pluginBase.js.html#l150"><code>build&#x2F;plugins&#x2F;pluginBase.js:150</code></a>
                               </p>
                       
                       
@@ -193,19 +194,47 @@
                           </div>
                       
                           <div class="description">
-                              <p>This should be the last method called by a plugin (after setupTaskEngine) when
-                      done performing a task.  Takes care of internal proceses required when end a
-                      task.  Might be something as simple as logging or might be more complex.</p>
+                              <p>Accepts a stream transform function that conforms to the through2.obj stream wrapper
+                      API. Caller can choose to use through2 or one of the through2 helper modules (map, filter, spy).
+                      For more information see - <a href="https://github.com/rvagg/through2">https://github.com/rvagg/through2</a>.</p>
                       
                           </div>
                       
+                              <div class="params">
+                                  <h4>Parameters:</h4>
+                      
+                                  <ul class="params-list">
+                                      <li class="param">
+                                              <code class="param-name">streamFunction</code>
+                                              <span class="type">Function</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>Function that conforms to the through2.obj stream wrapper API</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">streamFunctionType</code>
+                                              <span class="type">String</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>(optional, defaults to standard through2) standard, filter, map, or spy</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                  </ul>
+                              </div>
                       
                               <div class="returns">
                                   <h4>Returns:</h4>
                       
                                   <div class="returns-description">
-                                              <span class="type">Promise</span>:
-                                          <p>An immediately resolved Promise</p>
+                                              <span class="type">Function</span>:
+                                          <p>Returns stream transform wrapped using through2</p>
                       
                                   </div>
                               </div>
@@ -215,7 +244,8 @@
                                   <h4>Example:</h4>
                       
                                   <div class="example-content">
-                                      <pre class="code prettyprint"><code>pluginName.setupTaskEngine().startTask(&quot;foo&quot;).then(...).then(...)..endTask(&quot;foo&quot;)</code></pre>
+                                      <pre class="code prettyprint"><code>var streamFunction = function(element, index) { return element.foo &lt;= 10 };</code></pre>
+                      <pre class="code prettyprint"><code>return pluginName.runTask('sometaskname', streamFunction, 'filter');</code></pre>
                       
                                   </div>
                               </div>
@@ -244,7 +274,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_pluginBase.js.html#l86"><code>build&#x2F;plugins&#x2F;pluginBase.js:86</code></a>
+                              <a href="../files/build_plugins_pluginBase.js.html#l102"><code>build&#x2F;plugins&#x2F;pluginBase.js:102</code></a>
                               </p>
                       
                       
@@ -254,8 +284,8 @@
                           <div class="description">
                               <p>Convinence method used by plugins to run code in a background web worker thread. A worker
                       script must exist in the same directory as the plugin itself with a name of Worker.js. The
-                      format of the worker script must match the one defined in the Sort plugin for example
-                      (see src/plugins/core/Sort/Worker.js);</p>
+                      format of the worker script must match the one defined by the npm workerjs module -
+                      <a href="https://www.npmjs.com/package/workerjs#node-mode">https://www.npmjs.com/package/workerjs#node-mode</a>---allowing-require</p>
                       
                           </div>
                       
@@ -269,9 +299,7 @@
                       
                       
                                           <div class="param-description">
-                                              <p>The message to be passed to the worker. The object contains
-                      two properties; 1) cmd - The command/method to run inside the Worker &amp; 2) args - The
-                      arguments being passed to the methiod defined in command via apply().</p>
+                                              <p>The message to be passed to the worker (can be an object)</p>
                       
                                           </div>
                       
@@ -284,7 +312,7 @@
                       
                                   <div class="returns-description">
                                               <span class="type">Promise</span>:
-                                          <p>Promise resolved with collection</p>
+                                          <p>Promise resolved with worker response msg</p>
                       
                                   </div>
                               </div>
@@ -296,112 +324,6 @@
                                   <div class="example-content">
                                       <pre class="code prettyprint"><code>var workerMsg = { cmd: 'orderBy', args: [collection, iteratees, orders] };</code></pre>
                       <pre class="code prettyprint"><code>return pluginUtils.runInWorker(workerMsg);</code></pre>
-                      
-                                  </div>
-                              </div>
-                      </div>
-                      <div id="method_runInWorker" class="method item">
-                          <h3 class="name"><code>runInWorker</code></h3>
-                      
-                              <span class="paren">()</span>
-                      
-                              <span class="returns-inline">
-                                  <span class="type">Promise</span>
-                              </span>
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                          <div class="meta">
-                                      <p>
-                                      Defined in
-                              <a href="../files/build_plugins_pluginBase.js.html#l136"><code>build&#x2F;plugins&#x2F;pluginBase.js:136</code></a>
-                              </p>
-                      
-                      
-                      
-                          </div>
-                      
-                          <div class="description">
-                              <p>Plugin tasks are a series of chained Promises. setupTaskEngine is used to start the chain.
-                      Since the plugin instance itself is an object and not a promise we cannot immediately chain
-                      (then) off it.</p>
-                      
-                          </div>
-                      
-                      
-                              <div class="returns">
-                                  <h4>Returns:</h4>
-                      
-                                  <div class="returns-description">
-                                              <span class="type">Promise</span>:
-                                          <p>An immediately resolved Promise</p>
-                      
-                                  </div>
-                              </div>
-                      
-                      
-                              <div class="example">
-                                  <h4>Example:</h4>
-                      
-                                  <div class="example-content">
-                                      <pre class="code prettyprint"><code>pluginName.setupTaskEngine().then(...).then(...)</code></pre>
-                      
-                                  </div>
-                              </div>
-                      </div>
-                      <div id="method_runInWorker" class="method item">
-                          <h3 class="name"><code>runInWorker</code></h3>
-                      
-                              <span class="paren">()</span>
-                      
-                              <span class="returns-inline">
-                                  <span class="type">Promise</span>
-                              </span>
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                          <div class="meta">
-                                      <p>
-                                      Defined in
-                              <a href="../files/build_plugins_pluginBase.js.html#l153"><code>build&#x2F;plugins&#x2F;pluginBase.js:153</code></a>
-                              </p>
-                      
-                      
-                      
-                          </div>
-                      
-                          <div class="description">
-                              <p>This should be the 2nd method called by a plugin (after setupTaskEngine) when
-                      performing a task.  Takes care of internal proceses required when starting a new
-                      starts.  Might be something as simple as logging or might be more complex.</p>
-                      
-                          </div>
-                      
-                      
-                              <div class="returns">
-                                  <h4>Returns:</h4>
-                      
-                                  <div class="returns-description">
-                                              <span class="type">Promise</span>:
-                                          <p>An immediately resolved Promise</p>
-                      
-                                  </div>
-                              </div>
-                      
-                      
-                              <div class="example">
-                                  <h4>Example:</h4>
-                      
-                                  <div class="example-content">
-                                      <pre class="code prettyprint"><code>pluginName.setupTaskEngine().startTask(&quot;foo&quot;).then(...).then(...)</code></pre>
                       
                                   </div>
                               </div>
@@ -422,7 +344,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_pluginBase.js.html#l76"><code>build&#x2F;plugins&#x2F;pluginBase.js:76</code></a>
+                              <a href="../files/build_plugins_pluginBase.js.html#l92"><code>build&#x2F;plugins&#x2F;pluginBase.js:92</code></a>
                               </p>
                       
                       
@@ -447,7 +369,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_pluginBase.js.html#l59"><code>build&#x2F;plugins&#x2F;pluginBase.js:59</code></a>
+                              <a href="../files/build_plugins_pluginBase.js.html#l75"><code>build&#x2F;plugins&#x2F;pluginBase.js:75</code></a>
                               </p>
                       
                       
@@ -472,7 +394,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_pluginBase.js.html#l67"><code>build&#x2F;plugins&#x2F;pluginBase.js:67</code></a>
+                              <a href="../files/build_plugins_pluginBase.js.html#l83"><code>build&#x2F;plugins&#x2F;pluginBase.js:83</code></a>
                               </p>
                       
                       
@@ -497,7 +419,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_pluginBase.js.html#l41"><code>build&#x2F;plugins&#x2F;pluginBase.js:41</code></a>
+                              <a href="../files/build_plugins_pluginBase.js.html#l57"><code>build&#x2F;plugins&#x2F;pluginBase.js:57</code></a>
                               </p>
                       
                       
@@ -522,7 +444,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_pluginBase.js.html#l50"><code>build&#x2F;plugins&#x2F;pluginBase.js:50</code></a>
+                              <a href="../files/build_plugins_pluginBase.js.html#l66"><code>build&#x2F;plugins&#x2F;pluginBase.js:66</code></a>
                               </p>
                       
                       

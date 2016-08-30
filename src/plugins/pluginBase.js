@@ -11,6 +11,10 @@ import path from 'path';
 import _ from 'lodash';
 import { has, isArray } from 'lodash/fp';
 import Worker from 'workerjs';
+import through2 from 'through2';
+import throughFilter from 'through2-filter';
+import throughMap from 'through2-map';
+import throughSpy from 'through2-spy';
 
 var PluginBase = function(pluginName = null, pluginType = null) {
   var self = this;
@@ -71,8 +75,8 @@ var PluginBase = function(pluginName = null, pluginType = null) {
   /**
    * Convinence method used by plugins to run code in a background web worker thread. A worker
    * script must exist in the same directory as the plugin itself with a name of Worker.js. The
-   * format of the worker script must match the one defined in the Sort plugin for example
-   * (see src/plugins/core/Sort/Worker.js);
+   * format of the worker script must match the one defined by the npm workerjs module -
+   * https://www.npmjs.com/package/workerjs#node-mode---allowing-require
    *
    * @method runInWorker
    * @for Nextract.PluginBase
@@ -83,11 +87,9 @@ var PluginBase = function(pluginName = null, pluginType = null) {
    * @example
    *     return pluginUtils.runInWorker(workerMsg);
    *
-   * @param {Object} workerMsg The message to be passed to the worker. The object contains
-   * two properties; 1) cmd - The command/method to run inside the Worker & 2) args - The
-   * arguments being passed to the methiod defined in command via apply().
+   * @param {Object} workerMsg The message to be passed to the worker (can be an object)
    *
-   * @return {Promise} Promise resolved with collection
+   * @return {Promise} Promise resolved with worker response msg
    */
   this.runInWorker = function(workerMsg) {
     return new Promise(function (resolve, reject) {
@@ -119,60 +121,42 @@ var PluginBase = function(pluginName = null, pluginType = null) {
   };
 
   /**
-   * Plugin tasks are a series of chained Promises. setupTaskEngine is used to start the chain.
-   * Since the plugin instance itself is an object and not a promise we cannot immediately chain
-   * (then) off it.
+   * Accepts a stream transform function that conforms to the through2.obj stream wrapper
+   * API. Caller can choose to use through2 or one of the through2 helper modules (map, filter, spy).
+   * For more information see - https://github.com/rvagg/through2.
    *
-   * @method runInWorker
+   * @method buildStreamTransform
    * @for Nextract.PluginBase
    *
    * @example
-   *     pluginName.setupTaskEngine().then(...).then(...)
+   *     var streamFunction = function(element, index) { return element.foo <= 10 };
+   * @example
+   *     return pluginName.runTask('sometaskname', streamFunction, 'filter');
    *
-   * @return {Promise} An immediately resolved Promise
+   * @param {Function} streamFunction Function that conforms to the through2.obj stream wrapper API
+   * @param {String} streamFunctionType (optional, defaults to standard through2) standard, filter, map, or spy
+   *
+   * @return {Function} Returns stream transform wrapped using through2
    */
-  this.setupTaskEngine = function() {
-    return Promise.resolve(null);
-  };
+  this.buildStreamTransform = function(streamFunction, streamFunctionType = 'standard') {
+    var streamWrappedFunction;
 
-  /**
-   * This should be the 2nd method called by a plugin (after setupTaskEngine) when
-   * performing a task.  Takes care of internal proceses required when starting a new
-   * starts.  Might be something as simple as logging or might be more complex.
-   *
-   * @method runInWorker
-   * @for Nextract.PluginBase
-   *
-   * @example
-   *     pluginName.setupTaskEngine().startTask("foo").then(...).then(...)
-   *
-   * @return {Promise} An immediately resolved Promise
-   */
-  this.startTask = function(taskName) {
-    return new Promise(function (resolve) {
-      self.ETL.logger.info(taskName, 'started for plugin', self.pluginName);
-      resolve();
-    });
-  };
+    switch(streamFunctionType) {
+      case 'filter':
+        streamWrappedFunction = throughFilter.obj(streamFunction);
+        break;
+      case 'map':
+        streamWrappedFunction = throughMap.obj(streamFunction);
+        break;
+      case 'spy':
+        streamWrappedFunction = throughSpy.obj(streamFunction);
+        break;
+      default:
+        streamWrappedFunction = through2.obj(streamFunction);
+        break;
+    }
 
-  /**
-   * This should be the last method called by a plugin (after setupTaskEngine) when
-   * done performing a task.  Takes care of internal proceses required when end a
-   * task.  Might be something as simple as logging or might be more complex.
-   *
-   * @method endTask
-   * @for Nextract.PluginBase
-   *
-   * @example
-   *     pluginName.setupTaskEngine().startTask("foo").then(...).then(...)..endTask("foo")
-   *
-   * @return {Promise} An immediately resolved Promise
-   */
-  this.endTask = function(taskName) {
-    return new Promise(function (resolve) {
-      self.ETL.logger.info(taskName, 'ended for plugin', self.pluginName);
-      resolve();
-    });
+    return streamWrappedFunction;
   };
 
 };

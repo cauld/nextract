@@ -1,12 +1,12 @@
 'use strict';
 
-var _uniqBy2 = require('lodash/uniqBy');
+var _has2 = require('lodash/has');
 
-var _uniqBy3 = _interopRequireDefault(_uniqBy2);
+var _has3 = _interopRequireDefault(_has2);
 
-var _filter2 = require('lodash/filter');
+var _isUndefined2 = require('lodash/isUndefined');
 
-var _filter3 = _interopRequireDefault(_filter2);
+var _isUndefined3 = _interopRequireDefault(_isUndefined2);
 
 var _pluginBase = require('../../pluginBase');
 
@@ -24,114 +24,161 @@ var filterPlugin = new _pluginBase2.default('Filter', 'Core'); /**
 module.exports = {
 
   /**
-   * Iterates over elements of collection, returning an array of all elements
-   * that equal the given testValue.
+   * Filters a stream, passing along all elements that equal the given testValue
    *
    * @method equals
-   * @example
-   *     ETL.Plugins.Core.Filter.equals(collection, 'foo', 'name');
-    * @param {Array|Object} collection The collection to iterate over
-   * @param {String|Number} valueToTest The value being against during each iteration
-   * @param {String} propertyToTest The object property name being tested against during each iteration
+   * @for Nextract.Plugins.Core.Filter
    *
-   * @return {Promise} Promise resolved with an array of all elements that equal the testValue
+   * @example
+   *     someReadableStream.pipe(yourTransformInstance.Plugins.Core.Filter.equals('age', 30))
+   *
+   * @param {String} propertyToTest The object property name being tested against
+   * @param {String|Number} valueToTest The value being against
+   * @param {Boolean} useStrictEquality (optional, defaults to false) Uses the === comparison operator.
+   *
+   * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
    */
-  equals: function equals(collection, propertyToTest, valueToTest) {
-    var taskName = 'greaterThan';
-    var updatedCollection = void 0;
+  equals: function equals(propertyToTest, valueToTest) {
+    var useStrictEquality = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
 
-    return new Promise(function (resolve, reject) {
-      filterPlugin.setupTaskEngine().then(filterPlugin.startTask(taskName)).then(function () {
-        updatedCollection = (0, _filter3.default)(collection, function (v) {
-          return v[propertyToTest] == valueToTest;
-        });
-      }).then(filterPlugin.endTask(taskName)).then(function () {
-        resolve(updatedCollection);
-      });
-    });
+    var streamFunction = function streamFunction(element, index) {
+      if (!(0, _isUndefined3.default)(element) && (0, _has3.default)(element, propertyToTest)) {
+        if (useStrictEquality === true) {
+          return element[propertyToTest] === valueToTest;
+        } else {
+          return element[propertyToTest] == valueToTest;
+        }
+      }
+    };
+
+    return filterPlugin.buildStreamTransform(streamFunction, 'filter');
   },
 
   /**
-   * Iterates over elements of collection, returning an array of all elements
-   * that are greater than the given number.
+   * Filters a stream, passing along all elements that do not equal the given testValue
+   *
+   * @method notEquals
+   * @for Nextract.Plugins.Core.Filter
+   *
+   * @example
+   *     someReadableStream.pipe(yourTransformInstance.Plugins.Core.Filter.notEquals('age', 30))
+   *
+   * @param {String} propertyToTest The object property name being tested against
+   * @param {String|Number} valueToTest The value being against
+   * @param {Boolean} useStrictEquality (optional, defaults to false) Uses the !== comparison operator.
+   *
+   * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
+   */
+  notEquals: function notEquals(propertyToTest, valueToTest) {
+    var useStrictEquality = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+
+    var streamFunction = function streamFunction(element, index) {
+      if (!(0, _isUndefined3.default)(element) && (0, _has3.default)(element, propertyToTest)) {
+        if (useStrictEquality === true) {
+          return element[propertyToTest] !== valueToTest;
+        } else {
+          return element[propertyToTest] != valueToTest;
+        }
+      }
+    };
+
+    return filterPlugin.buildStreamTransform(streamFunction, 'filter');
+  },
+
+  /**
+   * Filters a stream, passing along all elements that are great than the given testValue
    *
    * @method greaterThan
-   * @example
-   *     ETL.Plugins.Core.Filter.greaterThan(collection, 10);
-    * @param {Array|Object} collection The collection to iterate over
-   * @param {String|Number} valueToTest The value being against during each iteration
-   * @param {String} propertyToTest The object property name being tested against during each iteration
+   * @for Nextract.Plugins.Core.Filter
    *
-   * @return {Promise} Promise resolved with an array of all elements that are greater than the testValue
+   * @example
+   *     someReadableStream.pipe(yourTransformInstance.Plugins.Core.Filter.greaterThan('age', 30))
+   *
+   * @param {String} propertyToTest The object property name being tested against
+   * @param {String|Number} valueToTest The value being against
+   *
+   * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
    */
-  greaterThan: function greaterThan(collection, propertyToTest, valueToTest) {
-    var taskName = 'greaterThan';
-    var updatedCollection = void 0;
+  greaterThan: function greaterThan(propertyToTest, valueToTest) {
+    var streamFunction = function streamFunction(element, index) {
+      if (!(0, _isUndefined3.default)(element) && (0, _has3.default)(element, propertyToTest)) {
+        return element[propertyToTest] > valueToTest;
+      }
+    };
 
-    return new Promise(function (resolve, reject) {
-      filterPlugin.setupTaskEngine().then(filterPlugin.startTask(taskName)).then(function () {
-        updatedCollection = (0, _filter3.default)(collection, function (v) {
-          return v[propertyToTest] > valueToTest;
-        });
-      }).then(filterPlugin.endTask(taskName)).then(function () {
-        resolve(updatedCollection);
-      });
-    });
+    return filterPlugin.buildStreamTransform(streamFunction, 'filter');
   },
 
   /**
-   * Iterates over elements of collection, returning an array of all elements
-   * that are less than the given number.
+   * Filters a stream, passing along all elements that are great than or equal to the given testValue
+   *
+   * @method greaterThanOrEqualTo
+   * @for Nextract.Plugins.Core.Filter
+   *
+   * @example
+   *     someReadableStream.pipe(yourTransformInstance.Plugins.Core.Filter.greaterThanOrEqualTo('age', 30))
+   *
+   * @param {String} propertyToTest The object property name being tested against
+   * @param {String|Number} valueToTest The value being against
+   *
+   * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
+   */
+  greaterThanOrEqualTo: function greaterThanOrEqualTo(propertyToTest, valueToTest) {
+    var streamFunction = function streamFunction(element, index) {
+      if (!(0, _isUndefined3.default)(element) && (0, _has3.default)(element, propertyToTest)) {
+        return element[propertyToTest] >= valueToTest;
+      }
+    };
+
+    return filterPlugin.buildStreamTransform(streamFunction, 'filter');
+  },
+
+  /**
+   * Filters a stream, passing along all elements that are less than the given testValue
    *
    * @method lessThan
-   * @example
-   *     ETL.Plugins.Core.Filter.lessThan(collection, 10);
-    * @param {Array|Object} collection The collection to iterate over
-   * @param {String|Number} valueToTest The value being against during each iteration
-   * @param {String} propertyToTest The object property name being tested against during each iteration
+   * @for Nextract.Plugins.Core.Filter
    *
-   * @return {Promise} Promise resolved with an array of all elements that are less than the testValue
+   * @example
+   *     someReadableStream.pipe(yourTransformInstance.Plugins.Core.Filter.lessThan('age', 30))
+   *
+   * @param {String} propertyToTest The object property name being tested against
+   * @param {String|Number} valueToTest The value being against
+   *
+   * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
    */
-  lessThan: function lessThan(collection, propertyToTest, valueToTest) {
-    var taskName = 'lessThan';
-    var updatedCollection = void 0;
+  lessThan: function lessThan(propertyToTest, valueToTest) {
+    var streamFunction = function streamFunction(element, index) {
+      if (!(0, _isUndefined3.default)(element) && (0, _has3.default)(element, propertyToTest)) {
+        return element[propertyToTest] < valueToTest;
+      }
+    };
 
-    return new Promise(function (resolve, reject) {
-      filterPlugin.setupTaskEngine().then(filterPlugin.startTask(taskName)).then(function () {
-        updatedCollection = (0, _filter3.default)(collection, function (v) {
-          return v[propertyToTest] < valueToTest;
-        });
-      }).then(filterPlugin.endTask(taskName)).then(function () {
-        resolve(updatedCollection);
-      });
-    });
+    return filterPlugin.buildStreamTransform(streamFunction, 'filter');
   },
 
   /**
-   * Creates a duplicate-free version of a collection, using SameValueZero for equality comparisons, in which
-   * only the first occurrence of each element is kept.
+   * Filters a stream, passing along all elements that are less or equal to than the given testValue
    *
-   * For usage reference - https://lodash.com/docs#uniqBy
+   * @method lessThanOrEqualTo
+   * @for Nextract.Plugins.Core.Filter
    *
-   * @method uniqBy
    * @example
-   *     ETL.Plugins.Core.Filter.uniqBy(collection, 'last_name');
-    * @param {Array|Object} collection The collection to iterate over
-   * @param {String} propertyToTest The object property name being tested against during each iteration
+   *     someReadableStream.pipe(yourTransformInstance.Plugins.Core.Filter.lessThanOrEqualTo('age', 30))
    *
-   * @return {Promise} Promise resolved with the new duplicate free array
+   * @param {String} propertyToTest The object property name being tested against
+   * @param {String|Number} valueToTest The value being against
+   *
+   * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
    */
-  uniqBy: function uniqBy(collection, propertyToTest) {
-    var taskName = 'uniqBy';
-    var updatedCollection = void 0;
+  lessThanOrEqualTo: function lessThanOrEqualTo(propertyToTest, valueToTest) {
+    var streamFunction = function streamFunction(element, index) {
+      if (!(0, _isUndefined3.default)(element) && (0, _has3.default)(element, propertyToTest)) {
+        return element[propertyToTest] <= valueToTest;
+      }
+    };
 
-    return new Promise(function (resolve, reject) {
-      filterPlugin.setupTaskEngine().then(filterPlugin.startTask(taskName)).then(function () {
-        updatedCollection = (0, _uniqBy3.default)(collection, propertyToTest);
-      }).then(filterPlugin.endTask(taskName)).then(function () {
-        resolve(updatedCollection);
-      });
-    });
+    return filterPlugin.buildStreamTransform(streamFunction, 'filter');
   }
 
 };

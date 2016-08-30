@@ -2,6 +2,7 @@
  * Example: CSV input and sort...
  */
 
+/*
 var path     = require('path'),
     Nextract = require(path.resolve(__dirname, '../nextract'));
 
@@ -34,3 +35,6 @@ etlJob.loadPlugins('Core', ['Input', 'Output', 'Sort', 'Logger'])
     .catch(function(err) {
       etlJob.Plugins.Core.Logger.error('ETL process failed: ', err);
     });
+*/
+
+console.log("Reimplement example once file input is streaming and once the sort plugin is reworked!");

@@ -6,8 +6,7 @@
 
 /*
 TODO:
-1) Support making requests for each item in a collection...
-2) Migrate to setupTaskEngine, startTask, endTask format
+1) Add method to support making requests for each item in a stream...
 */
 
 import request from 'request';
@@ -32,30 +31,49 @@ module.exports = {
    *       headers: { 'Content-Type': 'MyContentType', 'Custom-Header': 'Custom Value' }
    *      };
    * @example
-   *     ETL.Plugins.Core.Http.makeRequest(requestConfig);
+   *     yourTransformInstance.Plugins.Core.Http.makeRequest(requestConfig, 'json')
    *
    * @param {Object} requestConfig A request configuration made up of key/value pairs. Wraps
    * the popular npm request module so any request config supported by this module will work.
    * See - https://www.npmjs.com/package/request#requestoptions-callback.
+   * @param {String} responseFormat (optional, defaults to buffer) Allowed values are string, json, or buffer.
    *
-   * @return {Promise} Promise resolved with an object like so { statusCode: 200, body: 'Hello World' }
+   * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
    */
-  makeRequest: function(requestConfig) {
-    return new Promise(function (resolve, reject) {
-      request(requestConfig, function(err, response, body){
-        if (err) {
-          httpPlugin.logger.error(err);
-          reject(err);
-        } else {
-          var result = {
-            statusCode: response.statusCode,
-            body: body
-          };
+  makeRequest: function(requestConfig, responseFormat = 'buffer') {
+    var streamFunction,
+        readStream;
 
-          resolve(result);
+    //The request module is stream ready (https://github.com/request/request#streaming).
+    //We'll add support for returning in other common formats.
+    streamFunction = function(element) {
+      if (responseFormat === 'string') {
+        return element.toString();
+      } else if (responseFormat === 'json') {
+        var jsonData;
+        try {
+          jsonData = JSON.parse(element.toString());
+        } catch(err) {
+          throw new Error('makeRequest was unable to parse as JSON!');
         }
-      });
-    });
+
+        return jsonData;
+      } else {
+        return element; //return as buffer
+      }
+    };
+
+    //To easily handle errors when streaming requests, listen to the error event before piping.
+    readStream = request(requestConfig)
+                  .on('response', function(response) {
+                    response = response.toString();
+                  })
+                  .on('error', function(err) {
+                    httpPlugin.logger.error(err);
+                  })
+                  .pipe(httpPlugin.buildStreamTransform(streamFunction, 'map'));
+
+    return readStream;
   }
 
 };

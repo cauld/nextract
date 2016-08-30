@@ -42,7 +42,7 @@
                                 <li><a href="../classes/Nextract.PluginBase.html">Nextract.PluginBase</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Calculator.html">Nextract.Plugins.Core.Calculator</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Database.html">Nextract.Plugins.Core.Database</a></li>
-                                <li><a href="../classes/Nextract.Plugins.Core.GroupBy.html">Nextract.Plugins.Core.GroupBy</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Filter.html">Nextract.Plugins.Core.Filter</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Http.html">Nextract.Plugins.Core.Http</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Input.html">Nextract.Plugins.Core.Input</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Output.html">Nextract.Plugins.Core.Output</a></li>
@@ -92,15 +92,15 @@
                       &#x27;use strict&#x27;;
                       
                       /**
-                       * Example: CSV input and sort...
+                       * Example: Http request and pluck...
                        */
                       
                       var path = require(&#x27;path&#x27;),
                           Nextract = require(path.resolve(__dirname, &#x27;../nextract&#x27;));
                       
-                      var etlJob = new Nextract();
+                      var transform = new Nextract();
                       
-                      etlJob.loadPlugins(&#x27;Core&#x27;, [&#x27;Http&#x27;, &#x27;Utils&#x27;, &#x27;Logger&#x27;]).then(function () {
+                      transform.loadPlugins(&#x27;Core&#x27;, [&#x27;Http&#x27;, &#x27;Utils&#x27;, &#x27;Logger&#x27;]).then(function () {
                         //We&#x27;ll use the FAA Airport Service API (http://services.faa.gov/docs/services/airport/)
                         //to fetch the status of SFO. This is a simple request that requires only a URL.
                         //makeRequest will except any valid request bject supported by the npm request
@@ -109,23 +109,20 @@
                           url: &#x27;http://services.faa.gov/airport/status/SFO?format=application/json&#x27;
                         };
                       
-                        return etlJob.Plugins.Core.Http.makeRequest(requestConfig).then(function (responseData) {
-                          if (responseData.statusCode == 200) {
-                            var jsonData = JSON.parse(responseData.body);
-                            return jsonData;
-                          }
+                        //The makeRequest will hand us back a stream. The data is a buffer by default, but you can add
+                        //a 2nd param to request it back as a string or as json.  Once we get it back we&#x27;ll pickout just
+                        //a few properties to focus on.  It&#x27;s always best to keep the stream as lite as possible.
+                        transform.Plugins.Core.Http.makeRequest(requestConfig, &#x27;json&#x27;).pipe(transform.countStream(&#x27;Step1&#x27;, &#x27;in&#x27;)).pipe(transform.Plugins.Core.Utils.pluckProperties([&#x27;IATA&#x27;, &#x27;name&#x27;, &#x27;delay&#x27;])).pipe(transform.countStream(&#x27;Step1&#x27;, &#x27;out&#x27;)).on(&#x27;data&#x27;, function (resultingData) {
+                          //NOTE: This listener must exist, even if it does nothing. Otherwise, the end event is not fired.
+                      
+                          //Uncomment to dump the resulting data for debugging
+                          console.log(resultingData);
+                        }).on(&#x27;end&#x27;, function () {
+                          transform.Plugins.Core.Logger.info(&#x27;Transform finished!&#x27;);
+                          transform.printStepProfilingReport();
                         });
-                      }).then(function (airportStatus) {
-                        //The API response contains a goof many proprties.  Lets say we only care about a few.
-                        //It&#x27;s always better to trim down unecessary portions of collection so that we pass around
-                        //the smallest set possible for performance reasons.
-                        var collection = [airportStatus];
-                        var propertiesOfInterest = [&#x27;IATA&#x27;, &#x27;name&#x27;, &#x27;delay&#x27;];
-                        return etlJob.Plugins.Core.Utils.pluckProperties(collection, propertiesOfInterest);
-                      }).then(function (trimmedCollection) {
-                        etlJob.Plugins.Core.Logger.info(&#x27;Trimmed collection:&#x27;, trimmedCollection);
                       }).catch(function (err) {
-                        etlJob.Plugins.Core.Logger.error(&#x27;ETL process failed:&#x27;, err);
+                        transform.Plugins.Core.Logger.error(&#x27;ETL process failed:&#x27;, err);
                       });
                       
                           </pre>

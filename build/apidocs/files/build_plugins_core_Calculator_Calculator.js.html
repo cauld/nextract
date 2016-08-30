@@ -42,7 +42,7 @@
                                 <li><a href="../classes/Nextract.PluginBase.html">Nextract.PluginBase</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Calculator.html">Nextract.Plugins.Core.Calculator</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Database.html">Nextract.Plugins.Core.Database</a></li>
-                                <li><a href="../classes/Nextract.Plugins.Core.GroupBy.html">Nextract.Plugins.Core.GroupBy</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Filter.html">Nextract.Plugins.Core.Filter</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Http.html">Nextract.Plugins.Core.Http</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Input.html">Nextract.Plugins.Core.Input</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Output.html">Nextract.Plugins.Core.Output</a></li>
@@ -112,197 +112,139 @@
                       
                       var calculatorPlugin = new _pluginBase2.default(&#x27;Calculator&#x27;, &#x27;Core&#x27;);
                       
-                      function doLodashPassthrough(collection, lodashMethod, firstPropOrVal, secondPropOrVal) {
-                        var propertyToUpdateOrAdd = arguments.length &lt;= 4 || arguments[4] === undefined ? &#x27;&#x27; : arguments[4];
+                      //Many of the common calc operations can flow through lodash so this is a shared wrapper
+                      function doLodashPassthrough(lodashMethod, firstPropOrVal, secondPropOrVal) {
+                        var propertyToUpdateOrAdd = arguments.length &lt;= 3 || arguments[3] === undefined ? &#x27;&#x27; : arguments[3];
                       
-                        var taskName = lodashMethod;
-                        var updatedCollection = void 0;
+                        var streamFunction = function streamFunction(element, index) {
+                          var v1 = _.isString(firstPropOrVal) &amp;&amp; _.has(element, firstPropOrVal) ? element[firstPropOrVal] : Number(firstPropOrVal);
+                          var v2 = _.isString(secondPropOrVal) &amp;&amp; _.has(element, secondPropOrVal) ? element[secondPropOrVal] : Number(secondPropOrVal);
                       
-                        return new Promise(function (resolve, reject) {
-                          calculatorPlugin.setupTaskEngine().then(calculatorPlugin.startTask(taskName)).then(function () {
-                            collection.forEach(function (element) {
-                              //Users can pass a property name or a number to be added
-                              var v1 = _.isString(firstPropOrVal) &amp;&amp; _.has(element, firstPropOrVal) ? element[firstPropOrVal] : Number(firstPropOrVal);
-                              var v2 = _.isString(secondPropOrVal) &amp;&amp; _.has(element, secondPropOrVal) ? element[secondPropOrVal] : Number(secondPropOrVal);
+                          if (_.isUndefined(v1) || _.isUndefined(v2)) {
+                            throw new Error(&#x27;Invalid calculator &#x27; + lodashMethod + &#x27; request, please check your input params!&#x27;);
+                          } else {
+                            //Set or update with new value
+                            element[propertyToUpdateOrAdd] = _[lodashMethod](v1, v2);
+                            return element;
+                          }
+                        };
                       
-                              if (_.isUndefined(v1) || _.isUndefined(v2)) {
-                                reject(&#x27;Invalid calculator &#x27; + lodashMethod + &#x27; request, please check your input params!&#x27;);
-                              } else {
-                                //Set or update with new value
-                                element[propertyToUpdateOrAdd] = _[lodashMethod](v1, v2);
-                              }
-                            });
-                      
-                            return collection;
-                          }).then(function (collection) {
-                            updatedCollection = collection;
-                          }).then(calculatorPlugin.endTask(taskName)).then(function () {
-                            resolve(updatedCollection);
-                          });
-                        });
+                        return calculatorPlugin.buildStreamTransform(streamFunction, &#x27;map&#x27;);
                       }
                       
                       module.exports = {
                       
                         /**
-                         * Adds two numbers and/or object properties
+                         * Operates on a stream adding two numbers and/or object properties
                          *
                          * @method add
                          * @example
-                         *     ETL.Plugins.Core.Calculator.add(collection, &#x27;salary&#x27;, 1000, &#x27;new_salary&#x27;);
-                          * @param {Object} collection The collection to iterate over
+                         *     someReadableStream.pipe(yourTransformInstance.Plugins.Core.Calculator.add(&#x27;salary&#x27;, 1000, &#x27;new_salary&#x27;))
+                         *
                          * @param {String|Number} firstPropOrVal The 1st value or property to use in this operation
                          * @param {String|Number} secondPropOrVal The 2nd value or property to use in this operation
                          * @param {String} propertyToUpdateOrAdd The object property to update or create with the value
                          * of this operation
                          *
-                         * @return {Promise} Promise resolved with the updated collection
+                         * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
                          */
-                        add: function add(collection, firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd) {
-                          if (collection.length &lt; calculatorPlugin.ETL.config.collections.sizeToBackground) {
-                            return doLodashPassthrough(collection, &#x27;add&#x27;, firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd);
-                          } else {
-                            var workerMsg = {
-                              args: [collection, &#x27;add&#x27;, firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd]
-                            };
-                      
-                            return calculatorPlugin.runInWorker(workerMsg);
-                          }
+                        add: function add(firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd) {
+                          return doLodashPassthrough(&#x27;add&#x27;, firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd);
                         },
                       
                         /**
-                         * Subtracts two numbers and/or object properties
+                         * Operates on a stream subtracting two numbers and/or object properties
                          *
                          * @method subtract
                          * @example
-                         *     ETL.Plugins.Core.Calculator.subtract(collection, &#x27;salary&#x27;, 1000, &#x27;new_salary&#x27;);
-                          * @param {Object} collection The collection to iterate over
+                         *     someReadableStream.pipe(yourTransformInstance.Plugins.Core.Calculator.subtract(&#x27;salary&#x27;, 1000, &#x27;new_salary&#x27;))
+                         *
+                         * @param {Object} collection The collection to iterate over
                          * @param {String|Number} firstPropOrVal The 1st value or property to use in this operation
                          * @param {String|Number} secondPropOrVal The 2nd value or property to use in this operation
                          * @param {String} propertyToUpdateOrAdd The object property to update or create with the value
                          * of this operation
                          *
-                         * @return {Promise} Promise resolved with the updated collection
+                         * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
                          */
-                        subtract: function subtract(collection, firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd) {
-                          if (collection.length &lt; calculatorPlugin.ETL.config.collections.sizeToBackground) {
-                            return doLodashPassthrough(collection, &#x27;subtract&#x27;, firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd);
-                          } else {
-                            var workerMsg = {
-                              args: [collection, &#x27;subtract&#x27;, firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd]
-                            };
-                      
-                            return calculatorPlugin.runInWorker(workerMsg);
-                          }
+                        subtract: function subtract(firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd) {
+                          return doLodashPassthrough(&#x27;subtract&#x27;, firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd);
                         },
                       
                         /**
-                         * Multiplies two numbers and/or object properties
+                         * Operates on a stream multiplying two numbers and/or object properties
                          *
                          * @method multiply
                          * @example
-                         *     ETL.Plugins.Core.Calculator.multiply(collection, &#x27;salary&#x27;, 10, &#x27;new_salary&#x27;);
-                          * @param {Object} collection The collection to iterate over
+                         *     someReadableStream.pipe(yourTransformInstance.Plugins.Core.Calculator.multiply(&#x27;salary&#x27;, 1000, &#x27;new_salary&#x27;))
+                         *
                          * @param {String|Number} firstPropOrVal The 1st value or property to use in this operation
                          * @param {String|Number} secondPropOrVal The 2nd value or property to use in this operation
                          * @param {String} propertyToUpdateOrAdd The object property to update or create with the value
                          * of this operation
                          *
-                         * @return {Promise} Promise resolved with the updated collection
+                         * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
                          */
-                        multiply: function multiply(collection, firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd) {
-                          if (collection.length &lt; calculatorPlugin.ETL.config.collections.sizeToBackground) {
-                            return doLodashPassthrough(collection, &#x27;multiply&#x27;, firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd);
-                          } else {
-                            var workerMsg = {
-                              args: [collection, &#x27;multiply&#x27;, firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd]
-                            };
-                      
-                            return calculatorPlugin.runInWorker(workerMsg);
-                          }
+                        multiply: function multiply(firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd) {
+                          return doLodashPassthrough(&#x27;multiply&#x27;, firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd);
                         },
                       
                         /**
-                         * Divides two numbers and/or object properties
+                         * Operates on a stream dividing two numbers and/or object properties
                          *
                          * @method divide
                          * @example
-                         *     ETL.Plugins.Core.Calculator.divide(collection, &#x27;salary&#x27;, 10, &#x27;new_salary&#x27;);
-                          * @param {Object} collection The collection to iterate over
+                         *     someReadableStream.pipe(yourTransformInstance.Plugins.Core.Calculator.divide(&#x27;salary&#x27;, 1000, &#x27;new_salary&#x27;))
+                         *
                          * @param {String|Number} firstPropOrVal The 1st value or property to use in this operation
                          * @param {String|Number} secondPropOrVal The 2nd value or property to use in this operation
                          * @param {String} propertyToUpdateOrAdd The object property to update or create with the value
                          * of this operation
                          *
-                         * @return {Promise} Promise resolved with the updated collection
+                         * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
                          */
-                        divide: function divide(collection, firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd) {
-                          if (collection.length &lt; calculatorPlugin.ETL.config.collections.sizeToBackground) {
-                            return doLodashPassthrough(collection, &#x27;divide&#x27;, firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd);
-                          } else {
-                            var workerMsg = {
-                              args: [collection, &#x27;divide&#x27;, firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd]
-                            };
-                      
-                            return calculatorPlugin.runInWorker(workerMsg);
-                          }
+                        divide: function divide(firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd) {
+                          return doLodashPassthrough(&#x27;divide&#x27;, firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd);
                         },
                       
                         /**
-                         * Concatenates strings and/or object properties
+                         * Operates on a stream concatenating strings and/or object properties
                          *
                          * @method concat
                          * @example
-                         *     ETL.Plugins.Core.Calculator.concat(collection, [&#x27;Mr/Mrs:&#x27;, &#x27;first_name&#x27;, &#x27;last_name&#x27;], &#x27; &#x27;, &#x27;full_name&#x27;);
-                          * @param {Object} collection The collection to iterate over
+                         *     someReadableStream.pipe(yourTransformInstance.Plugins.Core.Calculator.concat([&#x27;Mr/Mrs:&#x27;, &#x27;first_name&#x27;, &#x27;last_name&#x27;], &#x27; &#x27;, &#x27;full_name&#x27;))
+                         *
                          * @param {Array} propsOrValsToConcat An array of strings and/or object properties to concat
                          * @param {String} delimiter The delimiter to use in between each propsOrValsToConcat
                          * @param {String} propertyToUpdateOrAdd The object property to update or create with the value
-                         * of this operation
                          *
-                         * @return {Promise} Promise resolved with the updated collection
+                         * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
                          */
-                        concat: function concat(collection, propsOrValsToConcat) {
-                          var delimiter = arguments.length &lt;= 2 || arguments[2] === undefined ? &#x27;&#x27; : arguments[2];
-                          var propertyToUpdateOrAdd = arguments[3];
+                        concat: function concat(propsOrValsToConcat) {
+                          var delimiter = arguments.length &lt;= 1 || arguments[1] === undefined ? &#x27;&#x27; : arguments[1];
+                          var propertyToUpdateOrAdd = arguments[2];
                       
-                          var taskName = &#x27;concat&#x27;;
-                          var updatedCollection = void 0;
-                      
-                          return new Promise(function (resolve, reject) {
-                            calculatorPlugin.setupTaskEngine().then(calculatorPlugin.startTask(taskName)).then(function () {
-                              collection.forEach(function (element) {
-                                //First assume each string is a key in the object, if not treat as a normal string
-                                var valuesToConcat = [];
-                                propsOrValsToConcat.forEach(function (p) {
-                                  var v = _.has(element, p) === true ? element[p].toString() : p.toString();
-                                  valuesToConcat[valuesToConcat.length] = v;
-                                });
-                      
-                                //Set or update with new value
-                                element[propertyToUpdateOrAdd] = valuesToConcat.join(delimiter);
-                              });
-                      
-                              return collection;
-                            }).then(function (collection) {
-                              updatedCollection = collection;
-                            }).then(calculatorPlugin.endTask(taskName)).then(function () {
-                              resolve(updatedCollection);
+                          var streamFunction = function streamFunction(element, index) {
+                            //First assume each string is a key in the object, if not treat as a normal string
+                            var valuesToConcat = [];
+                            propsOrValsToConcat.forEach(function (p) {
+                              var v = _.has(element, p) === true ? element[p].toString() : p.toString();
+                              valuesToConcat[valuesToConcat.length] = v;
                             });
-                          });
-                        },
                       
-                        //TBD...
-                        round: function round() {},
+                            //Set or update with new value
+                            element[propertyToUpdateOrAdd] = valuesToConcat.join(delimiter);
+                            return element;
+                          };
                       
-                        //TBD...
-                        floor: function floor() {},
-                      
-                        //TBD...
-                        ceil: function ceil() {}
+                          return calculatorPlugin.buildStreamTransform(streamFunction, &#x27;map&#x27;);
+                        }
                       
                         //TODO: Implement...
                         /*
+                          round
+                          floor
+                          ceil
                           sqrt
                           split field
                           uppercase

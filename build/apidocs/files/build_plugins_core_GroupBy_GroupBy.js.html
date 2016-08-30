@@ -42,7 +42,7 @@
                                 <li><a href="../classes/Nextract.PluginBase.html">Nextract.PluginBase</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Calculator.html">Nextract.Plugins.Core.Calculator</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Database.html">Nextract.Plugins.Core.Database</a></li>
-                                <li><a href="../classes/Nextract.Plugins.Core.GroupBy.html">Nextract.Plugins.Core.GroupBy</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Filter.html">Nextract.Plugins.Core.Filter</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Http.html">Nextract.Plugins.Core.Http</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Input.html">Nextract.Plugins.Core.Input</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Output.html">Nextract.Plugins.Core.Output</a></li>
@@ -98,31 +98,10 @@
                       function _interopRequireDefault(obj) { return obj &amp;&amp; obj.__esModule ? obj : { default: obj }; }
                       
                       //Would be nice to do import as show above but babel-plugin-lodash has issues with the format _[lodashMethod]
-                      var _ = require(&#x27;lodash&#x27;);
+                      //var _ = require(&#x27;lodash&#x27;);
                       
                       //Instantiate the plugin
-                      /**
-                       * Mixes in methods used to perform grouping operations on data
-                       *
-                       * @class Nextract.Plugins.Core.GroupBy
-                       */
-                      
-                      //import _ from &#x27;lodash&#x27;;
-                      //import { maxBy, minBy, meanBy, sumBy } from &#x27;lodash/fp&#x27;;
-                      var groupByPlugin = new _pluginBase2.default(&#x27;GroupBy&#x27;, &#x27;Core&#x27;);
-                      
-                      function doLodashPassthrough(collection, lodashMethod, prop) {
-                        var taskName = lodashMethod;
-                        var updatedCollection = void 0;
-                      
-                        return new Promise(function (resolve, reject) {
-                          groupByPlugin.setupTaskEngine().then(groupByPlugin.startTask(taskName)).then(function () {
-                            updatedCollection = _[lodashMethod](collection, prop);
-                          }).then(groupByPlugin.endTask(taskName)).then(function () {
-                            resolve(updatedCollection);
-                          });
-                        });
-                      }
+                      //var groupByPlugin = new pluginBase(&#x27;GroupBy&#x27;, &#x27;Core&#x27;);
                       
                       module.exports = {
                       
@@ -142,9 +121,7 @@
                          *
                          * @return {Promise} Promise resolved with the maximum value
                          */
-                        maxBy: function maxBy(collection, prop) {
-                          return doLodashPassthrough(collection, &#x27;maxBy&#x27;, prop);
-                        },
+                        maxBy: function maxBy() {},
                       
                         /**
                          * Computes the minimum value of array. It accepts iteratee which is invoked for each element in
@@ -162,9 +139,7 @@
                          *
                          * @return {Promise} Promise resolved with the maximum value
                          */
-                        minBy: function minBy(collection, prop) {
-                          return doLodashPassthrough(collection, &#x27;minBy&#x27;, prop);
-                        },
+                        minBy: function minBy() {},
                       
                         /**
                          * Computes the mean of the values in array. It accepts iteratee which is invoked for each element in
@@ -182,9 +157,7 @@
                          *
                          * @return {Promise} Promise resolved with the maximum value
                          */
-                        meanBy: function meanBy(collection, prop) {
-                          return doLodashPassthrough(collection, &#x27;meanBy&#x27;, prop);
-                        },
+                        meanBy: function meanBy() {},
                       
                         /**
                          * Computes the sum of the values in array. It accepts iteratee which is invoked for each element
@@ -201,11 +174,19 @@
                          *
                          * @return {Promise} Promise resolved with the sum
                          */
-                        sumBy: function sumBy(collection, prop) {
-                          return doLodashPassthrough(collection, &#x27;sumBy&#x27;, prop);
-                        }
+                        sumBy: function sumBy() {},
                       
-                      };
+                        //TODO: Will this need to block?  maybe not, see - https://www.npmjs.com/package/unique-stream
+                        uniqBy: function uniqBy() {}
+                      
+                      }; /**
+                          * Mixes in methods used to perform grouping operations on data
+                          *
+                          * @class Nextract.Plugins.Core.GroupBy
+                          */
+                      
+                      //import _ from &#x27;lodash&#x27;;
+                      //import { maxBy, minBy, meanBy, sumBy } from &#x27;lodash/fp&#x27;;
                       
                           </pre>
                       </div>

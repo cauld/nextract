@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>build/examples/queryAndCalc.js - nextract</title>
+    <title>build/examples/queryCalcAndFilter.js - nextract</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -42,7 +42,7 @@
                                 <li><a href="../classes/Nextract.PluginBase.html">Nextract.PluginBase</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Calculator.html">Nextract.Plugins.Core.Calculator</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Database.html">Nextract.Plugins.Core.Database</a></li>
-                                <li><a href="../classes/Nextract.Plugins.Core.GroupBy.html">Nextract.Plugins.Core.GroupBy</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Filter.html">Nextract.Plugins.Core.Filter</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Http.html">Nextract.Plugins.Core.Http</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Input.html">Nextract.Plugins.Core.Input</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Output.html">Nextract.Plugins.Core.Output</a></li>
@@ -85,7 +85,7 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                      <h1 class="file-heading">File: build/examples/queryAndCalc.js</h1>
+                      <h1 class="file-heading">File: build/examples/queryCalcAndFilter.js</h1>
                       
                       <div class="file">
                           <pre class="code prettyprint linenums">
@@ -98,19 +98,23 @@
                       var path = require(&#x27;path&#x27;),
                           Nextract = require(path.resolve(__dirname, &#x27;../nextract&#x27;));
                       
-                      var etlJob = new Nextract();
+                      var transform = new Nextract(&quot;queryAndSort&quot;);
                       
-                      etlJob.loadPlugins(&#x27;Core&#x27;, [&#x27;Database&#x27;, &#x27;Calculator&#x27;, &#x27;Logger&#x27;]).then(function () {
-                        return etlJob.Plugins.Core.Database.selectQuery(&#x27;nextract_sample&#x27;, &#x27;select first_name, last_name, age, salary from employees&#x27;);
-                      }).then(function (data) {
-                        return etlJob.Plugins.Core.Calculator.add(data, &#x27;salary&#x27;, 1000, &#x27;new_salary&#x27;);
-                      }).then(function (data) {
-                        //Lets add a new full name property
-                        return etlJob.Plugins.Core.Calculator.concat(data, [&#x27;Mr/Mrs:&#x27;, &#x27;first_name&#x27;, &#x27;last_name&#x27;], &#x27; &#x27;, &#x27;full_name&#x27;);
-                      }).then(function (data) {
-                        etlJob.Plugins.Core.Logger.debug(&#x27;Manipulated queryResults:&#x27;, data);
+                      transform.loadPlugins(&#x27;Core&#x27;, [&#x27;Database&#x27;, &#x27;Filter&#x27;, &#x27;Calculator&#x27;, &#x27;Utils&#x27;, &#x27;Logger&#x27;]).then(function () {
+                        //ETL plugins have been loaded, get a readStream to start the job with
+                        return transform.Plugins.Core.Database.selectQuery(&#x27;nextract_sample&#x27;, &#x27;select first_name, last_name, age from employees&#x27;, {});
+                      }).then(function (dbDataStream) {
+                        dbDataStream.pipe(transform.countStream(&#x27;Step1&#x27;, &#x27;in&#x27;)).pipe(transform.Plugins.Core.Filter.greaterThan(&#x27;age&#x27;, 30)).pipe(transform.countStream(&#x27;Step1&#x27;, &#x27;out&#x27;)).pipe(transform.countStream(&#x27;Step2&#x27;, &#x27;in&#x27;)).pipe(transform.Plugins.Core.Calculator.add(&#x27;age&#x27;, 10, &#x27;age&#x27;)).pipe(transform.countStream(&#x27;Step2&#x27;, &#x27;out&#x27;)).pipe(transform.countStream(&#x27;Step3&#x27;, &#x27;in&#x27;)).pipe(transform.Plugins.Core.Calculator.concat([&#x27;first_name&#x27;, &#x27;last_name&#x27;], &#x27; &#x27;, &#x27;full_name&#x27;)).pipe(transform.countStream(&#x27;Step3&#x27;, &#x27;out&#x27;)).pipe(transform.countStream(&#x27;Step4&#x27;, &#x27;in&#x27;)).pipe(transform.Plugins.Core.Utils.pluckProperties([&#x27;full_name&#x27;, &#x27;age&#x27;])).pipe(transform.countStream(&#x27;Step4&#x27;, &#x27;out&#x27;)).on(&#x27;data&#x27;, function (resultingData) {
+                          //NOTE: This listener must exist, even if it does nothing. Otherwise, the end event is not fired.
+                      
+                          //Uncomment to dump the resulting data for debugging
+                          console.log(resultingData);
+                        }).on(&#x27;end&#x27;, function () {
+                          transform.Plugins.Core.Logger.info(&#x27;Transform finished!&#x27;);
+                          transform.printStepProfilingReport();
+                        });
                       }).catch(function (err) {
-                        etlJob.Plugins.Core.Logger.error(&#x27;etlJob process failed:&#x27;, err);
+                        transform.Plugins.Core.Logger.error(&#x27;Transform failed: &#x27;, err);
                       });
                       
                           </pre>

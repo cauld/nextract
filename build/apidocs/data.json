@@ -62,13 +62,6 @@
             "fors": {},
             "namespaces": {}
         },
-        "build/examples/pg_queryAndSort.js": {
-            "name": "build/examples/pg_queryAndSort.js",
-            "modules": {},
-            "classes": {},
-            "fors": {},
-            "namespaces": {}
-        },
         "build/examples/queries.js": {
             "name": "build/examples/queries.js",
             "modules": {},
@@ -76,15 +69,8 @@
             "fors": {},
             "namespaces": {}
         },
-        "build/examples/queryAndCalc.js": {
-            "name": "build/examples/queryAndCalc.js",
-            "modules": {},
-            "classes": {},
-            "fors": {},
-            "namespaces": {}
-        },
-        "build/examples/queryAndSort.js": {
-            "name": "build/examples/queryAndSort.js",
+        "build/examples/queryCalcAndFilter.js": {
+            "name": "build/examples/queryCalcAndFilter.js",
             "modules": {},
             "classes": {},
             "fors": {},
@@ -112,15 +98,15 @@
             "name": "build/plugins/core/Filter/Filter.js",
             "modules": {},
             "classes": {},
-            "fors": {},
+            "fors": {
+                "Nextract.Plugins.Core.Filter": 1
+            },
             "namespaces": {}
         },
         "build/plugins/core/GroupBy/GroupBy.js": {
             "name": "build/plugins/core/GroupBy/GroupBy.js",
             "modules": {},
-            "classes": {
-                "Nextract.Plugins.Core.GroupBy": 1
-            },
+            "classes": {},
             "fors": {},
             "namespaces": {}
         },
@@ -163,10 +149,10 @@
         "build/plugins/core/Sort/Sort.js": {
             "name": "build/plugins/core/Sort/Sort.js",
             "modules": {},
-            "classes": {
+            "classes": {},
+            "fors": {
                 "Nextract.Plugins.Core.Sort": 1
             },
-            "fors": {},
             "namespaces": {}
         },
         "build/plugins/core/Utils/Utils.js": {
@@ -190,9 +176,7 @@
         "build/nextract.js": {
             "name": "build/nextract.js",
             "modules": {},
-            "classes": {
-                "Nextract": 1
-            },
+            "classes": {},
             "fors": {
                 "Nextract": 1
             },
@@ -222,17 +206,14 @@
             "plugin_for": [],
             "extension_for": []
         },
-        "Nextract.Plugins.Core.GroupBy": {
-            "name": "Nextract.Plugins.Core.GroupBy",
-            "shortname": "Nextract.Plugins.Core.GroupBy",
+        "Nextract.Plugins.Core.Filter": {
+            "name": "Nextract.Plugins.Core.Filter",
+            "shortname": "Nextract.Plugins.Core.Filter",
             "classitems": [],
             "plugins": [],
             "extensions": [],
             "plugin_for": [],
-            "extension_for": [],
-            "file": "build/plugins/core/GroupBy/GroupBy.js",
-            "line": 13,
-            "description": "Mixes in methods used to perform grouping operations on data"
+            "extension_for": []
         },
         "Nextract.Plugins.Core.Http": {
             "name": "Nextract.Plugins.Core.Http",
@@ -277,10 +258,7 @@
             "plugins": [],
             "extensions": [],
             "plugin_for": [],
-            "extension_for": [],
-            "file": "build/plugins/core/Sort/Sort.js",
-            "line": 29,
-            "description": "Mixes in methods used to sort data"
+            "extension_for": []
         },
         "Nextract.Plugins.Core.Utils": {
             "name": "Nextract.Plugins.Core.Utils",
@@ -307,11 +285,7 @@
             "plugins": [],
             "extensions": [],
             "plugin_for": [],
-            "extension_for": [],
-            "file": "build/nextract.js",
-            "line": 17,
-            "description": "ETL class that all programs start from",
-            "is_constructor": 1
+            "extension_for": []
         }
     },
     "elements": {},
@@ -343,7 +317,7 @@
         {
             "file": "build/examples/httpAndPluck.js",
             "line": 3,
-            "description": "Example: CSV input and sort...",
+            "description": "Example: Http request and pluck...",
             "class": "Nextract.Plugins.Core.Calculator"
         },
         {
@@ -365,44 +339,27 @@
             "class": "Nextract.Plugins.Core.Calculator"
         },
         {
-            "file": "build/examples/pg_queryAndSort.js",
-            "line": 3,
-            "description": "Example: Query and sort...",
-            "class": "Nextract.Plugins.Core.Calculator"
-        },
-        {
             "file": "build/examples/queries.js",
             "line": 3,
             "description": "Example: Query and sort...",
             "class": "Nextract.Plugins.Core.Calculator"
         },
         {
-            "file": "build/examples/queryAndCalc.js",
-            "line": 3,
-            "description": "Example: Query and sort...",
-            "class": "Nextract.Plugins.Core.Calculator"
-        },
-        {
-            "file": "build/examples/queryAndSort.js",
+            "file": "build/examples/queryCalcAndFilter.js",
             "line": 3,
             "description": "Example: Query and sort...",
             "class": "Nextract.Plugins.Core.Calculator"
         },
         {
             "file": "build/plugins/core/Calculator/Calculator.js",
-            "line": 56,
-            "description": "Adds two numbers and/or object properties",
+            "line": 46,
+            "description": "Operates on a stream adding two numbers and/or object properties",
             "itemtype": "method",
             "name": "add",
             "example": [
-                "\n    ETL.Plugins.Core.Calculator.add(collection, 'salary', 1000, 'new_salary');"
+                "\n    someReadableStream.pipe(yourTransformInstance.Plugins.Core.Calculator.add('salary', 1000, 'new_salary'))"
             ],
             "params": [
-                {
-                    "name": "collection",
-                    "description": "The collection to iterate over",
-                    "type": "Object"
-                },
                 {
                     "name": "firstPropOrVal",
                     "description": "The 1st value or property to use in this operation",
@@ -420,19 +377,19 @@
                 }
             ],
             "return": {
-                "description": "Promise resolved with the updated collection",
-                "type": "Promise"
+                "description": "Read/write stream transform to use in conjuction with pipe()",
+                "type": "stream.Transform"
             },
             "class": "Nextract.Plugins.Core.Calculator"
         },
         {
             "file": "build/plugins/core/Calculator/Calculator.js",
-            "line": 82,
-            "description": "Subtracts two numbers and/or object properties",
+            "line": 64,
+            "description": "Operates on a stream subtracting two numbers and/or object properties",
             "itemtype": "method",
             "name": "subtract",
             "example": [
-                "\n    ETL.Plugins.Core.Calculator.subtract(collection, 'salary', 1000, 'new_salary');"
+                "\n    someReadableStream.pipe(yourTransformInstance.Plugins.Core.Calculator.subtract('salary', 1000, 'new_salary'))"
             ],
             "params": [
                 {
@@ -457,26 +414,21 @@
                 }
             ],
             "return": {
-                "description": "Promise resolved with the updated collection",
-                "type": "Promise"
+                "description": "Read/write stream transform to use in conjuction with pipe()",
+                "type": "stream.Transform"
             },
             "class": "Nextract.Plugins.Core.Calculator"
         },
         {
             "file": "build/plugins/core/Calculator/Calculator.js",
-            "line": 108,
-            "description": "Multiplies two numbers and/or object properties",
+            "line": 83,
+            "description": "Operates on a stream multiplying two numbers and/or object properties",
             "itemtype": "method",
             "name": "multiply",
             "example": [
-                "\n    ETL.Plugins.Core.Calculator.multiply(collection, 'salary', 10, 'new_salary');"
+                "\n    someReadableStream.pipe(yourTransformInstance.Plugins.Core.Calculator.multiply('salary', 1000, 'new_salary'))"
             ],
             "params": [
-                {
-                    "name": "collection",
-                    "description": "The collection to iterate over",
-                    "type": "Object"
-                },
                 {
                     "name": "firstPropOrVal",
                     "description": "The 1st value or property to use in this operation",
@@ -494,26 +446,21 @@
                 }
             ],
             "return": {
-                "description": "Promise resolved with the updated collection",
-                "type": "Promise"
+                "description": "Read/write stream transform to use in conjuction with pipe()",
+                "type": "stream.Transform"
             },
             "class": "Nextract.Plugins.Core.Calculator"
         },
         {
             "file": "build/plugins/core/Calculator/Calculator.js",
-            "line": 134,
-            "description": "Divides two numbers and/or object properties",
+            "line": 101,
+            "description": "Operates on a stream dividing two numbers and/or object properties",
             "itemtype": "method",
             "name": "divide",
             "example": [
-                "\n    ETL.Plugins.Core.Calculator.divide(collection, 'salary', 10, 'new_salary');"
+                "\n    someReadableStream.pipe(yourTransformInstance.Plugins.Core.Calculator.divide('salary', 1000, 'new_salary'))"
             ],
             "params": [
-                {
-                    "name": "collection",
-                    "description": "The collection to iterate over",
-                    "type": "Object"
-                },
                 {
                     "name": "firstPropOrVal",
                     "description": "The 1st value or property to use in this operation",
@@ -531,26 +478,21 @@
                 }
             ],
             "return": {
-                "description": "Promise resolved with the updated collection",
-                "type": "Promise"
+                "description": "Read/write stream transform to use in conjuction with pipe()",
+                "type": "stream.Transform"
             },
             "class": "Nextract.Plugins.Core.Calculator"
         },
         {
             "file": "build/plugins/core/Calculator/Calculator.js",
-            "line": 160,
-            "description": "Concatenates strings and/or object properties",
+            "line": 119,
+            "description": "Operates on a stream concatenating strings and/or object properties",
             "itemtype": "method",
             "name": "concat",
             "example": [
-                "\n    ETL.Plugins.Core.Calculator.concat(collection, ['Mr/Mrs:', 'first_name', 'last_name'], ' ', 'full_name');"
+                "\n    someReadableStream.pipe(yourTransformInstance.Plugins.Core.Calculator.concat(['Mr/Mrs:', 'first_name', 'last_name'], ' ', 'full_name'))"
             ],
             "params": [
-                {
-                    "name": "collection",
-                    "description": "The collection to iterate over",
-                    "type": "Object"
-                },
                 {
                     "name": "propsOrValsToConcat",
                     "description": "An array of strings and/or object properties to concat",
@@ -563,13 +505,13 @@
                 },
                 {
                     "name": "propertyToUpdateOrAdd",
-                    "description": "The object property to update or create with the value\nof this operation",
+                    "description": "The object property to update or create with the value",
                     "type": "String"
                 }
             ],
             "return": {
-                "description": "Promise resolved with the updated collection",
-                "type": "Promise"
+                "description": "Read/write stream transform to use in conjuction with pipe()",
+                "type": "stream.Transform"
             },
             "class": "Nextract.Plugins.Core.Calculator"
         },
@@ -609,7 +551,7 @@
         },
         {
             "file": "build/plugins/core/Database/Database.js",
-            "line": 217,
+            "line": 219,
             "description": "Allows you to run an DELETE query against a database using data obtained from previous steps. Runs\na query for each row in the collection.",
             "itemtype": "method",
             "name": "deleteQuery",
@@ -652,7 +594,7 @@
         },
         {
             "file": "build/plugins/core/Database/Database.js",
-            "line": 249,
+            "line": 251,
             "description": "Allows you to run an UPDATE query against a database using data obtained from previous steps. Runs\na query for each row in the collection.",
             "itemtype": "method",
             "name": "updateQuery",
@@ -696,7 +638,7 @@
         },
         {
             "file": "build/plugins/core/Database/Database.js",
-            "line": 289,
+            "line": 291,
             "description": "Insert query for collections. Will insert each collection item into a database table.\nUses batched inserts for performance gains.",
             "itemtype": "method",
             "name": "insertQuery",
@@ -740,7 +682,7 @@
         },
         {
             "file": "build/plugins/core/Database/Database.js",
-            "line": 396,
+            "line": 398,
             "description": "Allows you to run a select query against a database using data obtained from previous steps. Runs\na query for each row in the collection. The collection will be returned with the properties of the\noriginal item data + the properties of the joined data.  Optionally returns all or just matched rows.",
             "itemtype": "method",
             "name": "joinQuery",
@@ -785,129 +727,178 @@
         {
             "file": "build/plugins/core/Filter/Filter.js",
             "line": 26,
-            "description": "Iterates over elements of collection, returning an array of all elements\nthat equal the given testValue.",
+            "description": "Filters a stream, passing along all elements that equal the given testValue",
             "itemtype": "method",
             "name": "equals",
             "example": [
-                "\n    ETL.Plugins.Core.Filter.equals(collection, 'foo', 'name');"
+                "\n    someReadableStream.pipe(yourTransformInstance.Plugins.Core.Filter.equals('age', 30))"
             ],
             "params": [
                 {
-                    "name": "collection",
-                    "description": "The collection to iterate over",
-                    "type": "Array|Object"
+                    "name": "propertyToTest",
+                    "description": "The object property name being tested against",
+                    "type": "String"
                 },
                 {
                     "name": "valueToTest",
-                    "description": "The value being against during each iteration",
+                    "description": "The value being against",
                     "type": "String|Number"
                 },
                 {
-                    "name": "propertyToTest",
-                    "description": "The object property name being tested against during each iteration",
-                    "type": "String"
+                    "name": "useStrictEquality",
+                    "description": "(optional, defaults to false) Uses the === comparison operator.",
+                    "type": "Boolean"
                 }
             ],
             "return": {
-                "description": "Promise resolved with an array of all elements that equal the testValue",
-                "type": "Promise"
+                "description": "Read/write stream transform to use in conjuction with pipe()",
+                "type": "stream.Transform"
             },
-            "class": "Nextract.Plugins.Core.GroupBy"
+            "class": "Nextract.Plugins.Core.Filter"
         },
         {
             "file": "build/plugins/core/Filter/Filter.js",
-            "line": 54,
-            "description": "Iterates over elements of collection, returning an array of all elements\nthat are greater than the given number.",
+            "line": 57,
+            "description": "Filters a stream, passing along all elements that do not equal the given testValue",
+            "itemtype": "method",
+            "name": "notEquals",
+            "example": [
+                "\n    someReadableStream.pipe(yourTransformInstance.Plugins.Core.Filter.notEquals('age', 30))"
+            ],
+            "params": [
+                {
+                    "name": "propertyToTest",
+                    "description": "The object property name being tested against",
+                    "type": "String"
+                },
+                {
+                    "name": "valueToTest",
+                    "description": "The value being against",
+                    "type": "String|Number"
+                },
+                {
+                    "name": "useStrictEquality",
+                    "description": "(optional, defaults to false) Uses the !== comparison operator.",
+                    "type": "Boolean"
+                }
+            ],
+            "return": {
+                "description": "Read/write stream transform to use in conjuction with pipe()",
+                "type": "stream.Transform"
+            },
+            "class": "Nextract.Plugins.Core.Filter"
+        },
+        {
+            "file": "build/plugins/core/Filter/Filter.js",
+            "line": 88,
+            "description": "Filters a stream, passing along all elements that are great than the given testValue",
             "itemtype": "method",
             "name": "greaterThan",
             "example": [
-                "\n    ETL.Plugins.Core.Filter.greaterThan(collection, 10);"
+                "\n    someReadableStream.pipe(yourTransformInstance.Plugins.Core.Filter.greaterThan('age', 30))"
             ],
             "params": [
                 {
-                    "name": "collection",
-                    "description": "The collection to iterate over",
-                    "type": "Array|Object"
+                    "name": "propertyToTest",
+                    "description": "The object property name being tested against",
+                    "type": "String"
                 },
                 {
                     "name": "valueToTest",
-                    "description": "The value being against during each iteration",
+                    "description": "The value being against",
                     "type": "String|Number"
-                },
-                {
-                    "name": "propertyToTest",
-                    "description": "The object property name being tested against during each iteration",
-                    "type": "String"
                 }
             ],
             "return": {
-                "description": "Promise resolved with an array of all elements that are greater than the testValue",
-                "type": "Promise"
+                "description": "Read/write stream transform to use in conjuction with pipe()",
+                "type": "stream.Transform"
             },
-            "class": "Nextract.Plugins.Core.GroupBy"
+            "class": "Nextract.Plugins.Core.Filter"
         },
         {
             "file": "build/plugins/core/Filter/Filter.js",
-            "line": 82,
-            "description": "Iterates over elements of collection, returning an array of all elements\nthat are less than the given number.",
+            "line": 112,
+            "description": "Filters a stream, passing along all elements that are great than or equal to the given testValue",
+            "itemtype": "method",
+            "name": "greaterThanOrEqualTo",
+            "example": [
+                "\n    someReadableStream.pipe(yourTransformInstance.Plugins.Core.Filter.greaterThanOrEqualTo('age', 30))"
+            ],
+            "params": [
+                {
+                    "name": "propertyToTest",
+                    "description": "The object property name being tested against",
+                    "type": "String"
+                },
+                {
+                    "name": "valueToTest",
+                    "description": "The value being against",
+                    "type": "String|Number"
+                }
+            ],
+            "return": {
+                "description": "Read/write stream transform to use in conjuction with pipe()",
+                "type": "stream.Transform"
+            },
+            "class": "Nextract.Plugins.Core.Filter"
+        },
+        {
+            "file": "build/plugins/core/Filter/Filter.js",
+            "line": 136,
+            "description": "Filters a stream, passing along all elements that are less than the given testValue",
             "itemtype": "method",
             "name": "lessThan",
             "example": [
-                "\n    ETL.Plugins.Core.Filter.lessThan(collection, 10);"
+                "\n    someReadableStream.pipe(yourTransformInstance.Plugins.Core.Filter.lessThan('age', 30))"
             ],
             "params": [
                 {
-                    "name": "collection",
-                    "description": "The collection to iterate over",
-                    "type": "Array|Object"
+                    "name": "propertyToTest",
+                    "description": "The object property name being tested against",
+                    "type": "String"
                 },
                 {
                     "name": "valueToTest",
-                    "description": "The value being against during each iteration",
+                    "description": "The value being against",
                     "type": "String|Number"
-                },
-                {
-                    "name": "propertyToTest",
-                    "description": "The object property name being tested against during each iteration",
-                    "type": "String"
                 }
             ],
             "return": {
-                "description": "Promise resolved with an array of all elements that are less than the testValue",
-                "type": "Promise"
+                "description": "Read/write stream transform to use in conjuction with pipe()",
+                "type": "stream.Transform"
             },
-            "class": "Nextract.Plugins.Core.GroupBy"
+            "class": "Nextract.Plugins.Core.Filter"
         },
         {
             "file": "build/plugins/core/Filter/Filter.js",
-            "line": 110,
-            "description": "Creates a duplicate-free version of a collection, using SameValueZero for equality comparisons, in which\nonly the first occurrence of each element is kept.\n\nFor usage reference - https://lodash.com/docs#uniqBy",
+            "line": 160,
+            "description": "Filters a stream, passing along all elements that are less or equal to than the given testValue",
             "itemtype": "method",
-            "name": "uniqBy",
+            "name": "lessThanOrEqualTo",
             "example": [
-                "\n    ETL.Plugins.Core.Filter.uniqBy(collection, 'last_name');"
+                "\n    someReadableStream.pipe(yourTransformInstance.Plugins.Core.Filter.lessThanOrEqualTo('age', 30))"
             ],
             "params": [
                 {
-                    "name": "collection",
-                    "description": "The collection to iterate over",
-                    "type": "Array|Object"
+                    "name": "propertyToTest",
+                    "description": "The object property name being tested against",
+                    "type": "String"
                 },
                 {
-                    "name": "propertyToTest",
-                    "description": "The object property name being tested against during each iteration",
-                    "type": "String"
+                    "name": "valueToTest",
+                    "description": "The value being against",
+                    "type": "String|Number"
                 }
             ],
             "return": {
-                "description": "Promise resolved with the new duplicate free array",
-                "type": "Promise"
+                "description": "Read/write stream transform to use in conjuction with pipe()",
+                "type": "stream.Transform"
             },
-            "class": "Nextract.Plugins.Core.GroupBy"
+            "class": "Nextract.Plugins.Core.Filter"
         },
         {
             "file": "build/plugins/core/GroupBy/GroupBy.js",
-            "line": 38,
+            "line": 17,
             "description": "Computes the maximum value of array. It accepts iteratee which is invoked for each element in\narray to generate the criterion by which the value is ranked. The iteratee is invoked with\none argument: (value).\n\nFor usage reference - https://lodash.com/docs#maxBy",
             "itemtype": "method",
             "name": "maxBy",
@@ -930,11 +921,11 @@
                 "description": "Promise resolved with the maximum value",
                 "type": "Promise"
             },
-            "class": "Nextract.Plugins.Core.GroupBy"
+            "class": "Nextract.Plugins.Core.Http"
         },
         {
             "file": "build/plugins/core/GroupBy/GroupBy.js",
-            "line": 58,
+            "line": 35,
             "description": "Computes the minimum value of array. It accepts iteratee which is invoked for each element in\narray to generate the criterion by which the value is ranked. The iteratee is invoked with\none argument: (value).\n\nFor usage reference - https://lodash.com/docs#minBy",
             "itemtype": "method",
             "name": "minBy",
@@ -957,11 +948,11 @@
                 "description": "Promise resolved with the maximum value",
                 "type": "Promise"
             },
-            "class": "Nextract.Plugins.Core.GroupBy"
+            "class": "Nextract.Plugins.Core.Http"
         },
         {
             "file": "build/plugins/core/GroupBy/GroupBy.js",
-            "line": 78,
+            "line": 53,
             "description": "Computes the mean of the values in array. It accepts iteratee which is invoked for each element in\narray to generate the criterion by which the value is ranked. The iteratee is invoked with\none argument: (value).\n\nFor usage reference - https://lodash.com/docs#maxBy",
             "itemtype": "method",
             "name": "meanBy",
@@ -984,11 +975,11 @@
                 "description": "Promise resolved with the maximum value",
                 "type": "Promise"
             },
-            "class": "Nextract.Plugins.Core.GroupBy"
+            "class": "Nextract.Plugins.Core.Http"
         },
         {
             "file": "build/plugins/core/GroupBy/GroupBy.js",
-            "line": 98,
+            "line": 71,
             "description": "Computes the sum of the values in array. It accepts iteratee which is invoked for each element\nin array to generate the value to be summed. The iteratee is invoked with one argument: (value).\n\nFor usage reference - https://lodash.com/docs#maxBy",
             "itemtype": "method",
             "name": "sumBy",
@@ -1011,34 +1002,39 @@
                 "description": "Promise resolved with the sum",
                 "type": "Promise"
             },
-            "class": "Nextract.Plugins.Core.GroupBy"
+            "class": "Nextract.Plugins.Core.Http"
         },
         {
             "file": "build/plugins/core/Http/Http.js",
-            "line": 30,
+            "line": 29,
             "description": "Make http calls. It supports HTTPS and follows redirects by default.",
             "itemtype": "method",
             "name": "makeRequest",
             "example": [
                 "\n    var requestConfig = {\n      url: 'http://example.com',\n      qs: { searchString: 'foo', page: 1 },\n      method: 'GET',\n      headers: { 'Content-Type': 'MyContentType', 'Custom-Header': 'Custom Value' }\n     };",
-                "\n    ETL.Plugins.Core.Http.makeRequest(requestConfig);"
+                "\n    yourTransformInstance.Plugins.Core.Http.makeRequest(requestConfig, 'json')"
             ],
             "params": [
                 {
                     "name": "requestConfig",
                     "description": "A request configuration made up of key/value pairs. Wraps\nthe popular npm request module so any request config supported by this module will work.\nSee - https://www.npmjs.com/package/request#requestoptions-callback.",
                     "type": "Object"
+                },
+                {
+                    "name": "responseFormat",
+                    "description": "(optional, defaults to buffer) Allowed values are string, json, or buffer.",
+                    "type": "String"
                 }
             ],
             "return": {
-                "description": "Promise resolved with an object like so { statusCode: 200, body: 'Hello World' }",
-                "type": "Promise"
+                "description": "Read/write stream transform to use in conjuction with pipe()",
+                "type": "stream.Transform"
             },
             "class": "Nextract.Plugins.Core.Http"
         },
         {
             "file": "build/plugins/core/Input/Input.js",
-            "line": 88,
+            "line": 86,
             "description": "Used to read files",
             "itemtype": "method",
             "name": "readFile",
@@ -1105,22 +1101,7 @@
         },
         {
             "file": "build/plugins/core/Sort/Sort.js",
-            "line": 64,
-            "description": "This method is like _.sortBy except that it allows specifying the sort orders of the iteratees to sort by.\nIf orders is unspecified, all values are sorted in ascending order. Otherwise, specify an order of \"desc\"\nfor descending or \"asc\" for ascending sort order of corresponding values.\n\nFor usage reference - https://lodash.com/docs#orderBy",
-            "itemtype": "method",
-            "name": "orderBy",
-            "example": [
-                "\n    ETL.Plugins.Core.Sort.orderBy(users, ['user', 'age'], ['asc', 'desc']);"
-            ],
-            "return": {
-                "description": "Promise resolved with the new sorted array",
-                "type": "Promise"
-            },
-            "class": "Nextract.Plugins.Core.Sort"
-        },
-        {
-            "file": "build/plugins/core/Sort/Sort.js",
-            "line": 95,
+            "line": 20,
             "description": "Creates an array of elements, sorted in ascending order by the results of running each element in a collection thru each iteratee.\nThis method performs a stable sort, that is, it preserves the original sort order of equal elements.\nThe iteratees are invoked with one argument: (value).\n\nFor usage reference - https://lodash.com/docs#sortBy",
             "itemtype": "method",
             "name": "sortBy",
@@ -1135,7 +1116,22 @@
         },
         {
             "file": "build/plugins/core/Sort/Sort.js",
-            "line": 125,
+            "line": 37,
+            "description": "This method is like sortBy except that it allows specifying the sort orders of the iteratees to sort by.\nIf orders is unspecified, all values are sorted in ascending order. Otherwise, specify an order of \"desc\"\nfor descending or \"asc\" for ascending sort order of corresponding values.\n\nFor usage reference - https://lodash.com/docs#orderBy",
+            "itemtype": "method",
+            "name": "orderBy",
+            "example": [
+                "\n    ETL.Plugins.Core.Sort.orderBy(users, ['user', 'age'], ['asc', 'desc']);"
+            ],
+            "return": {
+                "description": "Promise resolved with the new sorted array",
+                "type": "Promise"
+            },
+            "class": "Nextract.Plugins.Core.Sort"
+        },
+        {
+            "file": "build/plugins/core/Sort/Sort.js",
+            "line": 54,
             "description": "Sorts the elements of an array in place via a custom compare function\n\nFor usage reference - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort",
             "itemtype": "method",
             "name": "customCompare",
@@ -1185,18 +1181,13 @@
         {
             "file": "build/plugins/core/Utils/Utils.js",
             "line": 43,
-            "description": "Modifes each item of a collection returning only the requested properties from each.\nDeep picking is not yet supported.",
+            "description": "Operates on a stream returning only the requested properties from element",
             "itemtype": "method",
             "name": "pluckProperties",
             "example": [
-                "\n    ETL.Plugins.Core.Utils.pluckProperties(collection, ['foo', 'bar', 'baz']);"
+                "\n    someReadableStream.pipe(yourTransformInstance.Plugins.Core.Utils.pluckProperties(['foo', 'bar', 'baz']))"
             ],
             "params": [
-                {
-                    "name": "collection",
-                    "description": "The collection to iterate over",
-                    "type": "Object"
-                },
                 {
                     "name": "propertiesToTake",
                     "description": "Array of property names to keep",
@@ -1204,14 +1195,36 @@
                 }
             ],
             "return": {
-                "description": "Promise resolved with updated collection",
-                "type": "Promise"
+                "description": "Read/write stream transform to use in conjuction with pipe()",
+                "type": "stream.Transform"
+            },
+            "class": "Nextract.Plugins.Core.Utils"
+        },
+        {
+            "file": "build/plugins/core/Utils/Utils.js",
+            "line": 72,
+            "description": "Operates on a stream returning only the requested properties from element",
+            "itemtype": "method",
+            "name": "pluckProperties",
+            "example": [
+                "\n    someReadableStream.pipe(yourTransformInstance.Plugins.Core.Utils.pluckProperties(['foo', 'bar', 'baz']))"
+            ],
+            "params": [
+                {
+                    "name": "propertiesToTake",
+                    "description": "Array of property names to keep",
+                    "type": "Array"
+                }
+            ],
+            "return": {
+                "description": "Read/write stream transform to use in conjuction with pipe()",
+                "type": "stream.Transform"
             },
             "class": "Nextract.Plugins.Core.Utils"
         },
         {
             "file": "build/plugins/pluginBase.js",
-            "line": 41,
+            "line": 57,
             "description": "Plugin name",
             "itemtype": "property",
             "name": "pluginName",
@@ -1220,7 +1233,7 @@
         },
         {
             "file": "build/plugins/pluginBase.js",
-            "line": 50,
+            "line": 66,
             "description": "Plugin type (Core or Vendor)",
             "itemtype": "property",
             "name": "pluginType",
@@ -1229,7 +1242,7 @@
         },
         {
             "file": "build/plugins/pluginBase.js",
-            "line": 59,
+            "line": 75,
             "description": "Core system functionality is namespaced under this ETL object",
             "itemtype": "property",
             "name": "ETL",
@@ -1238,7 +1251,7 @@
         },
         {
             "file": "build/plugins/pluginBase.js",
-            "line": 67,
+            "line": 83,
             "description": "Provides convient access to the core system config variables",
             "itemtype": "property",
             "name": "ETL.config",
@@ -1247,7 +1260,7 @@
         },
         {
             "file": "build/plugins/pluginBase.js",
-            "line": 76,
+            "line": 92,
             "description": "Provides convient access to core logging functionality",
             "itemtype": "property",
             "name": "ELT.logger",
@@ -1256,8 +1269,8 @@
         },
         {
             "file": "build/plugins/pluginBase.js",
-            "line": 86,
-            "description": "Convinence method used by plugins to run code in a background web worker thread. A worker\nscript must exist in the same directory as the plugin itself with a name of Worker.js. The\nformat of the worker script must match the one defined in the Sort plugin for example\n(see src/plugins/core/Sort/Worker.js);",
+            "line": 102,
+            "description": "Convinence method used by plugins to run code in a background web worker thread. A worker\nscript must exist in the same directory as the plugin itself with a name of Worker.js. The\nformat of the worker script must match the one defined by the npm workerjs module -\nhttps://www.npmjs.com/package/workerjs#node-mode---allowing-require",
             "itemtype": "method",
             "name": "runInWorker",
             "example": [
@@ -1267,64 +1280,56 @@
             "params": [
                 {
                     "name": "workerMsg",
-                    "description": "The message to be passed to the worker. The object contains\ntwo properties; 1) cmd - The command/method to run inside the Worker & 2) args - The\narguments being passed to the methiod defined in command via apply().",
+                    "description": "The message to be passed to the worker (can be an object)",
                     "type": "Object"
                 }
             ],
             "return": {
-                "description": "Promise resolved with collection",
+                "description": "Promise resolved with worker response msg",
                 "type": "Promise"
             },
             "class": "Nextract.PluginBase"
         },
         {
             "file": "build/plugins/pluginBase.js",
-            "line": 136,
-            "description": "Plugin tasks are a series of chained Promises. setupTaskEngine is used to start the chain.\nSince the plugin instance itself is an object and not a promise we cannot immediately chain\n(then) off it.",
+            "line": 150,
+            "description": "Accepts a stream transform function that conforms to the through2.obj stream wrapper\nAPI. Caller can choose to use through2 or one of the through2 helper modules (map, filter, spy).\nFor more information see - https://github.com/rvagg/through2.",
             "itemtype": "method",
-            "name": "runInWorker",
+            "name": "buildStreamTransform",
             "example": [
-                "\n    pluginName.setupTaskEngine().then(...).then(...)"
+                "\n    var streamFunction = function(element, index) { return element.foo <= 10 };",
+                "\n    return pluginName.runTask('sometaskname', streamFunction, 'filter');"
+            ],
+            "params": [
+                {
+                    "name": "streamFunction",
+                    "description": "Function that conforms to the through2.obj stream wrapper API",
+                    "type": "Function"
+                },
+                {
+                    "name": "streamFunctionType",
+                    "description": "(optional, defaults to standard through2) standard, filter, map, or spy",
+                    "type": "String"
+                }
             ],
             "return": {
-                "description": "An immediately resolved Promise",
-                "type": "Promise"
-            },
-            "class": "Nextract.PluginBase"
-        },
-        {
-            "file": "build/plugins/pluginBase.js",
-            "line": 153,
-            "description": "This should be the 2nd method called by a plugin (after setupTaskEngine) when\nperforming a task.  Takes care of internal proceses required when starting a new\nstarts.  Might be something as simple as logging or might be more complex.",
-            "itemtype": "method",
-            "name": "runInWorker",
-            "example": [
-                "\n    pluginName.setupTaskEngine().startTask(\"foo\").then(...).then(...)"
-            ],
-            "return": {
-                "description": "An immediately resolved Promise",
-                "type": "Promise"
-            },
-            "class": "Nextract.PluginBase"
-        },
-        {
-            "file": "build/plugins/pluginBase.js",
-            "line": 173,
-            "description": "This should be the last method called by a plugin (after setupTaskEngine) when\ndone performing a task.  Takes care of internal proceses required when end a\ntask.  Might be something as simple as logging or might be more complex.",
-            "itemtype": "method",
-            "name": "endTask",
-            "example": [
-                "\n    pluginName.setupTaskEngine().startTask(\"foo\").then(...).then(...)..endTask(\"foo\")"
-            ],
-            "return": {
-                "description": "An immediately resolved Promise",
-                "type": "Promise"
+                "description": "Returns stream transform wrapped using through2",
+                "type": "Function"
             },
             "class": "Nextract.PluginBase"
         },
         {
             "file": "build/nextract.js",
-            "line": 27,
+            "line": 42,
+            "description": "Object containing references to the Core and Vendor plugins that have been loaded in the current program",
+            "itemtype": "property",
+            "name": "Plugins",
+            "type": "Object",
+            "class": "Nextract"
+        },
+        {
+            "file": "build/nextract.js",
+            "line": 50,
             "description": "Object containing references to core plugins that have loaded in the current program",
             "itemtype": "property",
             "name": "Plugins.Core",
@@ -1333,7 +1338,7 @@
         },
         {
             "file": "build/nextract.js",
-            "line": 36,
+            "line": 59,
             "description": "Object containing references to vendor plugins that have loaded in the current program",
             "itemtype": "property",
             "name": "Plugins.Vendor",
@@ -1342,7 +1347,7 @@
         },
         {
             "file": "build/nextract.js",
-            "line": 50,
+            "line": 96,
             "description": "Used to mixin the functionality of a core or 3rd party vendor ETL plugin. These\nplugins are located in plugins/core & plugins/vendor.",
             "itemtype": "method",
             "name": "loadPlugins",
@@ -1358,6 +1363,43 @@
                     "type": "String | Array"
                 }
             ],
+            "class": "Nextract"
+        },
+        {
+            "file": "build/nextract.js",
+            "line": 106,
+            "description": "Used to count the number of items flowing into or out of a stream step.\nMost often used before and after a transform task to see the impact of a task.",
+            "example": [
+                "\n    someReadableStream.pipe(transform.countStream('Step1', 'in'))\n     .pipe(transform.Plugins.Core.Filter.greaterThan('age', 30))\n     .pipe(transform.countStream('Step1', 'out'))"
+            ],
+            "itemtype": "method",
+            "name": "countStream",
+            "params": [
+                {
+                    "name": "stepKey",
+                    "description": "A unique name for the step (shared by the in and out buckets)",
+                    "type": "String"
+                },
+                {
+                    "name": "direction",
+                    "description": "Valid values are \"in\" & \"out\"",
+                    "type": "String"
+                }
+            ],
+            "class": "Nextract"
+        },
+        {
+            "file": "build/nextract.js",
+            "line": 125,
+            "description": "Used to print a report that contains the in and out counts recorded\nfrom countStream calls within a transform.",
+            "example": [
+                "\n    transform.printStepProfilingReport();"
+            ],
+            "itemtype": "method",
+            "name": "printStepProfilingReport",
+            "return": {
+                "description": "Triggers a core logger plugin logger.info() call that dumps out the\ncontents of transformEventData."
+            },
             "class": "Nextract"
         }
     ],
@@ -1379,7 +1421,7 @@
             "line": " build/examples/filterAndGroup.js:3"
         },
         {
-            "message": "Missing item type\nExample: CSV input and sort...",
+            "message": "Missing item type\nExample: Http request and pluck...",
             "line": " build/examples/httpAndPluck.js:3"
         },
         {
@@ -1396,19 +1438,11 @@
         },
         {
             "message": "Missing item type\nExample: Query and sort...",
-            "line": " build/examples/pg_queryAndSort.js:3"
-        },
-        {
-            "message": "Missing item type\nExample: Query and sort...",
             "line": " build/examples/queries.js:3"
         },
         {
             "message": "Missing item type\nExample: Query and sort...",
-            "line": " build/examples/queryAndCalc.js:3"
-        },
-        {
-            "message": "Missing item type\nExample: Query and sort...",
-            "line": " build/examples/queryAndSort.js:3"
+            "line": " build/examples/queryCalcAndFilter.js:3"
         },
         {
             "message": "Missing item type\nWinston logging config\nReferences:\n- https://github.com/winstonjs/winston\n- http://stackoverflow.com/a/23330037\n- http://stackoverflow.com/a/25233851",

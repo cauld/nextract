@@ -2,6 +2,7 @@
  * Example: Filter and group data...
  */
 
+/*
 var path       = require('path'),
     Nextract   = require(path.resolve(__dirname, '../nextract'));
 
@@ -23,3 +24,6 @@ etlJob.loadPlugins('Core', ['Database', 'Filter', 'GroupBy', 'Logger'])
     .catch(function(err) {
       etlJob.Plugins.Core.Logger.info('etlJob process failed:', err);
     });
+*/
+
+console.log("Reimplement example once file input is streaming and once the sort plugin is reworked!");

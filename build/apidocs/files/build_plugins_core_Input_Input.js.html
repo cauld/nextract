@@ -42,7 +42,7 @@
                                 <li><a href="../classes/Nextract.PluginBase.html">Nextract.PluginBase</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Calculator.html">Nextract.Plugins.Core.Calculator</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Database.html">Nextract.Plugins.Core.Database</a></li>
-                                <li><a href="../classes/Nextract.Plugins.Core.GroupBy.html">Nextract.Plugins.Core.GroupBy</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Filter.html">Nextract.Plugins.Core.Filter</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Http.html">Nextract.Plugins.Core.Http</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Input.html">Nextract.Plugins.Core.Input</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Output.html">Nextract.Plugins.Core.Output</a></li>
@@ -127,8 +127,6 @@
                       function readJsonFile(filePath) {
                         return new Promise(function (resolve, reject) {
                           _jsonfile2.default.readFile(filePath, function (err, fileData) {
-                            console.log(&quot;fileData&quot;, fileData);
-                      
                             if (err) {
                               inputPlugin.logger.error(&#x27;readJsonFile&#x27;, err);
                               reject(err);
@@ -139,7 +137,7 @@
                         });
                       }
                       
-                      //TODO: Implement with https://www.npmjs.com/package/excel-data
+                      //TODO: Implement. Perhaps with https://www.npmjs.com/package/excel-data.
                       function readExcelFile(filePath) {
                         return new Promise(function (resolve, reject) {
                       

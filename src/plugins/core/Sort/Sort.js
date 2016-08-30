@@ -4,76 +4,20 @@
  * @class Nextract.Plugins.Core.Sort
  */
 
-import _ from 'lodash';
-import { orderBy, sortBy, isArray, isFunction } from 'lodash/fp';
+//import _ from 'lodash';
+//import { orderBy, sortBy, isArray, isFunction } from 'lodash/fp';
 import pluginBase from '../../pluginBase';
 
 //Instantiate the plugin
-var sortPlugin = new pluginBase('Sort', 'Core');
+//var sortPlugin = new pluginBase('Sort', 'Core');
 
-/* Plugin methods */
-sortPlugin.orderBy = function(collection, iteratees, orders) {
-  if (collection.length < sortPlugin.ETL.config.collections.sizeToBackground) {
-    return Promise.resolve(_.orderBy(collection, iteratees, orders));
-  } else {
-    var workerMsg = {
-      cmd: 'orderBy',
-      args: [collection, iteratees, orders]
-    };
-
-    return sortPlugin.runInWorker(workerMsg);
-  }
-};
-
-sortPlugin.sortBy = function(collection, iteratees) {
-  if (collection.length < sortPlugin.ETL.config.collections.sizeToBackground) {
-    return Promise.resolve(_.sortBy(collection, iteratees));
-  } else {
-    var workerMsg = {
-      cmd: 'sortBy',
-      args: [collection, iteratees]
-    };
-
-    return sortPlugin.runInWorker(workerMsg);
-  }
-};
+//TODO: Reimplement sort as part of the stream flow
+//See for reference https://github.com/jed/sort-stream2, but we can't assume
+//memory will be ample enough for the entry dataset to be buffer.  We'll most likely
+//need tmp files.
 
 /* Plugin external interface */
 module.exports = {
-
-  /**
-   * This method is like _.sortBy except that it allows specifying the sort orders of the iteratees to sort by.
-   * If orders is unspecified, all values are sorted in ascending order. Otherwise, specify an order of "desc"
-   * for descending or "asc" for ascending sort order of corresponding values.
-   *
-   * For usage reference - https://lodash.com/docs#orderBy
-   *
-   * @method orderBy
-   * @example
-   *     ETL.Plugins.Core.Sort.orderBy(users, ['user', 'age'], ['asc', 'desc']);
-   *
-   * @return {Promise} Promise resolved with the new sorted array
-   */
-  orderBy: function(collection, iteratees = [], orders = []) {
-    let taskName = 'orderBy';
-    let updatedCollection;
-
-    return new Promise(function (resolve, reject) {
-      sortPlugin
-        .setupTaskEngine()
-        .then(sortPlugin.startTask(taskName))
-        .then(function() {
-          return sortPlugin.orderBy(collection, iteratees, orders);
-        })
-        .then(function(collection) {
-          updatedCollection = collection;
-        })
-        .then(sortPlugin.endTask(taskName))
-        .then(function() {
-          resolve(updatedCollection);
-        });
-    });
-  },
 
   /**
    * Creates an array of elements, sorted in ascending order by the results of running each element in a collection thru each iteratee.
@@ -83,30 +27,34 @@ module.exports = {
    * For usage reference - https://lodash.com/docs#sortBy
    *
    * @method sortBy
+   * @for Nextract.Plugins.Core.Sort
+   *
    * @example
    *     ETL.Plugins.Core.Sort.sortBy(users, ['user', 'age']);
    *
    * @return {Promise} Promise resolved with the new sorted array
    */
-  sortBy: function(collection, iteratees = []) {
-    let taskName = 'sortBy';
-    let updatedCollection;
+  sortBy: function() {
 
-    return new Promise(function (resolve, reject) {
-      sortPlugin
-        .setupTaskEngine()
-        .then(sortPlugin.startTask(taskName))
-        .then(function() {
-          return sortPlugin.sortBy(collection, iteratees);
-        })
-        .then(function(collection) {
-          updatedCollection = collection;
-        })
-        .then(sortPlugin.endTask(taskName))
-        .then(function() {
-          resolve(updatedCollection);
-        });
-    });
+  },
+
+  /**
+   * This method is like sortBy except that it allows specifying the sort orders of the iteratees to sort by.
+   * If orders is unspecified, all values are sorted in ascending order. Otherwise, specify an order of "desc"
+   * for descending or "asc" for ascending sort order of corresponding values.
+   *
+   * For usage reference - https://lodash.com/docs#orderBy
+   *
+   * @method orderBy
+   * @for Nextract.Plugins.Core.Sort
+   *
+   * @example
+   *     ETL.Plugins.Core.Sort.orderBy(users, ['user', 'age'], ['asc', 'desc']);
+   *
+   * @return {Promise} Promise resolved with the new sorted array
+   */
+  orderBy: function() {
+
   },
 
   /**
@@ -115,6 +63,8 @@ module.exports = {
    * For usage reference - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
    *
    * @method customCompare
+   * @for Nextract.Plugins.Core.Sort
+   *
    * @example
    *     ETL.Plugins.Core.Sort.customCompare(users, compareFunction);
    *
@@ -122,26 +72,8 @@ module.exports = {
    * @param {Function} Specifies a function that defines the sort order
    * @return {Promise} Promise resolved with the new sorted array
    */
-  customCompare: function(collection, compareFunction) {
-    return new Promise(function (resolve, reject) {
-      if (_.isFunction(compareFunction) === false) {
-        reject("A custom sorting function must be passed!");
-      } else if (_.isArray(collection) === false) {
-        reject("The custom method expects an array of data to sort!");
-      } else {
-        if (collection.length < sortPlugin.ETL.config.collections.sizeToBackground) {
-          var sortedCollection = collection.sort(compareFunction);
-          resolve(sortedCollection);
-        } else {
-          var workerMsg = {
-            cmd: 'orderBy',
-            args: [collection, compareFunction]
-          };
+  customCompare: function() {
 
-          return sortPlugin.runInWorker(workerMsg);
-        }
-      }
-    });
   }
 
 };

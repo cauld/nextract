@@ -42,7 +42,7 @@
                                 <li><a href="../classes/Nextract.PluginBase.html">Nextract.PluginBase</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Calculator.html">Nextract.Plugins.Core.Calculator</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Database.html">Nextract.Plugins.Core.Database</a></li>
-                                <li><a href="../classes/Nextract.Plugins.Core.GroupBy.html">Nextract.Plugins.Core.GroupBy</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Filter.html">Nextract.Plugins.Core.Filter</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Http.html">Nextract.Plugins.Core.Http</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Input.html">Nextract.Plugins.Core.Input</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Output.html">Nextract.Plugins.Core.Output</a></li>
@@ -132,46 +132,53 @@
                         },
                       
                         /**
-                         * Modifes each item of a collection returning only the requested properties from each.
-                         * Deep picking is not yet supported.
+                         * Operates on a stream returning only the requested properties from element
                          *
                          * @method pluckProperties
                          * @for Nextract.Plugins.Core.Utils
                          *
                          * @example
-                         *     ETL.Plugins.Core.Utils.pluckProperties(collection, [&#x27;foo&#x27;, &#x27;bar&#x27;, &#x27;baz&#x27;]);
+                         *     someReadableStream.pipe(yourTransformInstance.Plugins.Core.Utils.pluckProperties([&#x27;foo&#x27;, &#x27;bar&#x27;, &#x27;baz&#x27;]))
                          *
-                         * @param {Object} collection The collection to iterate over
                          * @param {Array} propertiesToTake Array of property names to keep
                          *
-                         * @return {Promise} Promise resolved with updated collection
+                         * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
                          */
-                        pluckProperties: function pluckProperties(collection, propertiesToTake) {
-                          return new Promise(function (resolve, reject) {
-                            if (collection.length &lt; utilsPlugin.ETL.config.collections.sizeToBackground) {
-                              //Run inline
-                              collection.map(function (element) {
-                                var elementKeys = (0, _keys3.default)(element);
+                        pluckProperties: function pluckProperties(propertiesToTake) {
+                          var streamFunction = function streamFunction(element, index) {
+                            var elementKeys = (0, _keys3.default)(element);
                       
-                                elementKeys.forEach(function (key) {
-                                  if ((0, _includes3.default)(propertiesToTake, key) === false) {
-                                    delete element[key];
-                                  }
-                                });
-                              });
+                            elementKeys.forEach(function (key) {
+                              if ((0, _includes3.default)(propertiesToTake, key) === false) {
+                                delete element[key];
+                              }
+                            });
                       
-                              resolve(collection);
-                            } else {
-                              var workerMsg = {
-                                cmd: &#x27;pluckProperties&#x27;,
-                                args: [collection, propertiesToTake]
-                              };
+                            return element;
+                          };
                       
-                              utilsPlugin.runInWorker(workerMsg).then(function (collection) {
-                                resolve(collection);
-                              });
-                            }
-                          });
+                          return utilsPlugin.buildStreamTransform(streamFunction, &#x27;map&#x27;);
+                        },
+                      
+                        /**
+                         * Operates on a stream returning only the requested properties from element
+                         *
+                         * @method pluckProperties
+                         * @for Nextract.Plugins.Core.Utils
+                         *
+                         * @example
+                         *     someReadableStream.pipe(yourTransformInstance.Plugins.Core.Utils.pluckProperties([&#x27;foo&#x27;, &#x27;bar&#x27;, &#x27;baz&#x27;]))
+                         *
+                         * @param {Array} propertiesToTake Array of property names to keep
+                         *
+                         * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
+                         */
+                        streamConvertBufferToString: function streamConvertBufferToString() {
+                          var streamFunction = function streamFunction(element, index) {
+                            return element.toString();
+                          };
+                      
+                          return utilsPlugin.buildStreamTransform(streamFunction, &#x27;map&#x27;);
                         }
                       
                       };

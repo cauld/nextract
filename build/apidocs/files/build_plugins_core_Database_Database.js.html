@@ -42,7 +42,7 @@
                                 <li><a href="../classes/Nextract.PluginBase.html">Nextract.PluginBase</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Calculator.html">Nextract.Plugins.Core.Calculator</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Database.html">Nextract.Plugins.Core.Database</a></li>
-                                <li><a href="../classes/Nextract.Plugins.Core.GroupBy.html">Nextract.Plugins.Core.GroupBy</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Filter.html">Nextract.Plugins.Core.Filter</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Http.html">Nextract.Plugins.Core.Http</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Input.html">Nextract.Plugins.Core.Input</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Output.html">Nextract.Plugins.Core.Output</a></li>
@@ -167,7 +167,7 @@
                       
                       //Sequelize expects a function for logging or false for no logging
                       function sequelizeQueryLogging(sql) {
-                        databasePlugin.logger.info(&#x27;SQL Debugging:&#x27;, sql);
+                        databasePlugin.ETL.logger.info(&#x27;SQL Debugging:&#x27;, sql);
                       }
                       
                       function buildNewConnection(dbName) {
@@ -252,12 +252,12 @@
                             }).then(function () {
                               callback(); //This query is done
                             }).catch(function (err) {
-                              databasePlugin.logger.error(err);
+                              databasePlugin.ETL.logger.error(err);
                               reject(err);
                             });
                           }, function (err) {
                             if (err) {
-                              databasePlugin.logger.error(&#x27;Invalid &#x27; + queryType + &#x27; request:&#x27;, err);
+                              databasePlugin.ETL.logger.error(&#x27;Invalid &#x27; + queryType + &#x27; request:&#x27;, err);
                               reject(&#x27;Invalid &#x27; + queryType + &#x27; request:&#x27;, err);
                             } else {
                               //All queries are done.  Resolves with the original collection to enable
@@ -299,9 +299,11 @@
                             replacements: sqlReplacements,
                             type: dbInstance.QueryTypes.SELECT
                           }).then(function (data) {
-                            return data;
+                            var objectStream = require(&#x27;object-stream&#x27;);
+                            var readableStream = objectStream.fromArray(data);
+                            return readableStream;
                           }).catch(function (err) {
-                            databasePlugin.logger.error(&#x27;Invalid SELECT request:&#x27;, err);
+                            databasePlugin.ETL.logger.error(&#x27;Invalid SELECT request:&#x27;, err);
                           });
                         },
                       
@@ -474,7 +476,7 @@
                               });
                             }, function (err) {
                               if (err) {
-                                databasePlugin.logger.error(&#x27;Invalid INSERT request:&#x27;, err);
+                                databasePlugin.ETL.logger.error(&#x27;Invalid INSERT request:&#x27;, err);
                                 reject(&#x27;Invalid INSERT request:&#x27;, err);
                               } else {
                                 //All queries are done
@@ -549,12 +551,12 @@
                       
                                 callback(); //Tells async that we are done with this item
                               }).catch(function (err) {
-                                databasePlugin.logger.error(err);
+                                databasePlugin.ETL.logger.error(err);
                                 reject(err);
                               });
                             }, function (err) {
                               if (err) {
-                                databasePlugin.logger.error(&#x27;Invalid join/lookup request:&#x27;, err);
+                                databasePlugin.ETL.logger.error(&#x27;Invalid join/lookup request:&#x27;, err);
                                 reject(&#x27;Invalid join/lookup request:&#x27;, err);
                               } else {
                                 //All queries are done

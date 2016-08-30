@@ -76,7 +76,7 @@ databasePlugin = new _pluginBase2.default('Database', 'Core');
 
 //Sequelize expects a function for logging or false for no logging
 function sequelizeQueryLogging(sql) {
-  databasePlugin.logger.info('SQL Debugging:', sql);
+  databasePlugin.ETL.logger.info('SQL Debugging:', sql);
 }
 
 function buildNewConnection(dbName) {
@@ -161,12 +161,12 @@ function runMany(dbName, queryType, baseQuery, collection, columnsToUpdate, matc
       }).then(function () {
         callback(); //This query is done
       }).catch(function (err) {
-        databasePlugin.logger.error(err);
+        databasePlugin.ETL.logger.error(err);
         reject(err);
       });
     }, function (err) {
       if (err) {
-        databasePlugin.logger.error('Invalid ' + queryType + ' request:', err);
+        databasePlugin.ETL.logger.error('Invalid ' + queryType + ' request:', err);
         reject('Invalid ' + queryType + ' request:', err);
       } else {
         //All queries are done.  Resolves with the original collection to enable
@@ -208,9 +208,11 @@ module.exports = {
       replacements: sqlReplacements,
       type: dbInstance.QueryTypes.SELECT
     }).then(function (data) {
-      return data;
+      var objectStream = require('object-stream');
+      var readableStream = objectStream.fromArray(data);
+      return readableStream;
     }).catch(function (err) {
-      databasePlugin.logger.error('Invalid SELECT request:', err);
+      databasePlugin.ETL.logger.error('Invalid SELECT request:', err);
     });
   },
 
@@ -383,7 +385,7 @@ module.exports = {
         });
       }, function (err) {
         if (err) {
-          databasePlugin.logger.error('Invalid INSERT request:', err);
+          databasePlugin.ETL.logger.error('Invalid INSERT request:', err);
           reject('Invalid INSERT request:', err);
         } else {
           //All queries are done
@@ -458,12 +460,12 @@ module.exports = {
 
           callback(); //Tells async that we are done with this item
         }).catch(function (err) {
-          databasePlugin.logger.error(err);
+          databasePlugin.ETL.logger.error(err);
           reject(err);
         });
       }, function (err) {
         if (err) {
-          databasePlugin.logger.error('Invalid join/lookup request:', err);
+          databasePlugin.ETL.logger.error('Invalid join/lookup request:', err);
           reject('Invalid join/lookup request:', err);
         } else {
           //All queries are done

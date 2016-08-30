@@ -42,7 +42,7 @@
                                 <li><a href="../classes/Nextract.PluginBase.html">Nextract.PluginBase</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Calculator.html">Nextract.Plugins.Core.Calculator</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Database.html">Nextract.Plugins.Core.Database</a></li>
-                                <li><a href="../classes/Nextract.Plugins.Core.GroupBy.html">Nextract.Plugins.Core.GroupBy</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Filter.html">Nextract.Plugins.Core.Filter</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Http.html">Nextract.Plugins.Core.Http</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Input.html">Nextract.Plugins.Core.Input</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Output.html">Nextract.Plugins.Core.Output</a></li>
@@ -98,17 +98,25 @@
                       var path = require(&#x27;path&#x27;),
                           Nextract = require(path.resolve(__dirname, &#x27;../nextract&#x27;));
                       
-                      var etlJob = new Nextract();
+                      var transform = new Nextract();
                       
-                      etlJob.loadPlugins(&#x27;Core&#x27;, [&#x27;Database&#x27;, &#x27;Sort&#x27;, &#x27;Logger&#x27;]).then(function () {
+                      transform.loadPlugins(&#x27;Core&#x27;, [&#x27;Database&#x27;, &#x27;Logger&#x27;]).then(function () {
                         var sql = &#x27;select first_name, last_name from employees where age &gt;= :age&#x27;;
                         var sqlReplacements = { &#x27;age&#x27;: 30 };
                       
-                        return etlJob.Plugins.Core.Database.selectQuery(&#x27;nextract_sample&#x27;, sql, sqlReplacements);
-                      }).then(function (data) {
-                        etlJob.Plugins.Core.Logger.info(&#x27;Query Results: &#x27;, data);
+                        return transform.Plugins.Core.Database.selectQuery(&#x27;nextract_sample&#x27;, sql, sqlReplacements);
+                      }).then(function (dbDataStream) {
+                        dbDataStream.on(&#x27;data&#x27;, function (resultingData) {
+                          //We aren&#x27;t doing any additional transforms so no pipes are needed.
+                          //We&#x27;ll just dump out the data when it arrives.
+                          if (resultingData !== undefined) {
+                            console.log(resultingData);
+                          }
+                        }).on(&#x27;end&#x27;, function () {
+                          transform.Plugins.Core.Logger.info(&#x27;Transform finished!&#x27;);
+                        });
                       }).catch(function (err) {
-                        etlJob.Plugins.Core.Logger.error(&#x27;etlJob process failed: &#x27;, err);
+                        transform.Plugins.Core.Logger.error(&#x27;Transform failed:&#x27;, err);
                       });
                       
                           </pre>

@@ -5,18 +5,28 @@
 var path       = require('path'),
     Nextract   = require(path.resolve(__dirname, '../nextract'));
 
-var etlJob = new Nextract();
+var transform = new Nextract();
 
-etlJob.loadPlugins('Core', ['Database', 'Sort', 'Logger'])
-    .then(function() {
-      var sql = 'select first_name, last_name from employees where age >= :age';
-      var sqlReplacements = { 'age': 30 };
+transform.loadPlugins('Core', ['Database', 'Logger'])
+  .then(function() {
+    var sql = 'select first_name, last_name from employees where age >= :age';
+    var sqlReplacements = { 'age': 30 };
 
-      return etlJob.Plugins.Core.Database.selectQuery('nextract_sample', sql, sqlReplacements);
-    })
-    .then(function(data) {
-      etlJob.Plugins.Core.Logger.info('Query Results: ', data);
-    })
-    .catch(function(err) {
-      etlJob.Plugins.Core.Logger.error('etlJob process failed: ', err);
-    });
+    return transform.Plugins.Core.Database.selectQuery('nextract_sample', sql, sqlReplacements);
+  })
+  .then(function(dbDataStream) {
+    dbDataStream
+      .on('data', function(resultingData) {
+        //We aren't doing any additional transforms so no pipes are needed.
+        //We'll just dump out the data when it arrives.
+        if (resultingData !== undefined) {
+          console.log(resultingData);
+        }
+      })
+      .on('end', function() {
+        transform.Plugins.Core.Logger.info('Transform finished!');
+      });
+  })
+  .catch(function(err) {
+    transform.Plugins.Core.Logger.error('Transform failed:', err);
+  });

@@ -2,6 +2,7 @@
  * Example: Running some etlJob tasks in parallel
  */
 
+/*
 var path       = require('path'),
     Nextract   = require(path.resolve(__dirname, '../nextract'));
 
@@ -36,3 +37,6 @@ etlJob.loadPlugins('Core', ['Database', 'Utils', 'Logger'])
     .catch(function(err) {
       etlJob.Plugins.Core.Logger.error('etlJob process failed: ', err);
     });
+*/
+
+console.log('Must rethink/reimplement with strean support now');

@@ -42,7 +42,7 @@
                                 <li><a href="../classes/Nextract.PluginBase.html">Nextract.PluginBase</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Calculator.html">Nextract.Plugins.Core.Calculator</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Database.html">Nextract.Plugins.Core.Database</a></li>
-                                <li><a href="../classes/Nextract.Plugins.Core.GroupBy.html">Nextract.Plugins.Core.GroupBy</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Filter.html">Nextract.Plugins.Core.Filter</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Http.html">Nextract.Plugins.Core.Http</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Input.html">Nextract.Plugins.Core.Input</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Output.html">Nextract.Plugins.Core.Output</a></li>
@@ -154,9 +154,6 @@
                               <div class="args">
                                   <span class="paren">(</span><ul class="args-list inline commas">
                                       <li class="arg">
-                                              <code>collection</code>
-                                      </li>
-                                      <li class="arg">
                                               <code>firstPropOrVal</code>
                                       </li>
                                       <li class="arg">
@@ -169,7 +166,7 @@
                               </div>
                       
                               <span class="returns-inline">
-                                  <span class="type">Promise</span>
+                                  <span class="type">stream.Transform</span>
                               </span>
                       
                       
@@ -181,7 +178,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_core_Calculator_Calculator.js.html#l56"><code>build&#x2F;plugins&#x2F;core&#x2F;Calculator&#x2F;Calculator.js:56</code></a>
+                              <a href="../files/build_plugins_core_Calculator_Calculator.js.html#l46"><code>build&#x2F;plugins&#x2F;core&#x2F;Calculator&#x2F;Calculator.js:46</code></a>
                               </p>
                       
                       
@@ -189,7 +186,7 @@
                           </div>
                       
                           <div class="description">
-                              <p>Adds two numbers and/or object properties</p>
+                              <p>Operates on a stream adding two numbers and/or object properties</p>
                       
                           </div>
                       
@@ -197,17 +194,6 @@
                                   <h4>Parameters:</h4>
                       
                                   <ul class="params-list">
-                                      <li class="param">
-                                              <code class="param-name">collection</code>
-                                              <span class="type">Object</span>
-                      
-                      
-                                          <div class="param-description">
-                                              <p>The collection to iterate over</p>
-                      
-                                          </div>
-                      
-                                      </li>
                                       <li class="param">
                                               <code class="param-name">firstPropOrVal</code>
                                               <span class="type">String | Number</span>
@@ -249,8 +235,8 @@
                                   <h4>Returns:</h4>
                       
                                   <div class="returns-description">
-                                              <span class="type">Promise</span>:
-                                          <p>Promise resolved with the updated collection</p>
+                                              <span class="type">stream.Transform</span>:
+                                          <p>Read/write stream transform to use in conjuction with pipe()</p>
                       
                                   </div>
                               </div>
@@ -260,7 +246,7 @@
                                   <h4>Example:</h4>
                       
                                   <div class="example-content">
-                                      <pre class="code prettyprint"><code>ETL.Plugins.Core.Calculator.add(collection, 'salary', 1000, 'new_salary');</code></pre>
+                                      <pre class="code prettyprint"><code>someReadableStream.pipe(yourTransformInstance.Plugins.Core.Calculator.add('salary', 1000, 'new_salary'))</code></pre>
                       
                                   </div>
                               </div>
@@ -270,9 +256,6 @@
                       
                               <div class="args">
                                   <span class="paren">(</span><ul class="args-list inline commas">
-                                      <li class="arg">
-                                              <code>collection</code>
-                                      </li>
                                       <li class="arg">
                                               <code>propsOrValsToConcat</code>
                                       </li>
@@ -286,7 +269,7 @@
                               </div>
                       
                               <span class="returns-inline">
-                                  <span class="type">Promise</span>
+                                  <span class="type">stream.Transform</span>
                               </span>
                       
                       
@@ -298,7 +281,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_core_Calculator_Calculator.js.html#l160"><code>build&#x2F;plugins&#x2F;core&#x2F;Calculator&#x2F;Calculator.js:160</code></a>
+                              <a href="../files/build_plugins_core_Calculator_Calculator.js.html#l119"><code>build&#x2F;plugins&#x2F;core&#x2F;Calculator&#x2F;Calculator.js:119</code></a>
                               </p>
                       
                       
@@ -306,7 +289,7 @@
                           </div>
                       
                           <div class="description">
-                              <p>Concatenates strings and/or object properties</p>
+                              <p>Operates on a stream concatenating strings and/or object properties</p>
                       
                           </div>
                       
@@ -314,17 +297,6 @@
                                   <h4>Parameters:</h4>
                       
                                   <ul class="params-list">
-                                      <li class="param">
-                                              <code class="param-name">collection</code>
-                                              <span class="type">Object</span>
-                      
-                      
-                                          <div class="param-description">
-                                              <p>The collection to iterate over</p>
-                      
-                                          </div>
-                      
-                                      </li>
                                       <li class="param">
                                               <code class="param-name">propsOrValsToConcat</code>
                                               <span class="type">Array</span>
@@ -353,8 +325,7 @@
                       
                       
                                           <div class="param-description">
-                                              <p>The object property to update or create with the value
-                      of this operation</p>
+                                              <p>The object property to update or create with the value</p>
                       
                                           </div>
                       
@@ -366,8 +337,8 @@
                                   <h4>Returns:</h4>
                       
                                   <div class="returns-description">
-                                              <span class="type">Promise</span>:
-                                          <p>Promise resolved with the updated collection</p>
+                                              <span class="type">stream.Transform</span>:
+                                          <p>Read/write stream transform to use in conjuction with pipe()</p>
                       
                                   </div>
                               </div>
@@ -377,7 +348,7 @@
                                   <h4>Example:</h4>
                       
                                   <div class="example-content">
-                                      <pre class="code prettyprint"><code>ETL.Plugins.Core.Calculator.concat(collection, ['Mr/Mrs:', 'first_name', 'last_name'], ' ', 'full_name');</code></pre>
+                                      <pre class="code prettyprint"><code>someReadableStream.pipe(yourTransformInstance.Plugins.Core.Calculator.concat(['Mr/Mrs:', 'first_name', 'last_name'], ' ', 'full_name'))</code></pre>
                       
                                   </div>
                               </div>
@@ -388,9 +359,6 @@
                               <div class="args">
                                   <span class="paren">(</span><ul class="args-list inline commas">
                                       <li class="arg">
-                                              <code>collection</code>
-                                      </li>
-                                      <li class="arg">
                                               <code>firstPropOrVal</code>
                                       </li>
                                       <li class="arg">
@@ -403,7 +371,7 @@
                               </div>
                       
                               <span class="returns-inline">
-                                  <span class="type">Promise</span>
+                                  <span class="type">stream.Transform</span>
                               </span>
                       
                       
@@ -415,7 +383,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_core_Calculator_Calculator.js.html#l134"><code>build&#x2F;plugins&#x2F;core&#x2F;Calculator&#x2F;Calculator.js:134</code></a>
+                              <a href="../files/build_plugins_core_Calculator_Calculator.js.html#l101"><code>build&#x2F;plugins&#x2F;core&#x2F;Calculator&#x2F;Calculator.js:101</code></a>
                               </p>
                       
                       
@@ -423,7 +391,7 @@
                           </div>
                       
                           <div class="description">
-                              <p>Divides two numbers and/or object properties</p>
+                              <p>Operates on a stream dividing two numbers and/or object properties</p>
                       
                           </div>
                       
@@ -431,17 +399,6 @@
                                   <h4>Parameters:</h4>
                       
                                   <ul class="params-list">
-                                      <li class="param">
-                                              <code class="param-name">collection</code>
-                                              <span class="type">Object</span>
-                      
-                      
-                                          <div class="param-description">
-                                              <p>The collection to iterate over</p>
-                      
-                                          </div>
-                      
-                                      </li>
                                       <li class="param">
                                               <code class="param-name">firstPropOrVal</code>
                                               <span class="type">String | Number</span>
@@ -483,8 +440,8 @@
                                   <h4>Returns:</h4>
                       
                                   <div class="returns-description">
-                                              <span class="type">Promise</span>:
-                                          <p>Promise resolved with the updated collection</p>
+                                              <span class="type">stream.Transform</span>:
+                                          <p>Read/write stream transform to use in conjuction with pipe()</p>
                       
                                   </div>
                               </div>
@@ -494,7 +451,7 @@
                                   <h4>Example:</h4>
                       
                                   <div class="example-content">
-                                      <pre class="code prettyprint"><code>ETL.Plugins.Core.Calculator.divide(collection, 'salary', 10, 'new_salary');</code></pre>
+                                      <pre class="code prettyprint"><code>someReadableStream.pipe(yourTransformInstance.Plugins.Core.Calculator.divide('salary', 1000, 'new_salary'))</code></pre>
                       
                                   </div>
                               </div>
@@ -505,9 +462,6 @@
                               <div class="args">
                                   <span class="paren">(</span><ul class="args-list inline commas">
                                       <li class="arg">
-                                              <code>collection</code>
-                                      </li>
-                                      <li class="arg">
                                               <code>firstPropOrVal</code>
                                       </li>
                                       <li class="arg">
@@ -520,7 +474,7 @@
                               </div>
                       
                               <span class="returns-inline">
-                                  <span class="type">Promise</span>
+                                  <span class="type">stream.Transform</span>
                               </span>
                       
                       
@@ -532,7 +486,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_core_Calculator_Calculator.js.html#l108"><code>build&#x2F;plugins&#x2F;core&#x2F;Calculator&#x2F;Calculator.js:108</code></a>
+                              <a href="../files/build_plugins_core_Calculator_Calculator.js.html#l83"><code>build&#x2F;plugins&#x2F;core&#x2F;Calculator&#x2F;Calculator.js:83</code></a>
                               </p>
                       
                       
@@ -540,7 +494,7 @@
                           </div>
                       
                           <div class="description">
-                              <p>Multiplies two numbers and/or object properties</p>
+                              <p>Operates on a stream multiplying two numbers and/or object properties</p>
                       
                           </div>
                       
@@ -548,17 +502,6 @@
                                   <h4>Parameters:</h4>
                       
                                   <ul class="params-list">
-                                      <li class="param">
-                                              <code class="param-name">collection</code>
-                                              <span class="type">Object</span>
-                      
-                      
-                                          <div class="param-description">
-                                              <p>The collection to iterate over</p>
-                      
-                                          </div>
-                      
-                                      </li>
                                       <li class="param">
                                               <code class="param-name">firstPropOrVal</code>
                                               <span class="type">String | Number</span>
@@ -600,8 +543,8 @@
                                   <h4>Returns:</h4>
                       
                                   <div class="returns-description">
-                                              <span class="type">Promise</span>:
-                                          <p>Promise resolved with the updated collection</p>
+                                              <span class="type">stream.Transform</span>:
+                                          <p>Read/write stream transform to use in conjuction with pipe()</p>
                       
                                   </div>
                               </div>
@@ -611,7 +554,7 @@
                                   <h4>Example:</h4>
                       
                                   <div class="example-content">
-                                      <pre class="code prettyprint"><code>ETL.Plugins.Core.Calculator.multiply(collection, 'salary', 10, 'new_salary');</code></pre>
+                                      <pre class="code prettyprint"><code>someReadableStream.pipe(yourTransformInstance.Plugins.Core.Calculator.multiply('salary', 1000, 'new_salary'))</code></pre>
                       
                                   </div>
                               </div>
@@ -637,7 +580,7 @@
                               </div>
                       
                               <span class="returns-inline">
-                                  <span class="type">Promise</span>
+                                  <span class="type">stream.Transform</span>
                               </span>
                       
                       
@@ -649,7 +592,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_core_Calculator_Calculator.js.html#l82"><code>build&#x2F;plugins&#x2F;core&#x2F;Calculator&#x2F;Calculator.js:82</code></a>
+                              <a href="../files/build_plugins_core_Calculator_Calculator.js.html#l64"><code>build&#x2F;plugins&#x2F;core&#x2F;Calculator&#x2F;Calculator.js:64</code></a>
                               </p>
                       
                       
@@ -657,7 +600,7 @@
                           </div>
                       
                           <div class="description">
-                              <p>Subtracts two numbers and/or object properties</p>
+                              <p>Operates on a stream subtracting two numbers and/or object properties</p>
                       
                           </div>
                       
@@ -717,8 +660,8 @@
                                   <h4>Returns:</h4>
                       
                                   <div class="returns-description">
-                                              <span class="type">Promise</span>:
-                                          <p>Promise resolved with the updated collection</p>
+                                              <span class="type">stream.Transform</span>:
+                                          <p>Read/write stream transform to use in conjuction with pipe()</p>
                       
                                   </div>
                               </div>
@@ -728,7 +671,7 @@
                                   <h4>Example:</h4>
                       
                                   <div class="example-content">
-                                      <pre class="code prettyprint"><code>ETL.Plugins.Core.Calculator.subtract(collection, 'salary', 1000, 'new_salary');</code></pre>
+                                      <pre class="code prettyprint"><code>someReadableStream.pipe(yourTransformInstance.Plugins.Core.Calculator.subtract('salary', 1000, 'new_salary'))</code></pre>
                       
                                   </div>
                               </div>

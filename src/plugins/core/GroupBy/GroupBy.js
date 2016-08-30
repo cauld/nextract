@@ -9,28 +9,10 @@
 import pluginBase from '../../pluginBase';
 
 //Would be nice to do import as show above but babel-plugin-lodash has issues with the format _[lodashMethod]
-var _ = require('lodash');
+//var _ = require('lodash');
 
 //Instantiate the plugin
-var groupByPlugin = new pluginBase('GroupBy', 'Core');
-
-function doLodashPassthrough(collection, lodashMethod, prop) {
-  let taskName = lodashMethod;
-  let updatedCollection;
-
-  return new Promise(function (resolve, reject) {
-    groupByPlugin
-      .setupTaskEngine()
-      .then(groupByPlugin.startTask(taskName))
-      .then(function() {
-        updatedCollection = _[lodashMethod](collection, prop);
-      })
-      .then(groupByPlugin.endTask(taskName))
-      .then(function() {
-        resolve(updatedCollection);
-      });
-  });
-}
+//var groupByPlugin = new pluginBase('GroupBy', 'Core');
 
 module.exports = {
 
@@ -50,8 +32,8 @@ module.exports = {
    *
    * @return {Promise} Promise resolved with the maximum value
    */
-  maxBy: function(collection, prop) {
-    return doLodashPassthrough(collection, 'maxBy', prop);
+  maxBy: function() {
+
   },
 
   /**
@@ -70,8 +52,8 @@ module.exports = {
    *
    * @return {Promise} Promise resolved with the maximum value
    */
-  minBy: function(collection, prop) {
-    return doLodashPassthrough(collection, 'minBy', prop);
+  minBy: function() {
+
   },
 
   /**
@@ -90,8 +72,8 @@ module.exports = {
    *
    * @return {Promise} Promise resolved with the maximum value
    */
-  meanBy: function(collection, prop) {
-    return doLodashPassthrough(collection, 'meanBy', prop);
+  meanBy: function() {
+
   },
 
   /**
@@ -109,8 +91,13 @@ module.exports = {
    *
    * @return {Promise} Promise resolved with the sum
    */
-  sumBy: function(collection, prop) {
-    return doLodashPassthrough(collection, 'sumBy', prop);
+  sumBy: function() {
+
+  },
+
+  //TODO: Will this need to block?  maybe not, see - https://www.npmjs.com/package/unique-stream
+  uniqBy: function() {
+
   }
 
 };

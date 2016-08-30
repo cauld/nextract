@@ -42,7 +42,7 @@
                                 <li><a href="../classes/Nextract.PluginBase.html">Nextract.PluginBase</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Calculator.html">Nextract.Plugins.Core.Calculator</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Database.html">Nextract.Plugins.Core.Database</a></li>
-                                <li><a href="../classes/Nextract.Plugins.Core.GroupBy.html">Nextract.Plugins.Core.GroupBy</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Filter.html">Nextract.Plugins.Core.Filter</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Http.html">Nextract.Plugins.Core.Http</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Input.html">Nextract.Plugins.Core.Input</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Output.html">Nextract.Plugins.Core.Output</a></li>
@@ -89,28 +89,37 @@
                       
                       <div class="file">
                           <pre class="code prettyprint linenums">
-                      &#x27;use strict&#x27;;
+                      &quot;use strict&quot;;
                       
                       /**
                        * Example: Filter and group data...
                        */
                       
-                      var path = require(&#x27;path&#x27;),
-                          Nextract = require(path.resolve(__dirname, &#x27;../nextract&#x27;));
+                      /*
+                      var path       = require(&#x27;path&#x27;),
+                          Nextract   = require(path.resolve(__dirname, &#x27;../nextract&#x27;));
                       
                       var etlJob = new Nextract();
                       
-                      etlJob.loadPlugins(&#x27;Core&#x27;, [&#x27;Database&#x27;, &#x27;Filter&#x27;, &#x27;GroupBy&#x27;, &#x27;Logger&#x27;]).then(function () {
-                        return etlJob.Plugins.Core.Database.selectQuery(&#x27;nextract_sample&#x27;, &#x27;select first_name, last_name, age, salary from employees&#x27;);
-                      }).then(function (data) {
-                        return etlJob.Plugins.Core.Filter.greaterThan(data, &#x27;age&#x27;, 30);
-                      }).then(function (data) {
-                        return etlJob.Plugins.Core.GroupBy.sumBy(data, &#x27;salary&#x27;);
-                      }).then(function (data) {
-                        etlJob.Plugins.Core.Logger.info(&#x27;Together they make:&#x27;, data);
-                      }).catch(function (err) {
-                        etlJob.Plugins.Core.Logger.info(&#x27;etlJob process failed:&#x27;, err);
-                      });
+                      etlJob.loadPlugins(&#x27;Core&#x27;, [&#x27;Database&#x27;, &#x27;Filter&#x27;, &#x27;GroupBy&#x27;, &#x27;Logger&#x27;])
+                          .then(function() {
+                            return etlJob.Plugins.Core.Database.selectQuery(&#x27;nextract_sample&#x27;, &#x27;select first_name, last_name, age, salary from employees&#x27;);
+                          })
+                          .then(function(data) {
+                            return etlJob.Plugins.Core.Filter.greaterThan(data, &#x27;age&#x27;, 30);
+                          })
+                          .then(function(data) {
+                            return etlJob.Plugins.Core.GroupBy.sumBy(data, &#x27;salary&#x27;);
+                          })
+                          .then(function(data) {
+                            etlJob.Plugins.Core.Logger.info(&#x27;Together they make:&#x27;, data);
+                          })
+                          .catch(function(err) {
+                            etlJob.Plugins.Core.Logger.info(&#x27;etlJob process failed:&#x27;, err);
+                          });
+                      */
+                      
+                      console.log(&quot;Reimplement example once file input is streaming and once the sort plugin is reworked!&quot;);
                       
                           </pre>
                       </div>

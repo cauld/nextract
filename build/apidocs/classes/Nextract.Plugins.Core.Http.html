@@ -42,7 +42,7 @@
                                 <li><a href="../classes/Nextract.PluginBase.html">Nextract.PluginBase</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Calculator.html">Nextract.Plugins.Core.Calculator</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Database.html">Nextract.Plugins.Core.Database</a></li>
-                                <li><a href="../classes/Nextract.Plugins.Core.GroupBy.html">Nextract.Plugins.Core.GroupBy</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Filter.html">Nextract.Plugins.Core.Filter</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Http.html">Nextract.Plugins.Core.Http</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Input.html">Nextract.Plugins.Core.Input</a></li>
                                 <li><a href="../classes/Nextract.Plugins.Core.Output.html">Nextract.Plugins.Core.Output</a></li>
@@ -122,6 +122,22 @@
                                                       <a href="#method_makeRequest">makeRequest</a>
                       
                                                   </li>
+                                                  <li class="index-item method">
+                                                      <a href="#method_maxBy">maxBy</a>
+                      
+                                                  </li>
+                                                  <li class="index-item method">
+                                                      <a href="#method_meanBy">meanBy</a>
+                      
+                                                  </li>
+                                                  <li class="index-item method">
+                                                      <a href="#method_minBy">minBy</a>
+                      
+                                                  </li>
+                                                  <li class="index-item method">
+                                                      <a href="#method_sumBy">sumBy</a>
+                      
+                                                  </li>
                                           </ul>
                                       </div>
                       
@@ -140,11 +156,14 @@
                                       <li class="arg">
                                               <code>requestConfig</code>
                                       </li>
+                                      <li class="arg">
+                                              <code>responseFormat</code>
+                                      </li>
                                   </ul><span class="paren">)</span>
                               </div>
                       
                               <span class="returns-inline">
-                                  <span class="type">Promise</span>
+                                  <span class="type">stream.Transform</span>
                               </span>
                       
                       
@@ -156,7 +175,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_core_Http_Http.js.html#l30"><code>build&#x2F;plugins&#x2F;core&#x2F;Http&#x2F;Http.js:30</code></a>
+                              <a href="../files/build_plugins_core_Http_Http.js.html#l29"><code>build&#x2F;plugins&#x2F;core&#x2F;Http&#x2F;Http.js:29</code></a>
                               </p>
                       
                       
@@ -185,6 +204,17 @@
                                           </div>
                       
                                       </li>
+                                      <li class="param">
+                                              <code class="param-name">responseFormat</code>
+                                              <span class="type">String</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>(optional, defaults to buffer) Allowed values are string, json, or buffer.</p>
+                      
+                                          </div>
+                      
+                                      </li>
                                   </ul>
                               </div>
                       
@@ -192,8 +222,8 @@
                                   <h4>Returns:</h4>
                       
                                   <div class="returns-description">
-                                              <span class="type">Promise</span>:
-                                          <p>Promise resolved with an object like so { statusCode: 200, body: 'Hello World' }</p>
+                                              <span class="type">stream.Transform</span>:
+                                          <p>Read/write stream transform to use in conjuction with pipe()</p>
                       
                                   </div>
                               </div>
@@ -209,7 +239,370 @@
                         method: 'GET',
                         headers: { 'Content-Type': 'MyContentType', 'Custom-Header': 'Custom Value' }
                        };</code></pre>
-                      <pre class="code prettyprint"><code>ETL.Plugins.Core.Http.makeRequest(requestConfig);</code></pre>
+                      <pre class="code prettyprint"><code>yourTransformInstance.Plugins.Core.Http.makeRequest(requestConfig, 'json')</code></pre>
+                      
+                                  </div>
+                              </div>
+                      </div>
+                      <div id="method_maxBy" class="method item">
+                          <h3 class="name"><code>maxBy</code></h3>
+                      
+                              <div class="args">
+                                  <span class="paren">(</span><ul class="args-list inline commas">
+                                      <li class="arg">
+                                              <code>collection</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>prop</code>
+                                      </li>
+                                  </ul><span class="paren">)</span>
+                              </div>
+                      
+                              <span class="returns-inline">
+                                  <span class="type">Promise</span>
+                              </span>
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                          <div class="meta">
+                                      <p>
+                                      Defined in
+                              <a href="../files/build_plugins_core_GroupBy_GroupBy.js.html#l17"><code>build&#x2F;plugins&#x2F;core&#x2F;GroupBy&#x2F;GroupBy.js:17</code></a>
+                              </p>
+                      
+                      
+                      
+                          </div>
+                      
+                          <div class="description">
+                              <p>Computes the maximum value of array. It accepts iteratee which is invoked for each element in
+                      array to generate the criterion by which the value is ranked. The iteratee is invoked with
+                      one argument: (value).</p>
+                      <p>For usage reference - <a href="https://lodash.com/docs#maxBy">https://lodash.com/docs#maxBy</a></p>
+                      
+                          </div>
+                      
+                              <div class="params">
+                                  <h4>Parameters:</h4>
+                      
+                                  <ul class="params-list">
+                                      <li class="param">
+                                              <code class="param-name">collection</code>
+                                              <span class="type">Object</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>The collection to iterate over</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">prop</code>
+                                              <span class="type">String</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>The property to use in this operation</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                  </ul>
+                              </div>
+                      
+                              <div class="returns">
+                                  <h4>Returns:</h4>
+                      
+                                  <div class="returns-description">
+                                              <span class="type">Promise</span>:
+                                          <p>Promise resolved with the maximum value</p>
+                      
+                                  </div>
+                              </div>
+                      
+                      
+                              <div class="example">
+                                  <h4>Example:</h4>
+                      
+                                  <div class="example-content">
+                                      <pre class="code prettyprint"><code>ETL.Plugins.Core.GroupBy.maxBy(objects, 'n');</code></pre>
+                      
+                                  </div>
+                              </div>
+                      </div>
+                      <div id="method_meanBy" class="method item">
+                          <h3 class="name"><code>meanBy</code></h3>
+                      
+                              <div class="args">
+                                  <span class="paren">(</span><ul class="args-list inline commas">
+                                      <li class="arg">
+                                              <code>collection</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>prop</code>
+                                      </li>
+                                  </ul><span class="paren">)</span>
+                              </div>
+                      
+                              <span class="returns-inline">
+                                  <span class="type">Promise</span>
+                              </span>
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                          <div class="meta">
+                                      <p>
+                                      Defined in
+                              <a href="../files/build_plugins_core_GroupBy_GroupBy.js.html#l53"><code>build&#x2F;plugins&#x2F;core&#x2F;GroupBy&#x2F;GroupBy.js:53</code></a>
+                              </p>
+                      
+                      
+                      
+                          </div>
+                      
+                          <div class="description">
+                              <p>Computes the mean of the values in array. It accepts iteratee which is invoked for each element in
+                      array to generate the criterion by which the value is ranked. The iteratee is invoked with
+                      one argument: (value).</p>
+                      <p>For usage reference - <a href="https://lodash.com/docs#maxBy">https://lodash.com/docs#maxBy</a></p>
+                      
+                          </div>
+                      
+                              <div class="params">
+                                  <h4>Parameters:</h4>
+                      
+                                  <ul class="params-list">
+                                      <li class="param">
+                                              <code class="param-name">collection</code>
+                                              <span class="type">Object</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>The collection to iterate over</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">prop</code>
+                                              <span class="type">String</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>The property to use in this operation</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                  </ul>
+                              </div>
+                      
+                              <div class="returns">
+                                  <h4>Returns:</h4>
+                      
+                                  <div class="returns-description">
+                                              <span class="type">Promise</span>:
+                                          <p>Promise resolved with the maximum value</p>
+                      
+                                  </div>
+                              </div>
+                      
+                      
+                              <div class="example">
+                                  <h4>Example:</h4>
+                      
+                                  <div class="example-content">
+                                      <pre class="code prettyprint"><code>ETL.Plugins.Core.GroupBy.meanBy(objects, 'n');</code></pre>
+                      
+                                  </div>
+                              </div>
+                      </div>
+                      <div id="method_minBy" class="method item">
+                          <h3 class="name"><code>minBy</code></h3>
+                      
+                              <div class="args">
+                                  <span class="paren">(</span><ul class="args-list inline commas">
+                                      <li class="arg">
+                                              <code>collection</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>prop</code>
+                                      </li>
+                                  </ul><span class="paren">)</span>
+                              </div>
+                      
+                              <span class="returns-inline">
+                                  <span class="type">Promise</span>
+                              </span>
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                          <div class="meta">
+                                      <p>
+                                      Defined in
+                              <a href="../files/build_plugins_core_GroupBy_GroupBy.js.html#l35"><code>build&#x2F;plugins&#x2F;core&#x2F;GroupBy&#x2F;GroupBy.js:35</code></a>
+                              </p>
+                      
+                      
+                      
+                          </div>
+                      
+                          <div class="description">
+                              <p>Computes the minimum value of array. It accepts iteratee which is invoked for each element in
+                      array to generate the criterion by which the value is ranked. The iteratee is invoked with
+                      one argument: (value).</p>
+                      <p>For usage reference - <a href="https://lodash.com/docs#minBy">https://lodash.com/docs#minBy</a></p>
+                      
+                          </div>
+                      
+                              <div class="params">
+                                  <h4>Parameters:</h4>
+                      
+                                  <ul class="params-list">
+                                      <li class="param">
+                                              <code class="param-name">collection</code>
+                                              <span class="type">Object</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>The collection to iterate over</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">prop</code>
+                                              <span class="type">String</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>The property to use in this operation</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                  </ul>
+                              </div>
+                      
+                              <div class="returns">
+                                  <h4>Returns:</h4>
+                      
+                                  <div class="returns-description">
+                                              <span class="type">Promise</span>:
+                                          <p>Promise resolved with the maximum value</p>
+                      
+                                  </div>
+                              </div>
+                      
+                      
+                              <div class="example">
+                                  <h4>Example:</h4>
+                      
+                                  <div class="example-content">
+                                      <pre class="code prettyprint"><code>ETL.Plugins.Core.GroupBy.minBy(objects, 'n');</code></pre>
+                      
+                                  </div>
+                              </div>
+                      </div>
+                      <div id="method_sumBy" class="method item">
+                          <h3 class="name"><code>sumBy</code></h3>
+                      
+                              <div class="args">
+                                  <span class="paren">(</span><ul class="args-list inline commas">
+                                      <li class="arg">
+                                              <code>collection</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>prop</code>
+                                      </li>
+                                  </ul><span class="paren">)</span>
+                              </div>
+                      
+                              <span class="returns-inline">
+                                  <span class="type">Promise</span>
+                              </span>
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                          <div class="meta">
+                                      <p>
+                                      Defined in
+                              <a href="../files/build_plugins_core_GroupBy_GroupBy.js.html#l71"><code>build&#x2F;plugins&#x2F;core&#x2F;GroupBy&#x2F;GroupBy.js:71</code></a>
+                              </p>
+                      
+                      
+                      
+                          </div>
+                      
+                          <div class="description">
+                              <p>Computes the sum of the values in array. It accepts iteratee which is invoked for each element
+                      in array to generate the value to be summed. The iteratee is invoked with one argument: (value).</p>
+                      <p>For usage reference - <a href="https://lodash.com/docs#maxBy">https://lodash.com/docs#maxBy</a></p>
+                      
+                          </div>
+                      
+                              <div class="params">
+                                  <h4>Parameters:</h4>
+                      
+                                  <ul class="params-list">
+                                      <li class="param">
+                                              <code class="param-name">collection</code>
+                                              <span class="type">Object</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>The collection to iterate over</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">prop</code>
+                                              <span class="type">String</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>The property to use in this operation</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                  </ul>
+                              </div>
+                      
+                              <div class="returns">
+                                  <h4>Returns:</h4>
+                      
+                                  <div class="returns-description">
+                                              <span class="type">Promise</span>:
+                                          <p>Promise resolved with the sum</p>
+                      
+                                  </div>
+                              </div>
+                      
+                      
+                              <div class="example">
+                                  <h4>Example:</h4>
+                      
+                                  <div class="example-content">
+                                      <pre class="code prettyprint"><code>ETL.Plugins.Core.GroupBy.sumBy(objects, 'n');</code></pre>
                       
                                   </div>
                               </div>

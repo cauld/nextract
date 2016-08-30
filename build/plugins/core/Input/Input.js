@@ -36,8 +36,6 @@ var inputPlugin = new _pluginBase2.default('Input', 'Core');
 function readJsonFile(filePath) {
   return new Promise(function (resolve, reject) {
     _jsonfile2.default.readFile(filePath, function (err, fileData) {
-      console.log("fileData", fileData);
-
       if (err) {
         inputPlugin.logger.error('readJsonFile', err);
         reject(err);
@@ -48,7 +46,7 @@ function readJsonFile(filePath) {
   });
 }
 
-//TODO: Implement with https://www.npmjs.com/package/excel-data
+//TODO: Implement. Perhaps with https://www.npmjs.com/package/excel-data.
 function readExcelFile(filePath) {
   return new Promise(function (resolve, reject) {
 
