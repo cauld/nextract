@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>build/plugins/core/Http/Http.js - nextract</title>
+    <title>build/examples/queryAndSort.js - nextract</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -85,96 +85,36 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                      <h1 class="file-heading">File: build/plugins/core/Http/Http.js</h1>
+                      <h1 class="file-heading">File: build/examples/queryAndSort.js</h1>
                       
                       <div class="file">
                           <pre class="code prettyprint linenums">
                       &#x27;use strict&#x27;;
                       
-                      var _request = require(&#x27;request&#x27;);
-                      
-                      var _request2 = _interopRequireDefault(_request);
-                      
-                      var _pluginBase = require(&#x27;../../pluginBase&#x27;);
-                      
-                      var _pluginBase2 = _interopRequireDefault(_pluginBase);
-                      
-                      function _interopRequireDefault(obj) { return obj &amp;&amp; obj.__esModule ? obj : { default: obj }; }
-                      
-                      //Instantiate the plugin
                       /**
-                       * Mixes in methods used make HTTP requests
-                       *
-                       * @class Nextract.Plugins.Core.Http
+                       * Example: Query and sort...
                        */
                       
-                      /*
-                      TODO:
-                      1) Add method to support making requests for each item in a stream...
-                      */
+                      var path = require(&#x27;path&#x27;),
+                          Nextract = require(path.resolve(__dirname, &#x27;../nextract&#x27;));
                       
-                      var httpPlugin = new _pluginBase2.default(&#x27;Http&#x27;, &#x27;Core&#x27;);
+                      var transform = new Nextract(&quot;queryAndSort&quot;);
                       
-                      module.exports = {
+                      transform.loadPlugins(&#x27;Core&#x27;, [&#x27;Database&#x27;, &#x27;Sort&#x27;, &#x27;Logger&#x27;]).then(function () {
+                        //ETL plugins have been loaded, get a readStream to start the job with
+                        return transform.Plugins.Core.Database.selectQuery(&#x27;nextract_sample&#x27;, &#x27;select first_name, last_name, age from employees&#x27;, {});
+                      }).then(function (dbDataStream) {
+                        dbDataStream.pipe(transform.Plugins.Core.Sort.sortBy([&#x27;age&#x27;], [&#x27;asc&#x27;])).on(&#x27;data&#x27;, function (resultingData) {
+                          //NOTE: This listener must exist, even if it does nothing. Otherwise, the end event is not fired.
                       
-                        /**
-                         * Make http calls. It supports HTTPS and follows redirects by default.
-                         *
-                         * @method makeRequest
-                         * @for Nextract.Plugins.Core.Http
-                         *
-                         * @example
-                         *     var requestConfig = {
-                         *       url: &#x27;http://example.com&#x27;,
-                         *       qs: { searchString: &#x27;foo&#x27;, page: 1 },
-                         *       method: &#x27;GET&#x27;,
-                         *       headers: { &#x27;Content-Type&#x27;: &#x27;MyContentType&#x27;, &#x27;Custom-Header&#x27;: &#x27;Custom Value&#x27; }
-                         *      };
-                         * @example
-                         *     yourTransformInstance.Plugins.Core.Http.makeRequest(requestConfig, &#x27;json&#x27;)
-                         *
-                         * @param {Object} requestConfig A request configuration made up of key/value pairs. Wraps
-                         * the popular npm request module so any request config supported by this module will work.
-                         * See - https://www.npmjs.com/package/request#requestoptions-callback.
-                         * @param {String} responseFormat (optional, defaults to buffer) Allowed values are string, json, or buffer.
-                         *
-                         * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
-                         */
-                        makeRequest: function makeRequest(requestConfig) {
-                          var responseFormat = arguments.length &lt;= 1 || arguments[1] === undefined ? &#x27;buffer&#x27; : arguments[1];
-                      
-                          var streamFunction, readStream;
-                      
-                          //The request module is stream ready (https://github.com/request/request#streaming).
-                          //We&#x27;ll add support for returning in other common formats.
-                          streamFunction = function streamFunction(element) {
-                            if (responseFormat === &#x27;string&#x27;) {
-                              return element.toString();
-                            } else if (responseFormat === &#x27;json&#x27;) {
-                              var jsonData;
-                              try {
-                                jsonData = JSON.parse(element.toString());
-                              } catch (err) {
-                                throw new Error(&#x27;makeRequest was unable to parse as JSON!&#x27;);
-                              }
-                      
-                              return jsonData;
-                            } else {
-                              return element; //return as buffer
-                            }
-                          };
-                      
-                          //To easily handle errors when streaming requests, listen to the error event before piping.
-                          readStream = (0, _request2.default)(requestConfig).on(&#x27;response&#x27;, function (response) {
-                            response = response.toString();
-                          }).on(&#x27;error&#x27;, function (err) {
-                            httpPlugin.logger.error(err);
-                          }).pipe(httpPlugin.buildStreamTransform(streamFunction, null, &#x27;map&#x27;));
-                      
-                          return readStream;
-                        }
-                      
-                      };
+                          //Uncomment to dump the resulting data for debugging
+                          console.log(&quot;resultingData&quot;, resultingData);
+                        }).on(&#x27;end&#x27;, function () {
+                          transform.Plugins.Core.Logger.info(&#x27;Transform finished!&#x27;);
+                        });
+                      }).catch(function (err) {
+                        transform.Plugins.Core.Logger.error(&#x27;Transform failed: &#x27;, err);
+                      });
                       
                           </pre>
                       </div>

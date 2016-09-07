@@ -78,7 +78,7 @@ module.exports = {
       response = response.toString();
     }).on('error', function (err) {
       httpPlugin.logger.error(err);
-    }).pipe(httpPlugin.buildStreamTransform(streamFunction, 'map'));
+    }).pipe(httpPlugin.buildStreamTransform(streamFunction, null, 'map'));
 
     return readStream;
   }

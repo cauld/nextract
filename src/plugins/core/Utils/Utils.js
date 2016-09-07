@@ -56,7 +56,7 @@ module.exports = {
       return element;
     };
 
-    return utilsPlugin.buildStreamTransform(streamFunction, 'map');
+    return utilsPlugin.buildStreamTransform(streamFunction, null, 'map');
   },
 
   /**
@@ -77,7 +77,7 @@ module.exports = {
       return element.toString();
     };
 
-    return utilsPlugin.buildStreamTransform(streamFunction, 'map');
+    return utilsPlugin.buildStreamTransform(streamFunction, null, 'map');
   }
 
 };

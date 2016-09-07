@@ -8,3 +8,7 @@ echo "Add default config files..."
 mkdir src/plugins/config
 mkdir build/plugins/config
 node utils/add_default_config.js
+
+echo "Setting up internal database..."
+chmod +w internal/db
+touch internal/db/nextract.sqlite3

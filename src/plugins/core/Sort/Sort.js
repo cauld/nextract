@@ -4,76 +4,102 @@
  * @class Nextract.Plugins.Core.Sort
  */
 
-//import _ from 'lodash';
-//import { orderBy, sortBy, isArray, isFunction } from 'lodash/fp';
+import _ from 'lodash';
+import { isUndefined, isArray, values } from 'lodash/fp';
 import pluginBase from '../../pluginBase';
 
 //Instantiate the plugin
-//var sortPlugin = new pluginBase('Sort', 'Core');
+var sortPlugin = new pluginBase('Sort', 'Core');
 
-//TODO: Reimplement sort as part of the stream flow
-//See for reference https://github.com/jed/sort-stream2, but we can't assume
-//memory will be ample enough for the entry dataset to be buffer.  We'll most likely
-//need tmp files.
 
 /* Plugin external interface */
 module.exports = {
 
   /**
-   * Creates an array of elements, sorted in ascending order by the results of running each element in a collection thru each iteratee.
-   * This method performs a stable sort, that is, it preserves the original sort order of equal elements.
-   * The iteratees are invoked with one argument: (value).
-   *
-   * For usage reference - https://lodash.com/docs#sortBy
+   * Sorts a stream of objects
    *
    * @method sortBy
    * @for Nextract.Plugins.Core.Sort
    *
    * @example
-   *     ETL.Plugins.Core.Sort.sortBy(users, ['user', 'age']);
+   *     someReadableStream.pipe(Plugins.Core.Sort.sortBy(['user', 'age'], ['asc', 'desc']))
    *
-   * @return {Promise} Promise resolved with the new sorted array
+   * @param {Array} propertiesToSortBy An array of properties to sort by
+   * @param {Array} ordersToSortBy An array of sort directions. The number of array elements must match
+   * the number of elements provided in propertiesToSortBy. The index of each element will be matched against
+   * the index of propertiesToSortBy. Valid values are "asc" & "desc".
+   *
+   * @return {stream.Transform} Sorted read/write stream transform to use in conjuction with pipe()
    */
-  sortBy: function() {
+  sortBy: function(propertiesToSortBy, ordersToSortBy) {
+    if (!_.isArray(propertiesToSortBy) || !_.isArray(ordersToSortBy) || propertiesToSortBy.length !== ordersToSortBy.length) {
+      throw new Error('The sortBy params propertiesToSortBy & ordersToSortBy must both be an array of equal length!');
+    }
 
-  },
+    /*
+    We are about to do a pretty unique kind of stream manipulation. It isn't really a
+    map, filter, or reduce.  More like a map/reduce with side effects. In a nutshell to scale
+    grouping operations like sort, group by, sum, etc we'll take advatange of Sqlite. We create
+    a temporary table based on the first stream row, insert a row for each stream row and return
+    for each row as part of the stream like a filter === false.  Then in the final flush call
+    we'll query out the data and push it into the stream kinda like a reduce in that the output
+    is one operation, but that operation ends up being the result of the final query which can
+    have multiple rows.
+    */
+    function processStreamInput(element, encoding, callback) {
+      if (_.isUndefined(element)) return callback();
 
-  /**
-   * This method is like sortBy except that it allows specifying the sort orders of the iteratees to sort by.
-   * If orders is unspecified, all values are sorted in ascending order. Otherwise, specify an order of "desc"
-   * for descending or "asc" for ascending sort order of corresponding values.
-   *
-   * For usage reference - https://lodash.com/docs#orderBy
-   *
-   * @method orderBy
-   * @for Nextract.Plugins.Core.Sort
-   *
-   * @example
-   *     ETL.Plugins.Core.Sort.orderBy(users, ['user', 'age'], ['asc', 'desc']);
-   *
-   * @return {Promise} Promise resolved with the new sorted array
-   */
-  orderBy: function() {
+      var that = this,
+          sqlReplacements = _.values(element);
 
-  },
+      //We need to setup the INSERT sql when encountering the first element in the stream
+      if (_.isUndefined(this.dbInfo)) {
+        this.dbInfo = {};
 
-  /**
-   * Sorts the elements of an array in place via a custom compare function
-   *
-   * For usage reference - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
-   *
-   * @method customCompare
-   * @for Nextract.Plugins.Core.Sort
-   *
-   * @example
-   *     ETL.Plugins.Core.Sort.customCompare(users, compareFunction);
-   *
-   * @param {Array|Object} collection The collection to iterate over
-   * @param {Function} Specifies a function that defines the sort order
-   * @return {Promise} Promise resolved with the new sorted array
-   */
-  customCompare: function() {
+        sortPlugin.createTemporaryTableForStream(element, function(temporaryTableName) {
+          that.dbInfo.tmpTableName = temporaryTableName;
+          that.dbInfo.insertSql = sortPlugin.getBoilerplateStreamInsertStatement(that.dbInfo.tmpTableName, element);
 
+          sortPlugin.runInternalQuery(that.dbInfo.insertSql, sqlReplacements, false, function() {
+            return callback();
+          });
+        });
+      } else {
+        sortPlugin.runInternalQuery(this.dbInfo.insertSql, sqlReplacements, false, function() {
+          return callback();
+        });
+      }
+    }
+
+    function streamFlush(callback) {
+      var that = this,
+          selectSql,
+          ordering;
+
+      selectSql = 'SELECT * FROM ' + this.dbInfo.tmpTableName + ' ORDER BY';
+      ordering = [];
+      for (let i=0; i<propertiesToSortBy.length; i++) {
+        ordering[ordering.length] = ' ' + propertiesToSortBy[i] + ' ' + ordersToSortBy[i];
+      }
+
+      selectSql += ordering.join(',');
+
+      console.log("selectSql", selectSql);
+
+      //Grab the sorted rows
+      sortPlugin.runInternalQuery(selectSql, [], true, function(err, sortedRows) {
+        that.push(sortedRows);
+
+        //Sorting done, we have what we need... drop the temp table
+        sortPlugin.dropTemporaryTableForStream(that.dbInfo.tmpTableName, function(err) {
+          if (err) sortPlugin.ETL.logger.error('Invalid DROP TABLE request:', err);
+
+          return callback();
+        });
+      });
+    }
+
+    return sortPlugin.buildStreamTransform(processStreamInput, streamFlush, 'standard');
   }
 
 };

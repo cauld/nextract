@@ -66,7 +66,6 @@ var databasePlugin,
 /*
 TODO:
 1) Transactions (http://docs.sequelizejs.com/en/v3/docs/transactions/)
-2) Migrate to setupTaskEngine, startTask, endTask format
 */
 
 queryLogging = enableQueryLogging === false ? false : sequelizeQueryLogging;
@@ -90,6 +89,7 @@ function buildNewConnection(dbName) {
     dialectOptions: {
       prependSearchPath: (0, _has3.default)(dbpluginConfig, 'dialectOptions') && (0, _has3.default)(dbpluginConfig.dialectOptions, 'prependSearchPath') ? dbpluginConfig.dialectOptions.searchPath : ''
     },
+    storage: (0, _has3.default)(dbpluginConfig, 'storage') ? dbpluginConfig.storage : '', //SQLite only
     pool: {
       max: 5,
       min: 0,
@@ -180,7 +180,44 @@ function runMany(dbName, queryType, baseQuery, collection, columnsToUpdate, matc
 module.exports = {
 
   /**
-   * Raw query interface for select statements
+   * Raw query interface
+   *
+   * @method rawQuery
+   * @for Nextract.Plugins.Core.Database
+   * @example
+   *     var sql = 'select first_name, last_name, age, salary from users where id = :id';
+   * @example
+   *     var sqlParams = { id: id };
+   * @example
+   *     ETL.Plugins.Core.Database.rawQuery('dbname', sql, sqlParams);
+   *
+   * @param {String} dbName A database name that matches a object key defined in your Nextract config file
+   * @param {String} sql SQL statement to execute. Can be a fully formed SQL select statement or
+   * a parameterized one with ":key" placeholders. If the later, then sqlParams
+   * must be an object of key/values to be replaced.
+   * @param {Object} sqlParams (optional) List of key/value params to be subbed out in a parameterized query
+   *
+   * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
+   */
+  rawQuery: function rawQuery(dbName, sql) {
+    var sqlReplacements = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+
+    var dbInstance = getInstance(dbName);
+
+    return dbInstance.query(sql, {
+      replacements: sqlReplacements,
+      type: dbInstance.QueryTypes.RAW
+    }).then(function (data) {
+      var objectStream = require('object-stream');
+      var readableStream = objectStream.fromArray(data);
+      return readableStream;
+    }).catch(function (err) {
+      databasePlugin.ETL.logger.error('Invalid RAW request:', err);
+    });
+  },
+
+  /**
+   * Query interface for select statements
    *
    * @method selectQuery
    * @for Nextract.Plugins.Core.Database
@@ -193,11 +230,11 @@ module.exports = {
    *
    * @param {String} dbName A database name that matches a object key defined in your Nextract config file
    * @param {String} sql SQL statement to execute. Can be a fully formed SQL select statement or
-   * a parameterized one with ":key" placeholders. If the later, then sqlParams
+   * a parameterized one with ":key" placeholders. If the later, then sqlReplacements
    * must be an object of key/values to be replaced.
-   * @param {Object} sqlParams (optional) List of key/value params to be subbed out in a parameterized query
+   * @param {Object} sqlReplacements (optional) List of key/value params to be subbed out in a parameterized query
    *
-   * @return {Promise} Promise resolved with an array of database rows that match the given select statement
+   * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
    */
   selectQuery: function selectQuery(dbName, sql) {
     var sqlReplacements = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];

@@ -51,7 +51,7 @@ module.exports = {
       }
     };
 
-    return filterPlugin.buildStreamTransform(streamFunction, 'filter');
+    return filterPlugin.buildStreamTransform(streamFunction, null, 'filter');
   },
 
   /**
@@ -82,7 +82,7 @@ module.exports = {
       }
     };
 
-    return filterPlugin.buildStreamTransform(streamFunction, 'filter');
+    return filterPlugin.buildStreamTransform(streamFunction, null, 'filter');
   },
 
   /**
@@ -106,7 +106,7 @@ module.exports = {
       }
     };
 
-    return filterPlugin.buildStreamTransform(streamFunction, 'filter');
+    return filterPlugin.buildStreamTransform(streamFunction, null, 'filter');
   },
 
   /**
@@ -130,7 +130,7 @@ module.exports = {
       }
     };
 
-    return filterPlugin.buildStreamTransform(streamFunction, 'filter');
+    return filterPlugin.buildStreamTransform(streamFunction, null, 'filter');
   },
 
   /**
@@ -154,7 +154,7 @@ module.exports = {
       }
     };
 
-    return filterPlugin.buildStreamTransform(streamFunction, 'filter');
+    return filterPlugin.buildStreamTransform(streamFunction, null, 'filter');
   },
 
   /**
@@ -178,7 +178,7 @@ module.exports = {
       }
     };
 
-    return filterPlugin.buildStreamTransform(streamFunction, 'filter');
+    return filterPlugin.buildStreamTransform(streamFunction, null, 'filter');
   }
 
 };

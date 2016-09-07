@@ -157,7 +157,6 @@
                       /*
                       TODO:
                       1) Transactions (http://docs.sequelizejs.com/en/v3/docs/transactions/)
-                      2) Migrate to setupTaskEngine, startTask, endTask format
                       */
                       
                       queryLogging = enableQueryLogging === false ? false : sequelizeQueryLogging;
@@ -181,6 +180,7 @@
                           dialectOptions: {
                             prependSearchPath: (0, _has3.default)(dbpluginConfig, &#x27;dialectOptions&#x27;) &amp;&amp; (0, _has3.default)(dbpluginConfig.dialectOptions, &#x27;prependSearchPath&#x27;) ? dbpluginConfig.dialectOptions.searchPath : &#x27;&#x27;
                           },
+                          storage: (0, _has3.default)(dbpluginConfig, &#x27;storage&#x27;) ? dbpluginConfig.storage : &#x27;&#x27;, //SQLite only
                           pool: {
                             max: 5,
                             min: 0,
@@ -271,7 +271,44 @@
                       module.exports = {
                       
                         /**
-                         * Raw query interface for select statements
+                         * Raw query interface
+                         *
+                         * @method rawQuery
+                         * @for Nextract.Plugins.Core.Database
+                         * @example
+                         *     var sql = &#x27;select first_name, last_name, age, salary from users where id = :id&#x27;;
+                         * @example
+                         *     var sqlParams = { id: id };
+                         * @example
+                         *     ETL.Plugins.Core.Database.rawQuery(&#x27;dbname&#x27;, sql, sqlParams);
+                         *
+                         * @param {String} dbName A database name that matches a object key defined in your Nextract config file
+                         * @param {String} sql SQL statement to execute. Can be a fully formed SQL select statement or
+                         * a parameterized one with &quot;:key&quot; placeholders. If the later, then sqlParams
+                         * must be an object of key/values to be replaced.
+                         * @param {Object} sqlParams (optional) List of key/value params to be subbed out in a parameterized query
+                         *
+                         * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
+                         */
+                        rawQuery: function rawQuery(dbName, sql) {
+                          var sqlReplacements = arguments.length &lt;= 2 || arguments[2] === undefined ? {} : arguments[2];
+                      
+                          var dbInstance = getInstance(dbName);
+                      
+                          return dbInstance.query(sql, {
+                            replacements: sqlReplacements,
+                            type: dbInstance.QueryTypes.RAW
+                          }).then(function (data) {
+                            var objectStream = require(&#x27;object-stream&#x27;);
+                            var readableStream = objectStream.fromArray(data);
+                            return readableStream;
+                          }).catch(function (err) {
+                            databasePlugin.ETL.logger.error(&#x27;Invalid RAW request:&#x27;, err);
+                          });
+                        },
+                      
+                        /**
+                         * Query interface for select statements
                          *
                          * @method selectQuery
                          * @for Nextract.Plugins.Core.Database
@@ -284,11 +321,11 @@
                          *
                          * @param {String} dbName A database name that matches a object key defined in your Nextract config file
                          * @param {String} sql SQL statement to execute. Can be a fully formed SQL select statement or
-                         * a parameterized one with &quot;:key&quot; placeholders. If the later, then sqlParams
+                         * a parameterized one with &quot;:key&quot; placeholders. If the later, then sqlReplacements
                          * must be an object of key/values to be replaced.
-                         * @param {Object} sqlParams (optional) List of key/value params to be subbed out in a parameterized query
+                         * @param {Object} sqlReplacements (optional) List of key/value params to be subbed out in a parameterized query
                          *
-                         * @return {Promise} Promise resolved with an array of database rows that match the given select statement
+                         * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
                          */
                         selectQuery: function selectQuery(dbName, sql) {
                           var sqlReplacements = arguments.length &lt;= 2 || arguments[2] === undefined ? {} : arguments[2];

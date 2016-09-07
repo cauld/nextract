@@ -38,7 +38,7 @@ function doLodashPassthrough(lodashMethod, firstPropOrVal, secondPropOrVal) {
     }
   };
 
-  return calculatorPlugin.buildStreamTransform(streamFunction, 'map');
+  return calculatorPlugin.buildStreamTransform(streamFunction, null, 'map');
 }
 
 module.exports = {
@@ -146,7 +146,7 @@ module.exports = {
       return element;
     };
 
-    return calculatorPlugin.buildStreamTransform(streamFunction, 'map');
+    return calculatorPlugin.buildStreamTransform(streamFunction, null, 'map');
   }
 
   //TODO: Implement...

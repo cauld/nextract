@@ -89,13 +89,17 @@
                       <div class="box meta">
                       
                       
+                              <div class="foundat">
+                                  Defined in: <a href="../files/build_plugins_core_Sort_Sort.js.html#l25"><code>build&#x2F;plugins&#x2F;core&#x2F;Sort&#x2F;Sort.js:25</code></a>
+                              </div>
                       
                       
                       </div>
                       
                       
                       <div class="box intro">
-                          
+                          <p>Mixes in methods used to sort data</p>
+                      
                       </div>
                       
                       
@@ -115,14 +119,6 @@
                       
                                           <ul class="index-list methods">
                                                   <li class="index-item method">
-                                                      <a href="#method_customCompare">customCompare</a>
-                      
-                                                  </li>
-                                                  <li class="index-item method">
-                                                      <a href="#method_orderBy">orderBy</a>
-                      
-                                                  </li>
-                                                  <li class="index-item method">
                                                       <a href="#method_sortBy">sortBy</a>
                       
                                                   </li>
@@ -136,22 +132,22 @@
                                   <div id="methods" class="api-class-tabpanel">
                                       <h2 class="off-left">Methods</h2>
                       
-                      <div id="method_customCompare" class="method item">
-                          <h3 class="name"><code>customCompare</code></h3>
+                      <div id="method_sortBy" class="method item">
+                          <h3 class="name"><code>sortBy</code></h3>
                       
                               <div class="args">
                                   <span class="paren">(</span><ul class="args-list inline commas">
                                       <li class="arg">
-                                              <code>collection</code>
+                                              <code>propertiesToSortBy</code>
                                       </li>
                                       <li class="arg">
-                                              <code>Specifies</code>
+                                              <code>ordersToSortBy</code>
                                       </li>
                                   </ul><span class="paren">)</span>
                               </div>
                       
                               <span class="returns-inline">
-                                  <span class="type">Promise</span>
+                                  <span class="type">stream.Transform</span>
                               </span>
                       
                       
@@ -163,7 +159,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_core_Sort_Sort.js.html#l54"><code>build&#x2F;plugins&#x2F;core&#x2F;Sort&#x2F;Sort.js:54</code></a>
+                              <a href="../files/build_plugins_core_Sort_Sort.js.html#l33"><code>build&#x2F;plugins&#x2F;core&#x2F;Sort&#x2F;Sort.js:33</code></a>
                               </p>
                       
                       
@@ -171,8 +167,7 @@
                           </div>
                       
                           <div class="description">
-                              <p>Sorts the elements of an array in place via a custom compare function</p>
-                      <p>For usage reference - <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort</a></p>
+                              <p>Sorts a stream of objects</p>
                       
                           </div>
                       
@@ -181,23 +176,25 @@
                       
                                   <ul class="params-list">
                                       <li class="param">
-                                              <code class="param-name">collection</code>
-                                              <span class="type">Array | Object</span>
+                                              <code class="param-name">propertiesToSortBy</code>
+                                              <span class="type">Array</span>
                       
                       
                                           <div class="param-description">
-                                              <p>The collection to iterate over</p>
+                                              <p>An array of properties to sort by</p>
                       
                                           </div>
                       
                                       </li>
                                       <li class="param">
-                                              <code class="param-name">Specifies</code>
-                                              <span class="type">Function</span>
+                                              <code class="param-name">ordersToSortBy</code>
+                                              <span class="type">Array</span>
                       
                       
                                           <div class="param-description">
-                                              <p>a function that defines the sort order</p>
+                                              <p>An array of sort directions. The number of array elements must match
+                      the number of elements provided in propertiesToSortBy. The index of each element will be matched against
+                      the index of propertiesToSortBy. Valid values are &quot;asc&quot; &amp; &quot;desc&quot;.</p>
                       
                                           </div>
                       
@@ -209,8 +206,8 @@
                                   <h4>Returns:</h4>
                       
                                   <div class="returns-description">
-                                              <span class="type">Promise</span>:
-                                          <p>Promise resolved with the new sorted array</p>
+                                              <span class="type">stream.Transform</span>:
+                                          <p>Sorted read/write stream transform to use in conjuction with pipe()</p>
                       
                                   </div>
                               </div>
@@ -220,115 +217,7 @@
                                   <h4>Example:</h4>
                       
                                   <div class="example-content">
-                                      <pre class="code prettyprint"><code>ETL.Plugins.Core.Sort.customCompare(users, compareFunction);</code></pre>
-                      
-                                  </div>
-                              </div>
-                      </div>
-                      <div id="method_orderBy" class="method item">
-                          <h3 class="name"><code>orderBy</code></h3>
-                      
-                              <span class="paren">()</span>
-                      
-                              <span class="returns-inline">
-                                  <span class="type">Promise</span>
-                              </span>
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                          <div class="meta">
-                                      <p>
-                                      Defined in
-                              <a href="../files/build_plugins_core_Sort_Sort.js.html#l37"><code>build&#x2F;plugins&#x2F;core&#x2F;Sort&#x2F;Sort.js:37</code></a>
-                              </p>
-                      
-                      
-                      
-                          </div>
-                      
-                          <div class="description">
-                              <p>This method is like sortBy except that it allows specifying the sort orders of the iteratees to sort by.
-                      If orders is unspecified, all values are sorted in ascending order. Otherwise, specify an order of &quot;desc&quot;
-                      for descending or &quot;asc&quot; for ascending sort order of corresponding values.</p>
-                      <p>For usage reference - <a href="https://lodash.com/docs#orderBy">https://lodash.com/docs#orderBy</a></p>
-                      
-                          </div>
-                      
-                      
-                              <div class="returns">
-                                  <h4>Returns:</h4>
-                      
-                                  <div class="returns-description">
-                                              <span class="type">Promise</span>:
-                                          <p>Promise resolved with the new sorted array</p>
-                      
-                                  </div>
-                              </div>
-                      
-                      
-                              <div class="example">
-                                  <h4>Example:</h4>
-                      
-                                  <div class="example-content">
-                                      <pre class="code prettyprint"><code>ETL.Plugins.Core.Sort.orderBy(users, ['user', 'age'], ['asc', 'desc']);</code></pre>
-                      
-                                  </div>
-                              </div>
-                      </div>
-                      <div id="method_sortBy" class="method item">
-                          <h3 class="name"><code>sortBy</code></h3>
-                      
-                              <span class="paren">()</span>
-                      
-                              <span class="returns-inline">
-                                  <span class="type">Promise</span>
-                              </span>
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                          <div class="meta">
-                                      <p>
-                                      Defined in
-                              <a href="../files/build_plugins_core_Sort_Sort.js.html#l20"><code>build&#x2F;plugins&#x2F;core&#x2F;Sort&#x2F;Sort.js:20</code></a>
-                              </p>
-                      
-                      
-                      
-                          </div>
-                      
-                          <div class="description">
-                              <p>Creates an array of elements, sorted in ascending order by the results of running each element in a collection thru each iteratee.
-                      This method performs a stable sort, that is, it preserves the original sort order of equal elements.
-                      The iteratees are invoked with one argument: (value).</p>
-                      <p>For usage reference - <a href="https://lodash.com/docs#sortBy">https://lodash.com/docs#sortBy</a></p>
-                      
-                          </div>
-                      
-                      
-                              <div class="returns">
-                                  <h4>Returns:</h4>
-                      
-                                  <div class="returns-description">
-                                              <span class="type">Promise</span>:
-                                          <p>Promise resolved with the new sorted array</p>
-                      
-                                  </div>
-                              </div>
-                      
-                      
-                              <div class="example">
-                                  <h4>Example:</h4>
-                      
-                                  <div class="example-content">
-                                      <pre class="code prettyprint"><code>ETL.Plugins.Core.Sort.sortBy(users, ['user', 'age']);</code></pre>
+                                      <pre class="code prettyprint"><code>someReadableStream.pipe(Plugins.Core.Sort.sortBy(['user', 'age'], ['asc', 'desc']))</code></pre>
                       
                                   </div>
                               </div>
