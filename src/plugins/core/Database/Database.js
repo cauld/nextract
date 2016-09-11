@@ -373,14 +373,12 @@ module.exports = {
 
           //Do the batch INSERT if we have hit the batch limit
           if (this.elementValuesToInsert.length === batchAmount) {
-            this.elementValuesToInsert = []; //reset for next batch
-
             dbInstance.query(this.dbInfo.insertSql, {
               replacements: _.flatten(that.elementValuesToInsert),
               type: dbInstance.QueryTypes.INSERT
             })
             .then(function() {
-              that.elementValuesToInsert = null; //done, clear it
+              that.elementValuesToInsert = []; //reset for next batch
               return callback(null, null);
             })
             .catch(function(err) {
@@ -408,7 +406,7 @@ module.exports = {
         var lastInsertSql = databasePlugin.getBoilerplateStreamBulkInsertStatement(tableName, this.dbInfo.sampleElement, this.elementValuesToInsert.length, false);
 
         dbInstance.query(lastInsertSql, {
-          replacements: _.flatten(this.elementValuesToInsert),
+          replacements: _.flatten(that.elementValuesToInsert),
           type: dbInstance.QueryTypes.INSERT
         })
         .then(function() {

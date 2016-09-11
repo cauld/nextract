@@ -744,7 +744,7 @@
         },
         {
             "file": "build/plugins/core/Database/Database.js",
-            "line": 467,
+            "line": 465,
             "description": "Allows you to run a select query against a database using data obtained from previous steps. Runs\na query for each row in the collection. The collection will be returned with the properties of the\noriginal item data + the properties of the joined data.  Optionally returns all or just matched rows.",
             "itemtype": "method",
             "name": "joinQuery",
