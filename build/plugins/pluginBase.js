@@ -82,11 +82,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @class Nextract.PluginBase
  */
 
-var sqlite3 = require('sqlite3').verbose();
+var sqlite3 = require('sqlite3');
+//var sqlite3 = require('sqlite3').verbose();
 
 var internalDbConnectionInstance = null,
     internalDbPath = _path2.default.resolve(__dirname, '../../internal/db/nextract.sqlite3');
 
+//Provides a connection to the internal Sqlite database
 function getInternalDbInstance() {
   if (internalDbConnectionInstance === null) {
     internalDbConnectionInstance = new sqlite3.Database(internalDbPath, function (err) {
@@ -366,12 +368,20 @@ var PluginBase = function PluginBase() {
     });
   };
 
-  this.dropTemporaryTableForStream = function (temporaryTableName, callback) {
-    var dropTableSql = 'DROP TABLE IF EXISTS ' + temporaryTableName + '; COMMIT;';
+  /**
+   * Removes temporary internal database tables creates from usage of createTemporaryTableForStream.
+   *
+   * @method dropTemporaryTableForStream
+   * @for Nextract.PluginBase
+   *
+   * @param {String} tableName Name of the internal table to be dropped
+   * @param {Function} callback Function to be called once the internal table has been dropped
+   */
+  this.dropTemporaryTableForStream = function (tableName, callback) {
+    var dropTableSql = 'DROP TABLE IF EXISTS ' + tableName + '; COMMIT;';
 
     self.runInternalQuery(dropTableSql, [], false, function (err) {
       if (err) self.ETL.logger.error('Invalid DROP TABLE request:', err);
-
       return callback();
     });
   };
@@ -381,7 +391,7 @@ var PluginBase = function PluginBase() {
    * want to process the stream and return back a stream without breaking the stream pipe or giving
    * the appearance of a blocking action.  This method will take the first item of a stream and use it
    * to create a boilerplate INSERT statement for all items in a stream. Par this method with
-   * createTemporaryTableForStream.
+   * createTemporaryTableForStream.  See getBoilerplateStreamBulkInsertStatement for bulk inserts.
    *
    * @method getBoilerplateStreamInsertStatement
    * @for Nextract.PluginBase
@@ -409,8 +419,9 @@ var PluginBase = function PluginBase() {
 
     valueReplacementString = replaceMarks.join(',');
 
-    //Wrap the property name to be safe
+    //Build the columns replacement string
     if (escapeColumnNames === true) {
+      //Wrap the property name to be safe (not supported by all databases)
       columns = keys.map(function (v) {
         return '`' + v + '`';
       });
@@ -428,7 +439,24 @@ var PluginBase = function PluginBase() {
   };
 
   /**
-   * TBD...
+   * Some streams require a more traditional blocking like operation (e.g.) Sort, Group By, etc. We
+   * want to process the stream and return back a stream without breaking the stream pipe or giving
+   * the appearance of a blocking action.  This method will take the first item of a stream and use it
+   * to create a boilerplate bulk INSERT statement. Par this method with
+   * createTemporaryTableForStream.
+   *
+   * @method getBoilerplateStreamBulkInsertStatement
+   * @for Nextract.PluginBase
+   *
+   * @example
+   *     See the sortBy method of the core Sort plugin
+   *
+   * @param {String} temporaryTableName The temporary table name created by a call to createTemporaryTableForStream
+   * @param {Object} streamFunction The first object/element of a stream
+   * @param {Integer} batchCount The number of items to prep for bulk insert (creates the proper number of "?" placeholders)
+   * @param {Boolean} escapeColumnNames If true columns names are escaped (e.g.) `column_foo`
+   *
+   * @return {String} Returns the boilerplate INSERT statement with "?" value placeholders
    */
   this.getBoilerplateStreamBulkInsertStatement = function (temporaryTableName, firstElement, batchCount) {
     var escapeColumnNames = arguments.length <= 3 || arguments[3] === undefined ? true : arguments[3];
@@ -438,9 +466,8 @@ var PluginBase = function PluginBase() {
     keys = (0, _keys3.default)(firstElement);
 
     //Build the columns replacement string
-
-    //Wrap the property name to be safe
     if (escapeColumnNames === true) {
+      //Wrap the property name to be safe (not supported by all databases)
       columns = keys.map(function (v) {
         return '`' + v + '`';
       });

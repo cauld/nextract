@@ -111,72 +111,34 @@ function getInstance(dbName) {
   return connectionInstances[dbName];
 }
 
-//Method used in conjuction with runMany.  Takes an incoming collection and set of
-//filter criteria and creates an object with the necessary extra sql and sql replacement
-//params for each item in the collect.  Expects matchCriteria in the following format:
+//Creates an object with the necessary extra sql and sql replacement params for an incoming
+//stream element for set of filter criteria. Expects matchCriteria in the following format:
 //(e.g.) var matchCriteria = [{ tableColumn: '', comparator: '', collectionField: '' }];
-function buildSqlObjectsForCollectionWithMatchCriteria(collection, matchCriteria) {
+function buildSqlObjectsForCollectionWithMatchCriteria(element, matchCriteria) {
   var columnsToUpdate = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
 
-  var sqlObjects = [];
+  var sqlObject = {
+    extraSql: '',
+    sqlParams: {}
+  };
 
-  collection.forEach(function (element) {
-    var extraSql = '',
-        sqlParams = {};
-
-    matchCriteria.forEach(function (mc, index) {
-      if (index > 0) {
-        extraSql += ' AND ';
-      }
-
-      extraSql += mc.tableColumn + mc.comparator + ':' + mc.collectionField;
-      sqlParams[mc.collectionField] = element[mc.collectionField];
-    });
-
-    //If this is an INSERT or UPDATE then we need to inject replacements for each updateable column as well
-    if ((0, _isArray3.default)(columnsToUpdate) && !(0, _isEmpty3.default)(columnsToUpdate)) {
-      columnsToUpdate.forEach(function (column) {
-        sqlParams[column] = element[column];
-      });
+  matchCriteria.forEach(function (mc, index) {
+    if (index > 0) {
+      sqlObject.extraSql += ' AND ';
     }
 
-    sqlObjects[sqlObjects.length] = {
-      sql: extraSql,
-      sqlParams: sqlParams
-    };
+    sqlObject.extraSql += mc.tableColumn + mc.comparator + ':' + mc.collectionField;
+    sqlObject.sqlParams[mc.collectionField] = element[mc.collectionField];
   });
 
-  return sqlObjects;
-}
-
-//Collection can have many rows resulting in the need to execute multiple queries.  This method
-//handles of the running of many async functions with a configurable max amount to run in parallel.
-function runMany(dbName, queryType, baseQuery, collection, columnsToUpdate, matchCriteria, maxParallelQueries) {
-  return new Promise(function (resolve, reject) {
-    var dbInstance = getInstance(dbName);
-    var sqlObjects = buildSqlObjectsForCollectionWithMatchCriteria(collection, matchCriteria, columnsToUpdate);
-
-    (0, _eachOfLimit2.default)(sqlObjects, maxParallelQueries, function (element, index, callback) {
-      return dbInstance.query(baseQuery + element.sql, {
-        replacements: element.sqlParams,
-        type: dbInstance.QueryTypes[queryType]
-      }).then(function () {
-        callback(); //This query is done
-      }).catch(function (err) {
-        databasePlugin.ETL.logger.error(err);
-        reject(err);
-      });
-    }, function (err) {
-      if (err) {
-        databasePlugin.ETL.logger.error('Invalid ' + queryType + ' request:', err);
-        reject('Invalid ' + queryType + ' request:', err);
-      } else {
-        //All queries are done.  Resolves with the original collection to enable
-        //chaining within ETL programs.
-        resolve(collection);
-      }
+  //If this is an INSERT or UPDATE then we need to inject replacements for each updateable column as well
+  if ((0, _isArray3.default)(columnsToUpdate) && !(0, _isEmpty3.default)(columnsToUpdate)) {
+    columnsToUpdate.forEach(function (column) {
+      sqlObject.sqlParams[column] = element[column];
     });
-  });
+  }
+
+  return sqlObject;
 }
 
 //We can't guarantee the order of JavaScript properties and its possible each collection
@@ -258,13 +220,7 @@ module.exports = {
       replacements: sqlReplacements,
       type: dbInstance.QueryTypes.SELECT
     }).then(function (data) {
-      //console.log("SELECT DATA", data);
-
-      var objectStream, readableStream;
-
-      objectStream = require('object-stream');
-      readableStream = objectStream.fromArray(data);
-
+      var readableStream = _objectStream2.default.fromArray(data);
       return readableStream;
     }).catch(function (err) {
       databasePlugin.ETL.logger.error('Invalid SELECT request:', err);
@@ -273,7 +229,7 @@ module.exports = {
 
   /**
    * Allows you to run an DELETE query against a database using data obtained from previous steps. Runs
-   * a query for each row in the collection.
+   * a query for each element in the stream.
    *
    * @method deleteQuery
    * @for Nextract.Plugins.Core.Database
@@ -283,52 +239,60 @@ module.exports = {
    *      { tableColumn: 'last_name', comparator: '=', collectionField: 'last_name' }
    *     ];
    * @example
-   *     return ETL.Plugins.Core.Database.deleteQuery('nextract_sample', 'users', userData, matchCriteria);
+   *     return ETL.Plugins.Core.Database.deleteQuery('nextract_sample', 'users', matchCriteria);
    *
    * @param {String} dbName A database name that matches a object key defined in your Nextract config file
    * @param {String} tableName Table name
-   * @param {Array} collection The collection to iterate on
    * @param {Array} matchCriteria Array of objects with key/value params to be subbed out in a
    * parameterized query. The expected format is  [{ tableColumn: '', comparator: '', collectionField: '' }].
-   * @param {Integer}  maxParallelQueries (optional) Max number of queries to run in parallel (defaults to 5)
-   *
-   * @return {Promise} Promise resolved once all queries have completed
    */
-  deleteQuery: function deleteQuery(dbName, tableName, collection) {
-    var matchCriteria = arguments.length <= 3 || arguments[3] === undefined ? [] : arguments[3];
-    var maxParallelQueries = arguments.length <= 4 || arguments[4] === undefined ? 5 : arguments[4];
+  deleteQuery: function deleteQuery(dbName, tableName) {
+    var matchCriteria = arguments.length <= 2 || arguments[2] === undefined ? [] : arguments[2];
 
+    var dbInstance = getInstance(dbName);
     var baseQuery = 'DELETE FROM ' + tableName + ' WHERE ';
 
-    return runMany(dbName, 'DELETE', baseQuery, collection, null, matchCriteria, maxParallelQueries);
+    var deleteFilter = function deleteFilter(element) {
+      var sqlObject = buildSqlObjectsForCollectionWithMatchCriteria(element, matchCriteria, null);
+
+      dbInstance.query(baseQuery + sqlObject.extraSql, {
+        replacements: sqlObject.sqlParams,
+        type: dbInstance.QueryTypes.DELETE
+      }).then(function () {
+        return false; //Nothing to return as this was a delete
+      }).catch(function (err) {
+        databasePlugin.logger.error(err);
+        throw new Error(err);
+      });
+    };
+
+    return databasePlugin.buildStreamTransform(deleteFilter, null, 'filter');
   },
 
   /**
    * Allows you to run an UPDATE query against a database using data obtained from previous steps. Runs
-   * a query for each row in the collection.
+   * a query for each element in the stream.
    *
    * @method updateQuery
    * @for Nextract.Plugins.Core.Database
-   * @example
-   *     var userData = [ { id: 1, first_name: 'foo' }, {...} ];
+   *
    * @example
    *     var matchCriteria = [{ tableColumn: 'id', comparator: '=', collectionField: 'id' }];
    * @example
-   *     return ETL.Plugins.Core.Database.updateQuery('nextract_sample', 'users', userData, ['first_name'], matchCriteria);
+   *     return ETL.Plugins.Core.Database.updateQuery('nextract_sample', 'users', ['first_name'], matchCriteria);
    *
    * @param {String} dbName A database name that matches a object key defined in your Nextract config file
    * @param {String} tableName Table name
-   * @param {Array} collection The collection to iterate on
    * @param {Array} columnsToUpdate Array of property (column) names to use in the UPDATE
    * @param {Array} matchCriteria Array of objects with key/value params to be subbed out in a
    * parameterized query. The expected format is  [{ tableColumn: '', comparator: '', collectionField: '' }].
    *
-   * @return {Promise} Promise resolved with the give collection once all queries have completed
+   * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
    */
-  updateQuery: function updateQuery(dbName, tableName, collection, columnsToUpdate) {
-    var matchCriteria = arguments.length <= 4 || arguments[4] === undefined ? [] : arguments[4];
-    var maxParallelQueries = arguments.length <= 5 || arguments[5] === undefined ? 5 : arguments[5];
+  updateQuery: function updateQuery(dbName, tableName, columnsToUpdate) {
+    var matchCriteria = arguments.length <= 3 || arguments[3] === undefined ? [] : arguments[3];
 
+    var dbInstance = getInstance(dbName);
     var baseQuery = 'UPDATE ' + tableName + ' SET ';
 
     columnsToUpdate.forEach(function (column, index) {
@@ -340,7 +304,21 @@ module.exports = {
 
     baseQuery += ' WHERE ';
 
-    return runMany(dbName, 'UPDATE', baseQuery, collection, columnsToUpdate, matchCriteria, maxParallelQueries);
+    var updateMap = function updateMap(element) {
+      var sqlObject = buildSqlObjectsForCollectionWithMatchCriteria(element, matchCriteria, columnsToUpdate);
+
+      dbInstance.query(baseQuery + sqlObject.extraSql, {
+        replacements: sqlObject.sqlParams,
+        type: dbInstance.QueryTypes.DELETE
+      }).then(function () {
+        return element; //Return the same element to allow for stream chaining to continue
+      }).catch(function (err) {
+        databasePlugin.logger.error(err);
+        throw new Error(err);
+      });
+    };
+
+    return databasePlugin.buildStreamTransform(updateMap, null, 'map');
   },
 
   /**
@@ -442,7 +420,7 @@ module.exports = {
     function bulkFlush() {
       var that = this;
 
-      if (this.elementValuesToInsert.length > 0) {
+      if ((0, _isArray3.default)(this.elementValuesToInsert) && this.elementValuesToInsert.length > 0) {
         //We can't use the original batch statement becauase the value count is different
         var lastInsertSql = databasePlugin.getBoilerplateStreamBulkInsertStatement(tableName, this.dbInfo.sampleElement, this.elementValuesToInsert.length, false);
 

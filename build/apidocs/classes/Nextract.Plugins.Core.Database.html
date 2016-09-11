@@ -164,20 +164,11 @@
                                               <code>tableName</code>
                                       </li>
                                       <li class="arg">
-                                              <code>collection</code>
-                                      </li>
-                                      <li class="arg">
                                               <code>matchCriteria</code>
-                                      </li>
-                                      <li class="arg">
-                                              <code>maxParallelQueries</code>
                                       </li>
                                   </ul><span class="paren">)</span>
                               </div>
                       
-                              <span class="returns-inline">
-                                  <span class="type">Promise</span>
-                              </span>
                       
                       
                       
@@ -188,7 +179,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_core_Database_Database.js.html#l274"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:274</code></a>
+                              <a href="../files/build_plugins_core_Database_Database.js.html#l230"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:230</code></a>
                               </p>
                       
                       
@@ -197,7 +188,7 @@
                       
                           <div class="description">
                               <p>Allows you to run an DELETE query against a database using data obtained from previous steps. Runs
-                      a query for each row in the collection.</p>
+                      a query for each element in the stream.</p>
                       
                           </div>
                       
@@ -228,17 +219,6 @@
                       
                                       </li>
                                       <li class="param">
-                                              <code class="param-name">collection</code>
-                                              <span class="type">Array</span>
-                      
-                      
-                                          <div class="param-description">
-                                              <p>The collection to iterate on</p>
-                      
-                                          </div>
-                      
-                                      </li>
-                                      <li class="param">
                                               <code class="param-name">matchCriteria</code>
                                               <span class="type">Array</span>
                       
@@ -250,29 +230,9 @@
                                           </div>
                       
                                       </li>
-                                      <li class="param">
-                                              <code class="param-name">maxParallelQueries</code>
-                                              <span class="type">Integer</span>
-                      
-                      
-                                          <div class="param-description">
-                                              <p>(optional) Max number of queries to run in parallel (defaults to 5)</p>
-                      
-                                          </div>
-                      
-                                      </li>
                                   </ul>
                               </div>
                       
-                              <div class="returns">
-                                  <h4>Returns:</h4>
-                      
-                                  <div class="returns-description">
-                                              <span class="type">Promise</span>:
-                                          <p>Promise resolved once all queries have completed</p>
-                      
-                                  </div>
-                              </div>
                       
                       
                               <div class="example">
@@ -283,7 +243,7 @@
                        { tableColumn: 'first_name', comparator: '=', collectionField: 'first_name' },
                        { tableColumn: 'last_name', comparator: '=', collectionField: 'last_name' }
                       ];</code></pre>
-                      <pre class="code prettyprint"><code>return ETL.Plugins.Core.Database.deleteQuery('nextract_sample', 'users', userData, matchCriteria);</code></pre>
+                      <pre class="code prettyprint"><code>return ETL.Plugins.Core.Database.deleteQuery('nextract_sample', 'users', matchCriteria);</code></pre>
                       
                                   </div>
                               </div>
@@ -324,7 +284,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_core_Database_Database.js.html#l346"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:346</code></a>
+                              <a href="../files/build_plugins_core_Database_Database.js.html#l324"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:324</code></a>
                               </p>
                       
                       
@@ -457,7 +417,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_core_Database_Database.js.html#l465"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:465</code></a>
+                              <a href="../files/build_plugins_core_Database_Database.js.html#l443"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:443</code></a>
                               </p>
                       
                       
@@ -577,7 +537,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_core_Database_Database.js.html#l196"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:196</code></a>
+                              <a href="../files/build_plugins_core_Database_Database.js.html#l158"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:158</code></a>
                               </p>
                       
                       
@@ -683,7 +643,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_core_Database_Database.js.html#l232"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:232</code></a>
+                              <a href="../files/build_plugins_core_Database_Database.js.html#l194"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:194</code></a>
                               </p>
                       
                       
@@ -771,9 +731,6 @@
                                               <code>tableName</code>
                                       </li>
                                       <li class="arg">
-                                              <code>collection</code>
-                                      </li>
-                                      <li class="arg">
                                               <code>columnsToUpdate</code>
                                       </li>
                                       <li class="arg">
@@ -783,7 +740,7 @@
                               </div>
                       
                               <span class="returns-inline">
-                                  <span class="type">Promise</span>
+                                  <span class="type">stream.Transform</span>
                               </span>
                       
                       
@@ -795,7 +752,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_core_Database_Database.js.html#l306"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:306</code></a>
+                              <a href="../files/build_plugins_core_Database_Database.js.html#l272"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:272</code></a>
                               </p>
                       
                       
@@ -804,7 +761,7 @@
                       
                           <div class="description">
                               <p>Allows you to run an UPDATE query against a database using data obtained from previous steps. Runs
-                      a query for each row in the collection.</p>
+                      a query for each element in the stream.</p>
                       
                           </div>
                       
@@ -830,17 +787,6 @@
                       
                                           <div class="param-description">
                                               <p>Table name</p>
-                      
-                                          </div>
-                      
-                                      </li>
-                                      <li class="param">
-                                              <code class="param-name">collection</code>
-                                              <span class="type">Array</span>
-                      
-                      
-                                          <div class="param-description">
-                                              <p>The collection to iterate on</p>
                       
                                           </div>
                       
@@ -875,8 +821,8 @@
                                   <h4>Returns:</h4>
                       
                                   <div class="returns-description">
-                                              <span class="type">Promise</span>:
-                                          <p>Promise resolved with the give collection once all queries have completed</p>
+                                              <span class="type">stream.Transform</span>:
+                                          <p>Read/write stream transform to use in conjuction with pipe()</p>
                       
                                   </div>
                               </div>
@@ -886,9 +832,8 @@
                                   <h4>Example:</h4>
                       
                                   <div class="example-content">
-                                      <pre class="code prettyprint"><code>var userData = [ { id: 1, first_name: 'foo' }, {...} ];</code></pre>
-                      <pre class="code prettyprint"><code>var matchCriteria = [{ tableColumn: 'id', comparator: '=', collectionField: 'id' }];</code></pre>
-                      <pre class="code prettyprint"><code>return ETL.Plugins.Core.Database.updateQuery('nextract_sample', 'users', userData, ['first_name'], matchCriteria);</code></pre>
+                                      <pre class="code prettyprint"><code>var matchCriteria = [{ tableColumn: 'id', comparator: '=', collectionField: 'id' }];</code></pre>
+                      <pre class="code prettyprint"><code>return ETL.Plugins.Core.Database.updateQuery('nextract_sample', 'users', ['first_name'], matchCriteria);</code></pre>
                       
                                   </div>
                               </div>

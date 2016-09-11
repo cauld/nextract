@@ -135,9 +135,11 @@
                       
                       var transform = new Nextract(&quot;benchmark&quot;);
                       
+                      console.log(&quot;Starting transform... &quot;, new Date());
+                      
                       transform.loadPlugins(&#x27;Core&#x27;, [&#x27;Database&#x27;, &#x27;Filter&#x27;, &#x27;Calculator&#x27;, &#x27;Sort&#x27;, &#x27;Utils&#x27;, &#x27;Logger&#x27;]).then(function () {
                         //STEP 1: Lets start by selecting out a large set of data
-                        var selectSql = &#x27;select page_id from page LIMIT 100&#x27;;
+                        var selectSql = &#x27;select page_id from page LIMIT 1000000&#x27;;
                         return transform.Plugins.Core.Database.selectQuery(&#x27;nextract_sample&#x27;, selectSql, {});
                       }).then(function (dbDataStream) {
                         //STEP 2: Lets join back to the same table and pickup more rows (yes normally you&#x27;d get them all in the select, but we
@@ -164,9 +166,11 @@
                       
                           //Uncomment to dump the resulting data for debugging
                           //console.log(&quot;resultingData&quot;, resultingData.length);
-                          console.log(&quot;resultingData&quot;, resultingData);
+                          //console.log(&quot;resultingData&quot;, resultingData);
+                        }).on(&#x27;finish&#x27;, function () {
+                          transform.Plugins.Core.Logger.info(&#x27;Transform finished!&#x27;, new Date());
                         }).on(&#x27;end&#x27;, function () {
-                          transform.Plugins.Core.Logger.info(&#x27;Transform finished!&#x27;);
+                          transform.Plugins.Core.Logger.info(&#x27;Transform ended!&#x27;);
                         });
                       }).catch(function (err) {
                         transform.Plugins.Core.Logger.error(&#x27;Transform failed: &#x27;, err);

@@ -16,10 +16,6 @@ var _isArray2 = require('lodash/isArray');
 
 var _isArray3 = _interopRequireDefault(_isArray2);
 
-var _through = require('through2');
-
-var _through2 = _interopRequireDefault(_through);
-
 var _pluginBase = require('../../pluginBase');
 
 var _pluginBase2 = _interopRequireDefault(_pluginBase);
@@ -27,17 +23,17 @@ var _pluginBase2 = _interopRequireDefault(_pluginBase);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 //Instantiate the plugin
+var sortPlugin = new _pluginBase2.default('Sort', 'Core');
+
+//We can't guarantee the order of JavaScript properties and its possible each collection
+//item contains more properties than the ones being requested as part of the insert. So
+//we must handpick them out in the right order here.
 /**
  * Mixes in methods used to sort data
  *
  * @class Nextract.Plugins.Core.Sort
  */
 
-var sortPlugin = new _pluginBase2.default('Sort', 'Core');
-
-//We can't guarantee the order of JavaScript properties and its possible each collection
-//item contains more properties than the ones being requested as part of the insert. So
-//we must handpick them out in the right order here.
 function getInOrderValues(streamElement, columnsToInsert) {
   var inOrderValues = [];
   columnsToInsert.forEach(function (col) {
@@ -51,20 +47,21 @@ function getInOrderValues(streamElement, columnsToInsert) {
 module.exports = {
 
   /**
-   * Sorts a stream of objects
+   * Sorts a stream of objects. Be sure to call Plugins.Core.Sort.sortOut in the pipe()
+   * immediately after the call to sortIn.
    *
    * @method sortIn
    * @for Nextract.Plugins.Core.Sort
    *
    * @example
-   *     someReadableStream.pipe(Plugins.Core.Sort.sortIn(['user', 'age'], ['asc', 'desc']))
+   *     someReadableStream.pipe(transform.Core.Sort.sortIn(['user', 'age'], ['asc', 'desc'])).pipe(transform.Core.Sort.sortOut())
    *
    * @param {Array} propertiesToSortBy An array of properties to sort by
    * @param {Array} ordersToSortBy An array of sort directions. The number of array elements must match
    * the number of elements provided in propertiesToSortBy. The index of each element will be matched against
    * the index of propertiesToSortBy. Valid values are "asc" & "desc".
    *
-   * @return {stream.Transform} Sorted read/write stream transform to use in conjuction with pipe()
+   * @return {stream.Transform} Retuns 1 stream object with information expected as input to sortOut
    */
   sortIn: function sortIn(propertiesToSortBy, ordersToSortBy) {
     if (!(0, _isArray3.default)(propertiesToSortBy) || !(0, _isArray3.default)(ordersToSortBy) || propertiesToSortBy.length !== ordersToSortBy.length) {
@@ -82,7 +79,7 @@ module.exports = {
     have multiple rows.
     */
     function processStreamInput(element, encoding, callback) {
-      var batchAmount = 20;
+      var batchAmount = 100; //This number is still experimental... 100 seems to work best right now.
       var that = this;
 
       if ((0, _isUndefined3.default)(element)) {
@@ -123,8 +120,6 @@ module.exports = {
         } else {
           this.dbInfo.sortInputCount++;
 
-          //console.log(this.dbInfo.sortInputCount, this.elementValuesToInsert.length);
-
           //Add this element to the batch
           this.elementValuesToInsert[this.elementValuesToInsert.length] = getInOrderValues(element, this.dbInfo.columns);
 
@@ -147,6 +142,23 @@ module.exports = {
     return sortPlugin.buildStreamTransform(processStreamInput, null, 'standard');
   },
 
+  /**
+   * Outputs a stream of sorted objects. Must be used in first pipe()
+   * immediately after the call to Plugins.Core.Sort.sortIn to pickup the sorted output.
+   *
+   * @method sortOut
+   * @for Nextract.Plugins.Core.Sort
+   *
+   * @example
+   *     someReadableStream.pipe(transform.Core.Sort.sortIn(['user', 'age'], ['asc', 'desc'])).pipe(transform.Core.Sort.sortOut())
+   *
+   * @param {Array} propertiesToSortBy An array of properties to sort by
+   * @param {Array} ordersToSortBy An array of sort directions. The number of array elements must match
+   * the number of elements provided in propertiesToSortBy. The index of each element will be matched against
+   * the index of propertiesToSortBy. Valid values are "asc" & "desc".
+   *
+   * @return {stream.Transform} Sorted read/write stream transform to use in conjuction with pipe()
+   */
   sortOut: function sortOut() {
     function processStreamInput(element, encoding, callback) {
       var sortInDbInfo = element;
@@ -180,9 +192,7 @@ module.exports = {
       });
     }
 
-    return sortPlugin.buildStreamTransform(processStreamInput, null, 'standard').on('finish', function () {
-      console.log("Finished");
-    });
+    return sortPlugin.buildStreamTransform(processStreamInput, null, 'standard');
   }
 
 };

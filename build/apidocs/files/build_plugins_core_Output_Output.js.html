@@ -128,33 +128,15 @@
                       
                       var outputPlugin = new _pluginBase2.default(&#x27;Input&#x27;, &#x27;Core&#x27;);
                       
-                      //TODO: make this stream... see - http://csv.adaltas.com/stringify/examples/
-                      function writeCsvFile(filePath, data) {
-                        var formattingConfig = arguments.length &lt;= 2 || arguments[2] === undefined ? {} : arguments[2];
+                      //FIXME: Still not working.... see - http://csv.adaltas.com/stringify/examples/
+                      function writeCsvFile(filePath) {
+                        var formattingConfig = arguments.length &lt;= 1 || arguments[1] === undefined ? {} : arguments[1];
                       
-                        return new Promise(function (resolve, reject) {
-                          if (!(0, _isEmpty3.default)(data)) {
-                            //Ref: http://csv.adaltas.com/stringify/
-                            _csv2.default.stringify(data, formattingConfig, function (err, output) {
-                              if (err) {
-                                outputPlugin.logger.error(&#x27;writeTextFile&#x27;, err);
-                                reject(err);
-                              }
                       
-                              _fs2.default.writeFile(filePath, output, function (err) {
-                                if (err) {
-                                  outputPlugin.logger.error(&#x27;writeTextFile&#x27;, err);
-                                  reject(err);
-                                } else {
-                                  resolve();
-                                }
-                              });
-                            });
-                          } else {
-                            outputPlugin.logger.error(&#x27;writeCsvFile&#x27;, &#x27;Input data is empty!&#x27;);
-                            reject(&#x27;Input data is empty!&#x27;);
-                          }
-                        });
+                        var writeStream = _fs2.default.createWriteStream(filePath);
+                        var stringifier = _csv2.default.stringify(formattingConfig);
+                      
+                        return outputPlugin.buildStreamTransform(stringifier, null, &#x27;standard&#x27;).pipe(writeStream);
                       }
                       
                       //TODO: Implement with https://www.npmjs.com/package/excel4node
@@ -208,14 +190,14 @@
                          * 2) If json - the only option is formatting with X number of spaces (e.g.) {spaces: 2}
                          * 3) If excel - see https://www.npmjs.com/package/excel4node
                          */
-                        writeFile: function writeFile(fileType, data, filePath, formattingConfig) {
+                        writeFile: function writeFile(fileType, filePath, formattingConfig) {
                           switch (fileType) {
                             case &#x27;csv&#x27;:
-                              return writeCsvFile(filePath, data, formattingConfig);
+                              return writeCsvFile(filePath, formattingConfig);
                             case &#x27;json&#x27;:
-                              return writeJsonFile(filePath, data, formattingConfig);
+                              return writeJsonFile(filePath, formattingConfig);
                             case &#x27;excel&#x27;:
-                              return writeExcelFile(filePath, data, formattingConfig);
+                              return writeExcelFile(filePath, formattingConfig);
                             default:
                               return new Promise.reject(&quot;Invalid file type given in writeFile!&quot;);
                           }

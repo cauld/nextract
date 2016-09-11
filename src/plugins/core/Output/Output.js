@@ -20,31 +20,13 @@ import pluginBase from '../../pluginBase';
 //Instantiate the plugin
 var outputPlugin = new pluginBase('Input', 'Core');
 
-//TODO: make this stream... see - http://csv.adaltas.com/stringify/examples/
-function writeCsvFile(filePath, data, formattingConfig = {}) {
-  return new Promise(function (resolve, reject) {
-    if (!_.isEmpty(data)) {
-      //Ref: http://csv.adaltas.com/stringify/
-      csv.stringify(data, formattingConfig, function(err, output) {
-        if (err) {
-          outputPlugin.logger.error('writeTextFile', err);
-          reject(err);
-        }
+//FIXME: Still not working.... see - http://csv.adaltas.com/stringify/examples/
+function writeCsvFile(filePath, formattingConfig = {}) {
 
-        fs.writeFile(filePath, output, function (err) {
-          if (err) {
-            outputPlugin.logger.error('writeTextFile', err);
-            reject(err);
-          } else {
-            resolve();
-          }
-        });
-      });
-    } else {
-      outputPlugin.logger.error('writeCsvFile', 'Input data is empty!');
-      reject('Input data is empty!');
-    }
-  });
+  var writeStream = fs.createWriteStream(filePath);
+  var stringifier = csv.stringify(formattingConfig);
+
+  return outputPlugin.buildStreamTransform(stringifier, null, 'standard').pipe(writeStream);
 }
 
 //TODO: Implement with https://www.npmjs.com/package/excel4node
@@ -95,14 +77,14 @@ module.exports = {
    * 2) If json - the only option is formatting with X number of spaces (e.g.) {spaces: 2}
    * 3) If excel - see https://www.npmjs.com/package/excel4node
    */
-  writeFile: function(fileType, data, filePath, formattingConfig) {
+  writeFile: function(fileType, filePath, formattingConfig) {
     switch (fileType) {
       case 'csv':
-        return writeCsvFile(filePath, data, formattingConfig);
+        return writeCsvFile(filePath, formattingConfig);
       case 'json':
-        return writeJsonFile(filePath, data, formattingConfig);
+        return writeJsonFile(filePath, formattingConfig);
       case 'excel':
-        return writeExcelFile(filePath, data, formattingConfig);
+        return writeExcelFile(filePath, formattingConfig);
       default:
         return new Promise.reject("Invalid file type given in writeFile!");
     }

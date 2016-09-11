@@ -40,30 +40,28 @@ function readExcelFile(filePath) {
   });
 }
 
-//TODO: Make this stream... see - http://csv.adaltas.com/parse/examples/
+//Returns csv rows as a stream of objects
 function readCsvFile(filePath, parserConfig = { delimiter: ',', columns: true }) {
-  return new Promise(function (resolve, reject) {
-    //Read the contents of the file into memory
-    fs.readFile(filePath, function (err, fileData) {
-      if (err) {
-        inputPlugin.logger.error('readTextFile', err);
-        reject(err);
-      }
+  var parser,
+      input;
 
-      //Convert buffer to string
-      var input = fileData.toString();
+  parser = csv.parse(parserConfig);
+  input = fs.createReadStream(filePath);
 
-      //Ref: http://csv.adaltas.com/parse/
-      csv.parse(input, parserConfig, function(err, output) {
-        if (err) {
-          inputPlugin.logger.error('readTextFile csv parse', err);
-          reject(err);
-        } else {
-          resolve(output);
-        }
-      });
-    });
-  });
+  function processStreamInput(element, encoding, callback) {
+    callback(null, element);
+  }
+
+  function inputFlush(callback) {
+    //Trying to force an end of data notifcation... doesn't work!
+    this.push(null);
+    parser.end();
+
+    callback();
+  }
+
+  return input.pipe(parser).pipe(inputPlugin.buildStreamTransform(processStreamInput, inputFlush, 'standard'));
+  //return input.pipe(parser);
 }
 
 module.exports = {
@@ -78,14 +76,19 @@ module.exports = {
    * @param {String} fileType Type of file to write; json, csv, or excel
    * @param {String} filePath Full path of file to read (include filename and extension)
    * @param {Object} parserConfig If fileType is "csv" then you can also pass a
-   * parsing definition to handle the specific needs of your csv. If noe custom parserConfig
+   * parsing definition to handle the specific needs of your csv. If no custom parserConfig
    * is given then a default config of { delimiter: ',', columns: true } is used. The parserConfig
    * object allow all paser options supported by cvs-parse (http://csv.adaltas.com/parse/).
    */
   readFile: function(fileType, filePath, parserConfig = null) {
     switch (fileType) {
       case 'csv':
-        return readCsvFile(filePath, parserConfig);
+        if (parserConfig === null) {
+          //Don't pass null along since readCsvFile has a more proper default when not overridden
+          return readCsvFile(filePath);
+        } else {
+          return readCsvFile(filePath, parserConfig);
+        }
       case 'json':
         return readJsonFile(filePath);
       case 'excel':

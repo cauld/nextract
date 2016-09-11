@@ -6,7 +6,6 @@
 
 import _ from 'lodash';
 import { isUndefined, isArray, values, keys, flatten } from 'lodash/fp';
-import through2 from 'through2';
 import pluginBase from '../../pluginBase';
 
 //Instantiate the plugin
@@ -28,20 +27,21 @@ function getInOrderValues(streamElement, columnsToInsert) {
 module.exports = {
 
   /**
-   * Sorts a stream of objects
+   * Sorts a stream of objects. Be sure to call Plugins.Core.Sort.sortOut in the pipe()
+   * immediately after the call to sortIn.
    *
    * @method sortIn
    * @for Nextract.Plugins.Core.Sort
    *
    * @example
-   *     someReadableStream.pipe(Plugins.Core.Sort.sortIn(['user', 'age'], ['asc', 'desc']))
+   *     someReadableStream.pipe(transform.Core.Sort.sortIn(['user', 'age'], ['asc', 'desc'])).pipe(transform.Core.Sort.sortOut())
    *
    * @param {Array} propertiesToSortBy An array of properties to sort by
    * @param {Array} ordersToSortBy An array of sort directions. The number of array elements must match
    * the number of elements provided in propertiesToSortBy. The index of each element will be matched against
    * the index of propertiesToSortBy. Valid values are "asc" & "desc".
    *
-   * @return {stream.Transform} Sorted read/write stream transform to use in conjuction with pipe()
+   * @return {stream.Transform} Retuns 1 stream object with information expected as input to sortOut
    */
   sortIn: function(propertiesToSortBy, ordersToSortBy) {
     if (!_.isArray(propertiesToSortBy) || !_.isArray(ordersToSortBy) || propertiesToSortBy.length !== ordersToSortBy.length) {
@@ -59,7 +59,7 @@ module.exports = {
     have multiple rows.
     */
     function processStreamInput(element, encoding, callback) {
-      var batchAmount = 20;
+      var batchAmount = 100; //This number is still experimental... 100 seems to work best right now.
       var that = this;
 
       if (_.isUndefined(element)) {
@@ -100,8 +100,6 @@ module.exports = {
         } else {
           this.dbInfo.sortInputCount++;
 
-          //console.log(this.dbInfo.sortInputCount, this.elementValuesToInsert.length);
-
           //Add this element to the batch
           this.elementValuesToInsert[this.elementValuesToInsert.length] = getInOrderValues(element, this.dbInfo.columns);
 
@@ -124,6 +122,23 @@ module.exports = {
     return sortPlugin.buildStreamTransform(processStreamInput, null, 'standard');
   },
 
+  /**
+   * Outputs a stream of sorted objects. Must be used in first pipe()
+   * immediately after the call to Plugins.Core.Sort.sortIn to pickup the sorted output.
+   *
+   * @method sortOut
+   * @for Nextract.Plugins.Core.Sort
+   *
+   * @example
+   *     someReadableStream.pipe(transform.Core.Sort.sortIn(['user', 'age'], ['asc', 'desc'])).pipe(transform.Core.Sort.sortOut())
+   *
+   * @param {Array} propertiesToSortBy An array of properties to sort by
+   * @param {Array} ordersToSortBy An array of sort directions. The number of array elements must match
+   * the number of elements provided in propertiesToSortBy. The index of each element will be matched against
+   * the index of propertiesToSortBy. Valid values are "asc" & "desc".
+   *
+   * @return {stream.Transform} Sorted read/write stream transform to use in conjuction with pipe()
+   */
   sortOut: function() {
     function processStreamInput(element, encoding, callback) {
       var sortInDbInfo = element;
@@ -157,9 +172,7 @@ module.exports = {
       });
     }
 
-    return sortPlugin.buildStreamTransform(processStreamInput, null, 'standard').on( 'finish', function(){
-    console.log("Finished");
-  });
+    return sortPlugin.buildStreamTransform(processStreamInput, null, 'standard');
   }
 
 };

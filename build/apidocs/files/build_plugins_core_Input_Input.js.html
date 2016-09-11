@@ -145,32 +145,29 @@
                         });
                       }
                       
-                      //TODO: Make this stream... see - http://csv.adaltas.com/parse/examples/
+                      //Returns csv rows as a stream of objects
                       function readCsvFile(filePath) {
                         var parserConfig = arguments.length &lt;= 1 || arguments[1] === undefined ? { delimiter: &#x27;,&#x27;, columns: true } : arguments[1];
                       
-                        return new Promise(function (resolve, reject) {
-                          //Read the contents of the file into memory
-                          _fs2.default.readFile(filePath, function (err, fileData) {
-                            if (err) {
-                              inputPlugin.logger.error(&#x27;readTextFile&#x27;, err);
-                              reject(err);
-                            }
+                        var parser, input;
                       
-                            //Convert buffer to string
-                            var input = fileData.toString();
+                        parser = _csv2.default.parse(parserConfig);
+                        input = _fs2.default.createReadStream(filePath);
                       
-                            //Ref: http://csv.adaltas.com/parse/
-                            _csv2.default.parse(input, parserConfig, function (err, output) {
-                              if (err) {
-                                inputPlugin.logger.error(&#x27;readTextFile csv parse&#x27;, err);
-                                reject(err);
-                              } else {
-                                resolve(output);
-                              }
-                            });
-                          });
-                        });
+                        function processStreamInput(element, encoding, callback) {
+                          callback(null, element);
+                        }
+                      
+                        function inputFlush(callback) {
+                          //Trying to force an end of data notifcation... doesn&#x27;t work!
+                          this.push(null);
+                          parser.end();
+                      
+                          callback();
+                        }
+                      
+                        return input.pipe(parser).pipe(inputPlugin.buildStreamTransform(processStreamInput, inputFlush, &#x27;standard&#x27;));
+                        //return input.pipe(parser);
                       }
                       
                       module.exports = {
@@ -185,7 +182,7 @@
                          * @param {String} fileType Type of file to write; json, csv, or excel
                          * @param {String} filePath Full path of file to read (include filename and extension)
                          * @param {Object} parserConfig If fileType is &quot;csv&quot; then you can also pass a
-                         * parsing definition to handle the specific needs of your csv. If noe custom parserConfig
+                         * parsing definition to handle the specific needs of your csv. If no custom parserConfig
                          * is given then a default config of { delimiter: &#x27;,&#x27;, columns: true } is used. The parserConfig
                          * object allow all paser options supported by cvs-parse (http://csv.adaltas.com/parse/).
                          */
@@ -194,7 +191,12 @@
                       
                           switch (fileType) {
                             case &#x27;csv&#x27;:
-                              return readCsvFile(filePath, parserConfig);
+                              if (parserConfig === null) {
+                                //Don&#x27;t pass null along since readCsvFile has a more proper default when not overridden
+                                return readCsvFile(filePath);
+                              } else {
+                                return readCsvFile(filePath, parserConfig);
+                              }
                             case &#x27;json&#x27;:
                               return readJsonFile(filePath);
                             case &#x27;excel&#x27;:

@@ -44,9 +44,11 @@ EP.keys.add(etlJobSteps);
 
 var transform = new Nextract("benchmark");
 
+console.log("Starting transform... ", new Date());
+
 transform.loadPlugins('Core', ['Database', 'Filter', 'Calculator', 'Sort', 'Utils', 'Logger']).then(function () {
   //STEP 1: Lets start by selecting out a large set of data
-  var selectSql = 'select page_id from page LIMIT 100';
+  var selectSql = 'select page_id from page LIMIT 1000000';
   return transform.Plugins.Core.Database.selectQuery('nextract_sample', selectSql, {});
 }).then(function (dbDataStream) {
   //STEP 2: Lets join back to the same table and pickup more rows (yes normally you'd get them all in the select, but we
@@ -73,9 +75,11 @@ transform.loadPlugins('Core', ['Database', 'Filter', 'Calculator', 'Sort', 'Util
 
     //Uncomment to dump the resulting data for debugging
     //console.log("resultingData", resultingData.length);
-    console.log("resultingData", resultingData);
+    //console.log("resultingData", resultingData);
+  }).on('finish', function () {
+    transform.Plugins.Core.Logger.info('Transform finished!', new Date());
   }).on('end', function () {
-    transform.Plugins.Core.Logger.info('Transform finished!');
+    transform.Plugins.Core.Logger.info('Transform ended!');
   });
 }).catch(function (err) {
   transform.Plugins.Core.Logger.error('Transform failed: ', err);
