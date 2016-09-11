@@ -26,6 +26,8 @@ function doLodashPassthrough(lodashMethod, firstPropOrVal, secondPropOrVal) {
   var propertyToUpdateOrAdd = arguments.length <= 3 || arguments[3] === undefined ? '' : arguments[3];
 
   var streamFunction = function streamFunction(element, index) {
+    if (_.isUndefined(element)) return;
+
     var v1 = _.isString(firstPropOrVal) && _.has(element, firstPropOrVal) ? element[firstPropOrVal] : Number(firstPropOrVal);
     var v2 = _.isString(secondPropOrVal) && _.has(element, secondPropOrVal) ? element[secondPropOrVal] : Number(secondPropOrVal);
 

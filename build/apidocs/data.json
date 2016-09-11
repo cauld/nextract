@@ -95,7 +95,9 @@
         "build/plugins/core/Database/Database.js": {
             "name": "build/plugins/core/Database/Database.js",
             "modules": {},
-            "classes": {},
+            "classes": {
+                "Nextract.Plugins.Core.Database": 1
+            },
             "fors": {
                 "Nextract.Plugins.Core.Database": 1
             },
@@ -215,7 +217,10 @@
             "plugins": [],
             "extensions": [],
             "plugin_for": [],
-            "extension_for": []
+            "extension_for": [],
+            "file": "build/plugins/core/Database/Database.js",
+            "line": 57,
+            "description": "Mixes in methods used to work with a database"
         },
         "Nextract.Plugins.Core.Filter": {
             "name": "Nextract.Plugins.Core.Filter",
@@ -271,7 +276,7 @@
             "plugin_for": [],
             "extension_for": [],
             "file": "build/plugins/core/Sort/Sort.js",
-            "line": 25,
+            "line": 30,
             "description": "Mixes in methods used to sort data"
         },
         "Nextract.Plugins.Core.Utils": {
@@ -292,7 +297,7 @@
             "plugin_for": [],
             "extension_for": [],
             "file": "build/plugins/pluginBase.js",
-            "line": 83,
+            "line": 79,
             "description": "The base plugin class that all plugins inherit from"
         },
         "Nextract": {
@@ -375,7 +380,7 @@
         },
         {
             "file": "build/plugins/core/Calculator/Calculator.js",
-            "line": 46,
+            "line": 48,
             "description": "Operates on a stream adding two numbers and/or object properties",
             "itemtype": "method",
             "name": "add",
@@ -407,7 +412,7 @@
         },
         {
             "file": "build/plugins/core/Calculator/Calculator.js",
-            "line": 64,
+            "line": 66,
             "description": "Operates on a stream subtracting two numbers and/or object properties",
             "itemtype": "method",
             "name": "subtract",
@@ -444,7 +449,7 @@
         },
         {
             "file": "build/plugins/core/Calculator/Calculator.js",
-            "line": 83,
+            "line": 85,
             "description": "Operates on a stream multiplying two numbers and/or object properties",
             "itemtype": "method",
             "name": "multiply",
@@ -476,7 +481,7 @@
         },
         {
             "file": "build/plugins/core/Calculator/Calculator.js",
-            "line": 101,
+            "line": 103,
             "description": "Operates on a stream dividing two numbers and/or object properties",
             "itemtype": "method",
             "name": "divide",
@@ -508,7 +513,7 @@
         },
         {
             "file": "build/plugins/core/Calculator/Calculator.js",
-            "line": 119,
+            "line": 121,
             "description": "Operates on a stream concatenating strings and/or object properties",
             "itemtype": "method",
             "name": "concat",
@@ -540,7 +545,7 @@
         },
         {
             "file": "build/plugins/core/Database/Database.js",
-            "line": 182,
+            "line": 196,
             "description": "Raw query interface",
             "itemtype": "method",
             "name": "rawQuery",
@@ -574,7 +579,7 @@
         },
         {
             "file": "build/plugins/core/Database/Database.js",
-            "line": 219,
+            "line": 232,
             "description": "Query interface for select statements",
             "itemtype": "method",
             "name": "selectQuery",
@@ -608,7 +613,7 @@
         },
         {
             "file": "build/plugins/core/Database/Database.js",
-            "line": 256,
+            "line": 274,
             "description": "Allows you to run an DELETE query against a database using data obtained from previous steps. Runs\na query for each row in the collection.",
             "itemtype": "method",
             "name": "deleteQuery",
@@ -651,7 +656,7 @@
         },
         {
             "file": "build/plugins/core/Database/Database.js",
-            "line": 288,
+            "line": 306,
             "description": "Allows you to run an UPDATE query against a database using data obtained from previous steps. Runs\na query for each row in the collection.",
             "itemtype": "method",
             "name": "updateQuery",
@@ -695,7 +700,7 @@
         },
         {
             "file": "build/plugins/core/Database/Database.js",
-            "line": 328,
+            "line": 346,
             "description": "Insert query for collections. Will insert each collection item into a database table.\nUses batched inserts for performance gains.",
             "itemtype": "method",
             "name": "insertQuery",
@@ -739,14 +744,14 @@
         },
         {
             "file": "build/plugins/core/Database/Database.js",
-            "line": 435,
+            "line": 467,
             "description": "Allows you to run a select query against a database using data obtained from previous steps. Runs\na query for each row in the collection. The collection will be returned with the properties of the\noriginal item data + the properties of the joined data.  Optionally returns all or just matched rows.",
             "itemtype": "method",
             "name": "joinQuery",
             "example": [
                 "\n    var joinSQL = 'select first_name, last_name from users where id = :id';",
                 "\n    var joinColumnsToReturn = ['first_name', 'last_name'];",
-                "\n    ETL.Plugins.Core.Database.joinQuery('nextract_sample', joinSQL, queryResults, true, joinColumnsToReturn);"
+                "\n    ETL.Plugins.Core.Database.joinQuery(streamElement, 'nextract_sample', joinSQL, queryResults, true, joinColumnsToReturn);"
             ],
             "params": [
                 {
@@ -758,11 +763,6 @@
                     "name": "sqlStatment",
                     "description": "The sql to run for each row in the collection. The WHERE clause should contain\nsome :propertyName reference to match on against the current row. The query must return only 1 matching row.",
                     "type": "String"
-                },
-                {
-                    "name": "collection",
-                    "description": "The collection to iterate on",
-                    "type": "Array"
                 },
                 {
                     "name": "returnedUnmatched",
@@ -1158,12 +1158,12 @@
         },
         {
             "file": "build/plugins/core/Sort/Sort.js",
-            "line": 33,
+            "line": 53,
             "description": "Sorts a stream of objects",
             "itemtype": "method",
-            "name": "sortBy",
+            "name": "sortIn",
             "example": [
-                "\n    someReadableStream.pipe(Plugins.Core.Sort.sortBy(['user', 'age'], ['asc', 'desc']))"
+                "\n    someReadableStream.pipe(Plugins.Core.Sort.sortIn(['user', 'age'], ['asc', 'desc']))"
             ],
             "params": [
                 {
@@ -1251,7 +1251,7 @@
         },
         {
             "file": "build/plugins/pluginBase.js",
-            "line": 125,
+            "line": 137,
             "description": "Plugin name",
             "itemtype": "property",
             "name": "pluginName",
@@ -1260,7 +1260,7 @@
         },
         {
             "file": "build/plugins/pluginBase.js",
-            "line": 134,
+            "line": 146,
             "description": "Plugin type (Core or Vendor)",
             "itemtype": "property",
             "name": "pluginType",
@@ -1269,7 +1269,7 @@
         },
         {
             "file": "build/plugins/pluginBase.js",
-            "line": 143,
+            "line": 155,
             "description": "Core system functionality is namespaced under this ETL object",
             "itemtype": "property",
             "name": "ETL",
@@ -1278,7 +1278,7 @@
         },
         {
             "file": "build/plugins/pluginBase.js",
-            "line": 151,
+            "line": 163,
             "description": "Provides convient access to the core system config variables",
             "itemtype": "property",
             "name": "ETL.config",
@@ -1287,7 +1287,7 @@
         },
         {
             "file": "build/plugins/pluginBase.js",
-            "line": 160,
+            "line": 172,
             "description": "Provides convient access to core logging functionality",
             "itemtype": "property",
             "name": "ELT.logger",
@@ -1296,7 +1296,7 @@
         },
         {
             "file": "build/plugins/pluginBase.js",
-            "line": 170,
+            "line": 182,
             "description": "Provides access to internal sqlite3 database. Allows plugins to run raw queries as needed\nto create tables, query them, cleanup,etc.",
             "itemtype": "method",
             "name": "runInternalQuery",
@@ -1335,7 +1335,7 @@
         },
         {
             "file": "build/plugins/pluginBase.js",
-            "line": 208,
+            "line": 220,
             "description": "Convinence method used by plugins to run code in a background web worker thread. A worker\nscript must exist in the same directory as the plugin itself with a name of Worker.js. The\nformat of the worker script must match the one defined by the npm workerjs module -\nhttps://www.npmjs.com/package/workerjs#node-mode---allowing-require",
             "itemtype": "method",
             "name": "runInWorker",
@@ -1358,7 +1358,7 @@
         },
         {
             "file": "build/plugins/pluginBase.js",
-            "line": 256,
+            "line": 268,
             "description": "Accepts a stream transform function that conforms to the through2.obj stream wrapper\nAPI. Caller can choose to use through2 or one of the through2 helper modules (map, filter, spy).\nFor more information see - https://github.com/rvagg/through2.",
             "itemtype": "method",
             "name": "buildStreamTransform",
@@ -1391,7 +1391,7 @@
         },
         {
             "file": "build/plugins/pluginBase.js",
-            "line": 302,
+            "line": 314,
             "description": "Some streams require a more traditional blocking like operation (e.g.) Sort, Group By, etc. We\nwant to process the stream and return back a stream without breaking the stream pipe or giving\nthe appearance of a blocking action.  This method will take the first item of a stream and use it\nto create a temporary table in our internal database by inspecting its keys and values.",
             "itemtype": "method",
             "name": "createTemporaryTableForStream",
@@ -1418,7 +1418,7 @@
         },
         {
             "file": "build/plugins/pluginBase.js",
-            "line": 367,
+            "line": 379,
             "description": "Some streams require a more traditional blocking like operation (e.g.) Sort, Group By, etc. We\nwant to process the stream and return back a stream without breaking the stream pipe or giving\nthe appearance of a blocking action.  This method will take the first item of a stream and use it\nto create a boilerplate INSERT statement for all items in a stream. Par this method with\ncreateTemporaryTableForStream.",
             "itemtype": "method",
             "name": "getBoilerplateStreamInsertStatement",
@@ -1435,12 +1435,23 @@
                     "name": "streamFunction",
                     "description": "The first object/element of a stream",
                     "type": "Object"
+                },
+                {
+                    "name": "escapeColumnNames",
+                    "description": "If true columns names are escaped (e.g.) `column_foo`",
+                    "type": "Boolean"
                 }
             ],
             "return": {
                 "description": "Returns the boilerplate INSERT statement with \"?\" value placeholders",
                 "type": "String"
             },
+            "class": "Nextract.PluginBase"
+        },
+        {
+            "file": "build/plugins/pluginBase.js",
+            "line": 430,
+            "description": "TBD...",
             "class": "Nextract.PluginBase"
         },
         {
@@ -1576,6 +1587,10 @@
         {
             "message": "Missing item type\nWinston logging config\nReferences:\n- https://github.com/winstonjs/winston\n- http://stackoverflow.com/a/23330037\n- http://stackoverflow.com/a/25233851",
             "line": " build/plugins/core/Logger/Logger.js:15"
+        },
+        {
+            "message": "Missing item type\nTBD...",
+            "line": " build/plugins/pluginBase.js:430"
         }
     ]
 }

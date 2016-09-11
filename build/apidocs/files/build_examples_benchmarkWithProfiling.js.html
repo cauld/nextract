@@ -98,23 +98,27 @@
                       var path = require(&#x27;path&#x27;),
                           Nextract = require(path.resolve(__dirname, &#x27;../nextract&#x27;));
                       
+                      /*
                       //Profiler loads up and EP object into the global space
                       require(&#x27;easy-profiler&#x27;);
                       
                       function runStep(stepKey, stepPromise) {
-                        return new Promise(function (resolve) {
+                        return new Promise(function(resolve) {
                           EP.begin(EP.keys[stepKey]);
                       
-                          stepPromise.then(function (stepData) {
-                            EP.end(EP.keys[stepKey]);
-                            resolve(stepData);
-                          });
+                          stepPromise
+                            .then(function(stepData) {
+                              EP.end(EP.keys[stepKey]);
+                              resolve(stepData);
+                            });
                         });
                       }
+                      */
                       
                       /* Main */
                       
                       //Give each step a unique key and friendly name/desc
+                      /*
                       var etlJobSteps = {
                         STEP_1: &quot;Query db for page data&quot;,
                         STEP_2: &quot;Join db for more page data&quot;,
@@ -127,60 +131,45 @@
                       
                       //Register step keys
                       EP.keys.add(etlJobSteps);
+                      */
                       
-                      var etlJob = new Nextract();
+                      var transform = new Nextract(&quot;benchmark&quot;);
                       
-                      etlJob.loadPlugins(&#x27;Core&#x27;, [&#x27;Database&#x27;, &#x27;Filter&#x27;, &#x27;Calculator&#x27;, &#x27;Sort&#x27;, &#x27;Utils&#x27;, &#x27;Logger&#x27;]).then(function () {
+                      transform.loadPlugins(&#x27;Core&#x27;, [&#x27;Database&#x27;, &#x27;Filter&#x27;, &#x27;Calculator&#x27;, &#x27;Sort&#x27;, &#x27;Utils&#x27;, &#x27;Logger&#x27;]).then(function () {
                         //STEP 1: Lets start by selecting out a large set of data
                         var selectSql = &#x27;select page_id from page LIMIT 100&#x27;;
-                        var stepPromise = etlJob.Plugins.Core.Database.selectQuery(&#x27;nextract_sample&#x27;, selectSql);
-                      
-                        return runStep(&#x27;STEP_1&#x27;, stepPromise);
-                      }).then(function (pageData) {
+                        return transform.Plugins.Core.Database.selectQuery(&#x27;nextract_sample&#x27;, selectSql, {});
+                      }).then(function (dbDataStream) {
                         //STEP 2: Lets join back to the same table and pickup more rows (yes normally you&#x27;d get them all in the select, but we
                         //want to simulate a lot of joins.
-                        var joinSQL = &#x27;select page_namespace, page_title, page_restrictions, page_counter, page_is_redirect, page_is_new, page_random,&#x27; + &#x27;page_touched, page_latest, page_len from page where page_id = :page_id&#x27;;
-                        var stepPromise = etlJob.Plugins.Core.Database.joinQuery(&#x27;nextract_sample&#x27;, joinSQL, pageData, false);
+                        var step2JoinSQL = &#x27;select page_namespace, page_title, page_counter, page_is_redirect, page_is_new, page_random,&#x27; + &#x27;page_touched, page_latest, page_len from page where page_id = :page_id&#x27;;
                       
-                        return runStep(&#x27;STEP_2&#x27;, stepPromise);
-                      }).then(function (pageData) {
+                        var step7ColumnsToInsert = [&#x27;page_title&#x27;, &#x27;page_counter&#x27;, &#x27;page_random&#x27;, &#x27;page_latest&#x27;, &#x27;page_len&#x27;];
+                      
+                        dbDataStream.pipe(transform.Plugins.Core.Database.joinQuery(&#x27;nextract_sample&#x27;, step2JoinSQL, false))
                         //STEP 3: ETL operations are most often performed on the entire collection. Here we are taking the page_counter of each collection item
                         //and raising it by 100.  We could choose to store this new value in new collection properity or simply overwrite the existing one.
                         //Here we&#x27;ll just overwrite the existing one.
-                        var stepPromise = etlJob.Plugins.Core.Calculator.add(pageData, &#x27;page_counter&#x27;, 100, &#x27;page_counter&#x27;);
-                      
-                        return runStep(&#x27;STEP_3&#x27;, stepPromise);
-                      }).then(function (pageData) {
+                        .pipe(transform.Plugins.Core.Calculator.add(&#x27;page_counter&#x27;, 100, &#x27;page_counter&#x27;))
                         //STEP 4: It is always best to reduce the collection down to only the data you really need for performance reasons.
                         //So here we pick out only a subject of the current collection properties.
-                        var propertiesOfInterest = [&#x27;page_title&#x27;, &#x27;page_counter&#x27;, &#x27;page_random&#x27;, &#x27;page_latest&#x27;, &#x27;page_len&#x27;];
-                        var stepPromise = etlJob.Plugins.Core.Utils.pluckProperties(pageData, propertiesOfInterest);
-                      
-                        return runStep(&#x27;STEP_4&#x27;, stepPromise);
-                      }).then(function (pageData) {
+                        .pipe(transform.Plugins.Core.Utils.pluckProperties([&#x27;page_title&#x27;, &#x27;page_counter&#x27;, &#x27;page_random&#x27;, &#x27;page_latest&#x27;, &#x27;page_len&#x27;]))
                         //STEP 5: Sort the data
-                        var stepPromise = etlJob.Plugins.Core.Sort.sortBy(pageData, &#x27;page_title&#x27;);
-                      
-                        return runStep(&#x27;STEP_5&#x27;, stepPromise);
-                      }).then(function (pageData) {
+                        .pipe(transform.Plugins.Core.Sort.sortIn([&#x27;page_title&#x27;], [&#x27;asc&#x27;])).pipe(transform.Plugins.Core.Sort.sortOut())
                         //STEP 6: Filter collection for records with page_counter &gt; 200
-                        var stepPromise = etlJob.Plugins.Core.Filter.greaterThan(pageData, &#x27;page_counter&#x27;, 200);
-                      
-                        return runStep(&#x27;STEP_6&#x27;, stepPromise);
-                      }).then(function (pageData) {
+                        .pipe(transform.Plugins.Core.Filter.greaterThan(&#x27;page_counter&#x27;, 10))
                         //STEP 7: Insert into a 2nd database (to demo cross db support)
-                        var columnsToInsert = [&#x27;page_title&#x27;, &#x27;page_counter&#x27;, &#x27;page_random&#x27;, &#x27;page_latest&#x27;, &#x27;page_len&#x27;];
-                        var stepPromise = etlJob.Plugins.Core.Database.insertQuery(&#x27;nextract_pg_sample&#x27;, &#x27;page&#x27;, pageData, columnsToInsert);
+                        .pipe(transform.Plugins.Core.Database.insertQuery(&#x27;nextract_pg_sample&#x27;, &#x27;page&#x27;, step7ColumnsToInsert)).on(&#x27;data&#x27;, function (resultingData) {
+                          //NOTE: This listener must exist, even if it does nothing. Otherwise, the end event is not fired.
                       
-                        return runStep(&#x27;STEP_7&#x27;, stepPromise);
-                      }).then(function () {
-                        var d = new Date();
-                        etlJob.Plugins.Core.Logger.info(&#x27;ETL job complete!&#x27;, d);
-                      
-                        //Print the final profiling report
-                        EP.report(true);
+                          //Uncomment to dump the resulting data for debugging
+                          //console.log(&quot;resultingData&quot;, resultingData.length);
+                          console.log(&quot;resultingData&quot;, resultingData);
+                        }).on(&#x27;end&#x27;, function () {
+                          transform.Plugins.Core.Logger.info(&#x27;Transform finished!&#x27;);
+                        });
                       }).catch(function (err) {
-                        etlJob.Plugins.Core.Logger.error(&#x27;ETL process failed:&#x27;, err);
+                        transform.Plugins.Core.Logger.error(&#x27;Transform failed: &#x27;, err);
                       });
                       
                           </pre>

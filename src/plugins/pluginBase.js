@@ -16,8 +16,6 @@ import throughFilter from 'through2-filter';
 import throughMap from 'through2-map';
 import throughReduce from 'through2-reduce';
 import throughSpy from 'through2-spy';
-import uuid from 'node-uuid';
-import md5 from 'md5';
 
 var sqlite3 = require('sqlite3').verbose();
 
@@ -37,9 +35,25 @@ function getInternalDbInstance() {
     //https://github.com/mapbox/node-sqlite3/issues/9
     //http://www.sqlite.org/pragma.html#pragma_journal_mode
     internalDbConnectionInstance.run('PRAGMA journal_mode = WAL;');
+
+    //Turn on autovacuum
+    //https://www.techonthenet.com/sqlite/auto_vacuum.php
+    internalDbConnectionInstance.run('PRAGMA main.auto_vacuum = 1;');
   }
 
   return internalDbConnectionInstance;
+}
+
+//Based on http://stackoverflow.com/a/1349462
+function getRandomTemporaryTableName() {
+  var charSet = 'abcdefghijklmnopqrstuvwxyz_';
+  var randomString = '';
+  for (let i = 0; i < 50; i++) {
+  	var randomPoz = Math.floor(Math.random() * charSet.length);
+  	randomString += charSet.substring(randomPoz,randomPoz + 1);
+  }
+
+  return randomString;
 }
 
 
@@ -247,7 +261,7 @@ var PluginBase = function(pluginName = null, pluginType = null) {
    */
   this.createTemporaryTableForStream = function(streamElement, callback) {
     var createTableSql,
-        temporaryTableName = md5(uuid.v4()),
+        temporaryTableName = getRandomTemporaryTableName(),
         columnDefs = [];
 
     //Note: Sqlite doesn't really have standard data types.  It has type affinity instead so out guesses
@@ -308,10 +322,11 @@ var PluginBase = function(pluginName = null, pluginType = null) {
    *
    * @param {String} temporaryTableName The temporary table name created by a call to createTemporaryTableForStream
    * @param {Object} streamFunction The first object/element of a stream
+   * @param {Boolean} escapeColumnNames If true columns names are escaped (e.g.) `column_foo`
    *
    * @return {String} Returns the boilerplate INSERT statement with "?" value placeholders
    */
-  this.getBoilerplateStreamInsertStatement = function(temporaryTableName, element) {
+  this.getBoilerplateStreamInsertStatement = function(temporaryTableName, element, escapeColumnNames = true) {
     var keys,
         replaceMarks,
         valueReplacementString,
@@ -329,10 +344,53 @@ var PluginBase = function(pluginName = null, pluginType = null) {
     valueReplacementString = replaceMarks.join(',');
 
     //Wrap the property name to be safe
-    columns = keys.map(v => '`' + v + '`');
+    if (escapeColumnNames === true) {
+      columns = keys.map(v => '`' + v + '`');
+    } else {
+      columns = keys.map(v => v);
+    }
+
     columnReplacementString = columns.join(',');
 
     insertSql = 'INSERT INTO ' + temporaryTableName + ' (' + columnReplacementString + ') VALUES (' + valueReplacementString + ')';
+
+    return insertSql;
+  };
+
+  /**
+   * TBD...
+   */
+  this.getBoilerplateStreamBulkInsertStatement = function(temporaryTableName, firstElement, batchCount, escapeColumnNames = true) {
+    var keys,
+        batchValues,
+        valuesPlaceholder,
+        valueReplacementString,
+        columns,
+        columnReplacementString,
+        insertSql;
+
+    keys = _.keys(firstElement);
+
+    //Build the columns replacement string
+
+    //Wrap the property name to be safe
+    if (escapeColumnNames === true) {
+      columns = keys.map(v => '`' + v + '`');
+    } else {
+      columns = keys.map(v => v);
+    }
+
+    columnReplacementString = columns.join(',');
+
+    //Build the values replacement string
+    valuesPlaceholder = '(' + _.repeat('?', columns.length).split('').join(',') +  ')';
+    batchValues = [];
+    for (let i=0; i<batchCount; i++) {
+      batchValues[batchValues.length] = valuesPlaceholder;
+    }
+    valueReplacementString = batchValues.join(', ');
+
+    insertSql = 'INSERT INTO ' + temporaryTableName + ' (' + columnReplacementString + ') VALUES ' + valueReplacementString;
 
     return insertSql;
   };

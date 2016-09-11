@@ -19,6 +19,8 @@ var calculatorPlugin = new pluginBase('Calculator', 'Core');
 //Many of the common calc operations can flow through lodash so this is a shared wrapper
 function doLodashPassthrough(lodashMethod, firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd = '') {
   var streamFunction = function(element, index) {
+    if (_.isUndefined(element)) return;
+
     var v1 = _.isString(firstPropOrVal) && _.has(element, firstPropOrVal) ? element[firstPropOrVal] : Number(firstPropOrVal);
     var v2 = _.isString(secondPropOrVal) && _.has(element, secondPropOrVal) ? element[secondPropOrVal] : Number(secondPropOrVal);
 

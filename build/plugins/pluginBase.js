@@ -1,5 +1,9 @@
 'use strict';
 
+var _repeat2 = require('lodash/repeat');
+
+var _repeat3 = _interopRequireDefault(_repeat2);
+
 var _keys2 = require('lodash/keys');
 
 var _keys3 = _interopRequireDefault(_keys2);
@@ -68,14 +72,6 @@ var _through2Spy = require('through2-spy');
 
 var _through2Spy2 = _interopRequireDefault(_through2Spy);
 
-var _nodeUuid = require('node-uuid');
-
-var _nodeUuid2 = _interopRequireDefault(_nodeUuid);
-
-var _md = require('md5');
-
-var _md2 = _interopRequireDefault(_md);
-
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -103,9 +99,25 @@ function getInternalDbInstance() {
     //https://github.com/mapbox/node-sqlite3/issues/9
     //http://www.sqlite.org/pragma.html#pragma_journal_mode
     internalDbConnectionInstance.run('PRAGMA journal_mode = WAL;');
+
+    //Turn on autovacuum
+    //https://www.techonthenet.com/sqlite/auto_vacuum.php
+    internalDbConnectionInstance.run('PRAGMA main.auto_vacuum = 1;');
   }
 
   return internalDbConnectionInstance;
+}
+
+//Based on http://stackoverflow.com/a/1349462
+function getRandomTemporaryTableName() {
+  var charSet = 'abcdefghijklmnopqrstuvwxyz_';
+  var randomString = '';
+  for (var i = 0; i < 50; i++) {
+    var randomPoz = Math.floor(Math.random() * charSet.length);
+    randomString += charSet.substring(randomPoz, randomPoz + 1);
+  }
+
+  return randomString;
 }
 
 var PluginBase = function PluginBase() {
@@ -318,7 +330,7 @@ var PluginBase = function PluginBase() {
    */
   this.createTemporaryTableForStream = function (streamElement, callback) {
     var createTableSql,
-        temporaryTableName = (0, _md2.default)(_nodeUuid2.default.v4()),
+        temporaryTableName = getRandomTemporaryTableName(),
         columnDefs = [];
 
     //Note: Sqlite doesn't really have standard data types.  It has type affinity instead so out guesses
@@ -379,10 +391,13 @@ var PluginBase = function PluginBase() {
    *
    * @param {String} temporaryTableName The temporary table name created by a call to createTemporaryTableForStream
    * @param {Object} streamFunction The first object/element of a stream
+   * @param {Boolean} escapeColumnNames If true columns names are escaped (e.g.) `column_foo`
    *
    * @return {String} Returns the boilerplate INSERT statement with "?" value placeholders
    */
   this.getBoilerplateStreamInsertStatement = function (temporaryTableName, element) {
+    var escapeColumnNames = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
+
     var keys, replaceMarks, valueReplacementString, columns, columnReplacementString, insertSql;
 
     keys = (0, _keys3.default)(element);
@@ -395,12 +410,57 @@ var PluginBase = function PluginBase() {
     valueReplacementString = replaceMarks.join(',');
 
     //Wrap the property name to be safe
-    columns = keys.map(function (v) {
-      return '`' + v + '`';
-    });
+    if (escapeColumnNames === true) {
+      columns = keys.map(function (v) {
+        return '`' + v + '`';
+      });
+    } else {
+      columns = keys.map(function (v) {
+        return v;
+      });
+    }
+
     columnReplacementString = columns.join(',');
 
     insertSql = 'INSERT INTO ' + temporaryTableName + ' (' + columnReplacementString + ') VALUES (' + valueReplacementString + ')';
+
+    return insertSql;
+  };
+
+  /**
+   * TBD...
+   */
+  this.getBoilerplateStreamBulkInsertStatement = function (temporaryTableName, firstElement, batchCount) {
+    var escapeColumnNames = arguments.length <= 3 || arguments[3] === undefined ? true : arguments[3];
+
+    var keys, batchValues, valuesPlaceholder, valueReplacementString, columns, columnReplacementString, insertSql;
+
+    keys = (0, _keys3.default)(firstElement);
+
+    //Build the columns replacement string
+
+    //Wrap the property name to be safe
+    if (escapeColumnNames === true) {
+      columns = keys.map(function (v) {
+        return '`' + v + '`';
+      });
+    } else {
+      columns = keys.map(function (v) {
+        return v;
+      });
+    }
+
+    columnReplacementString = columns.join(',');
+
+    //Build the values replacement string
+    valuesPlaceholder = '(' + (0, _repeat3.default)('?', columns.length).split('').join(',') + ')';
+    batchValues = [];
+    for (var i = 0; i < batchCount; i++) {
+      batchValues[batchValues.length] = valuesPlaceholder;
+    }
+    valueReplacementString = batchValues.join(', ');
+
+    insertSql = 'INSERT INTO ' + temporaryTableName + ' (' + columnReplacementString + ') VALUES ' + valueReplacementString;
 
     return insertSql;
   };

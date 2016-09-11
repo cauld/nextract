@@ -1,8 +1,12 @@
 'use strict';
 
-var _values2 = require('lodash/values');
+var _keys2 = require('lodash/keys');
 
-var _values3 = _interopRequireDefault(_values2);
+var _keys3 = _interopRequireDefault(_keys2);
+
+var _flatten2 = require('lodash/flatten');
+
+var _flatten3 = _interopRequireDefault(_flatten2);
 
 var _isUndefined2 = require('lodash/isUndefined');
 
@@ -12,6 +16,10 @@ var _isArray2 = require('lodash/isArray');
 
 var _isArray3 = _interopRequireDefault(_isArray2);
 
+var _through = require('through2');
+
+var _through2 = _interopRequireDefault(_through);
+
 var _pluginBase = require('../../pluginBase');
 
 var _pluginBase2 = _interopRequireDefault(_pluginBase);
@@ -19,25 +27,37 @@ var _pluginBase2 = _interopRequireDefault(_pluginBase);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 //Instantiate the plugin
-var sortPlugin = new _pluginBase2.default('Sort', 'Core');
-
-/* Plugin external interface */
 /**
  * Mixes in methods used to sort data
  *
  * @class Nextract.Plugins.Core.Sort
  */
 
+var sortPlugin = new _pluginBase2.default('Sort', 'Core');
+
+//We can't guarantee the order of JavaScript properties and its possible each collection
+//item contains more properties than the ones being requested as part of the insert. So
+//we must handpick them out in the right order here.
+function getInOrderValues(streamElement, columnsToInsert) {
+  var inOrderValues = [];
+  columnsToInsert.forEach(function (col) {
+    inOrderValues[inOrderValues.length] = streamElement[col];
+  });
+
+  return inOrderValues;
+}
+
+/* Plugin external interface */
 module.exports = {
 
   /**
    * Sorts a stream of objects
    *
-   * @method sortBy
+   * @method sortIn
    * @for Nextract.Plugins.Core.Sort
    *
    * @example
-   *     someReadableStream.pipe(Plugins.Core.Sort.sortBy(['user', 'age'], ['asc', 'desc']))
+   *     someReadableStream.pipe(Plugins.Core.Sort.sortIn(['user', 'age'], ['asc', 'desc']))
    *
    * @param {Array} propertiesToSortBy An array of properties to sort by
    * @param {Array} ordersToSortBy An array of sort directions. The number of array elements must match
@@ -46,7 +66,7 @@ module.exports = {
    *
    * @return {stream.Transform} Sorted read/write stream transform to use in conjuction with pipe()
    */
-  sortBy: function sortBy(propertiesToSortBy, ordersToSortBy) {
+  sortIn: function sortIn(propertiesToSortBy, ordersToSortBy) {
     if (!(0, _isArray3.default)(propertiesToSortBy) || !(0, _isArray3.default)(ordersToSortBy) || propertiesToSortBy.length !== ordersToSortBy.length) {
       throw new Error('The sortBy params propertiesToSortBy & ordersToSortBy must both be an array of equal length!');
     }
@@ -62,59 +82,107 @@ module.exports = {
     have multiple rows.
     */
     function processStreamInput(element, encoding, callback) {
-      if ((0, _isUndefined3.default)(element)) return callback();
+      var batchAmount = 20;
+      var that = this;
 
-      var that = this,
-          sqlReplacements = (0, _values3.default)(element);
+      if ((0, _isUndefined3.default)(element)) {
+        //We have reach the end of the input stream and we most likely have some left over elements below the batch threshold.
+        //So insert the final batch now...
+        if (this.elementValuesToInsert.length > 0) {
+          //We can't use the original batch statement becauase the value count is different
+          var lastInsertSql = sortPlugin.getBoilerplateStreamBulkInsertStatement(this.dbInfo.tmpTableName, this.dbInfo.sampleElement, this.elementValuesToInsert.length);
 
-      //We need to setup the INSERT sql when encountering the first element in the stream
-      if ((0, _isUndefined3.default)(this.dbInfo)) {
-        this.dbInfo = {};
-
-        sortPlugin.createTemporaryTableForStream(element, function (temporaryTableName) {
-          that.dbInfo.tmpTableName = temporaryTableName;
-          that.dbInfo.insertSql = sortPlugin.getBoilerplateStreamInsertStatement(that.dbInfo.tmpTableName, element);
-
-          sortPlugin.runInternalQuery(that.dbInfo.insertSql, sqlReplacements, false, function () {
-            return callback();
+          sortPlugin.runInternalQuery(lastInsertSql, (0, _flatten3.default)(this.elementValuesToInsert), false, function () {
+            that.elementValuesToInsert = null; //done, clear it
+            return callback(null, that.dbInfo); //sortOut expects this 1 element
           });
-        });
-      } else {
-        sortPlugin.runInternalQuery(this.dbInfo.insertSql, sqlReplacements, false, function () {
+        } else {
+          this.push(this.dbInfo); //sortOut expects this 1 element
           return callback();
-        });
+        }
+      } else {
+        //We need to setup the INSERT sql when encountering the first element in the stream
+        if ((0, _isUndefined3.default)(this.dbInfo)) {
+          this.elementValuesToInsert = [];
+
+          this.dbInfo = {
+            propertiesToSortBy: propertiesToSortBy,
+            ordersToSortBy: ordersToSortBy,
+            sortInputCount: 1,
+            columns: (0, _keys3.default)(element),
+            sampleElement: element
+          };
+
+          sortPlugin.createTemporaryTableForStream(element, function (temporaryTableName) {
+            that.dbInfo.tmpTableName = temporaryTableName;
+            that.dbInfo.insertSql = sortPlugin.getBoilerplateStreamBulkInsertStatement(temporaryTableName, element, batchAmount);
+
+            that.elementValuesToInsert[that.elementValuesToInsert.length] = getInOrderValues(element, that.dbInfo.columns);
+            return callback(null, null); //We have to push something to keep the stream moving...
+          });
+        } else {
+          this.dbInfo.sortInputCount++;
+
+          //console.log(this.dbInfo.sortInputCount, this.elementValuesToInsert.length);
+
+          //Add this element to the batch
+          this.elementValuesToInsert[this.elementValuesToInsert.length] = getInOrderValues(element, this.dbInfo.columns);
+
+          //Do the batch INSERT if we have hit the batch limit
+          if (this.elementValuesToInsert.length === batchAmount) {
+            var sqlReplacements = (0, _flatten3.default)(this.elementValuesToInsert);
+            this.elementValuesToInsert = []; //reset for next batch
+
+            sortPlugin.runInternalQuery(this.dbInfo.insertSql, sqlReplacements, false, function () {
+              return callback(null, null);
+            });
+          } else {
+            //That one was added to the batch, lets move to the next.
+            return callback(null, null);
+          }
+        }
       }
     }
 
-    function streamFlush(callback) {
+    return sortPlugin.buildStreamTransform(processStreamInput, null, 'standard');
+  },
+
+  sortOut: function sortOut() {
+    function processStreamInput(element, encoding, callback) {
+      var sortInDbInfo = element;
+
       var that = this,
           selectSql,
           ordering;
 
-      selectSql = 'SELECT * FROM ' + this.dbInfo.tmpTableName + ' ORDER BY';
+      selectSql = 'SELECT * FROM ' + sortInDbInfo.tmpTableName + ' ORDER BY';
       ordering = [];
-      for (var i = 0; i < propertiesToSortBy.length; i++) {
-        ordering[ordering.length] = ' ' + propertiesToSortBy[i] + ' ' + ordersToSortBy[i];
+      for (var i = 0; i < sortInDbInfo.propertiesToSortBy.length; i++) {
+        ordering[ordering.length] = ' ' + sortInDbInfo.propertiesToSortBy[i] + ' ' + sortInDbInfo.ordersToSortBy[i];
       }
 
       selectSql += ordering.join(',');
 
-      console.log("selectSql", selectSql);
-
       //Grab the sorted rows
       sortPlugin.runInternalQuery(selectSql, [], true, function (err, sortedRows) {
-        that.push(sortedRows);
-
         //Sorting done, we have what we need... drop the temp table
-        sortPlugin.dropTemporaryTableForStream(that.dbInfo.tmpTableName, function (err) {
+        sortPlugin.dropTemporaryTableForStream(sortInDbInfo.tmpTableName, function (err) {
           if (err) sortPlugin.ETL.logger.error('Invalid DROP TABLE request:', err);
 
-          return callback();
+          sortedRows.forEach(function (r) {
+            that.push(r);
+          });
+          that.push(null);
+          //that.end();
+
+          return callback(null, null);
         });
       });
     }
 
-    return sortPlugin.buildStreamTransform(processStreamInput, streamFlush, 'standard');
+    return sortPlugin.buildStreamTransform(processStreamInput, null, 'standard').on('finish', function () {
+      console.log("Finished");
+    });
   }
 
 };

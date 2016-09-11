@@ -117,6 +117,8 @@
                         var propertyToUpdateOrAdd = arguments.length &lt;= 3 || arguments[3] === undefined ? &#x27;&#x27; : arguments[3];
                       
                         var streamFunction = function streamFunction(element, index) {
+                          if (_.isUndefined(element)) return;
+                      
                           var v1 = _.isString(firstPropOrVal) &amp;&amp; _.has(element, firstPropOrVal) ? element[firstPropOrVal] : Number(firstPropOrVal);
                           var v2 = _.isString(secondPropOrVal) &amp;&amp; _.has(element, secondPropOrVal) ? element[secondPropOrVal] : Number(secondPropOrVal);
                       

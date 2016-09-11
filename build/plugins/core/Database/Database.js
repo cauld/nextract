@@ -1,24 +1,20 @@
 'use strict';
 
-var _pull2 = require('lodash/pull');
-
-var _pull3 = _interopRequireDefault(_pull2);
-
 var _merge2 = require('lodash/merge');
 
 var _merge3 = _interopRequireDefault(_merge2);
+
+var _keys2 = require('lodash/keys');
+
+var _keys3 = _interopRequireDefault(_keys2);
 
 var _flatten2 = require('lodash/flatten');
 
 var _flatten3 = _interopRequireDefault(_flatten2);
 
-var _map2 = require('lodash/map');
+var _isUndefined2 = require('lodash/isUndefined');
 
-var _map3 = _interopRequireDefault(_map2);
-
-var _repeat2 = require('lodash/repeat');
-
-var _repeat3 = _interopRequireDefault(_repeat2);
+var _isUndefined3 = _interopRequireDefault(_isUndefined2);
 
 var _isEmpty2 = require('lodash/isEmpty');
 
@@ -52,21 +48,27 @@ var _sequelize = require('sequelize');
 
 var _sequelize2 = _interopRequireDefault(_sequelize);
 
+var _objectStream = require('object-stream');
+
+var _objectStream2 = _interopRequireDefault(_objectStream);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var databasePlugin,
-    connectionInstances = {},
-    queryLogging,
-    enableQueryLogging = false; /**
-                                 * Mixes in methods used to work with a database
-                                 *
-                                 * @class Nextract.Plugins.Core.Database
-                                 */
+/**
+ * Mixes in methods used to work with a database
+ *
+ * @class Nextract.Plugins.Core.Database
+ */
 
 /*
 TODO:
 1) Transactions (http://docs.sequelizejs.com/en/v3/docs/transactions/)
 */
+
+var databasePlugin,
+    connectionInstances = {},
+    queryLogging,
+    enableQueryLogging = false;
 
 queryLogging = enableQueryLogging === false ? false : sequelizeQueryLogging;
 
@@ -177,6 +179,18 @@ function runMany(dbName, queryType, baseQuery, collection, columnsToUpdate, matc
   });
 }
 
+//We can't guarantee the order of JavaScript properties and its possible each collection
+//item contains more properties than the ones being requested as part of the insert. So
+//we must handpick them out in the right order here.
+function getInOrderValues(streamElement, columnsToInsert) {
+  var inOrderValues = [];
+  columnsToInsert.forEach(function (col) {
+    inOrderValues[inOrderValues.length] = streamElement[col];
+  });
+
+  return inOrderValues;
+}
+
 module.exports = {
 
   /**
@@ -208,8 +222,7 @@ module.exports = {
       replacements: sqlReplacements,
       type: dbInstance.QueryTypes.RAW
     }).then(function (data) {
-      var objectStream = require('object-stream');
-      var readableStream = objectStream.fromArray(data);
+      var readableStream = _objectStream2.default.fromArray(data);
       return readableStream;
     }).catch(function (err) {
       databasePlugin.ETL.logger.error('Invalid RAW request:', err);
@@ -245,8 +258,13 @@ module.exports = {
       replacements: sqlReplacements,
       type: dbInstance.QueryTypes.SELECT
     }).then(function (data) {
-      var objectStream = require('object-stream');
-      var readableStream = objectStream.fromArray(data);
+      //console.log("SELECT DATA", data);
+
+      var objectStream, readableStream;
+
+      objectStream = require('object-stream');
+      readableStream = objectStream.fromArray(data);
+
       return readableStream;
     }).catch(function (err) {
       databasePlugin.ETL.logger.error('Invalid SELECT request:', err);
@@ -349,87 +367,101 @@ module.exports = {
    *
    * @return {Promise} Promise resolved with the give collection once all queries have completed
    */
-  insertQuery: function insertQuery(dbName, tableName, collection, columnsToInsert) {
-    var batchAmount = arguments.length <= 4 || arguments[4] === undefined ? 1000 : arguments[4];
+  insertQuery: function insertQuery(dbName, tableName, columnsToInsert) {
+    var batchAmount = arguments.length <= 3 || arguments[3] === undefined ? 25 : arguments[3];
 
-    var baseQuery, collectionLength, sqlReplacementGroups, valuesPlaceholder, batchGroupsRequired, batchValues, sqlJobs;
+    var dbInstance = getInstance(dbName);
 
-    //collection = [collection[0], collection[1]];
+    function processStreamInput(element, encoding, callback) {
+      var that = this;
 
-    //We'll batch INSERT to improve perfomance. Start by constructing a base INSERT statment.
-    baseQuery = 'INSERT INTO ' + tableName + ' (';
-    columnsToInsert.forEach(function (column, index) {
-      if (index > 0) {
-        baseQuery += ', ';
-      }
-      baseQuery += column;
-    });
-    baseQuery += ') VALUES ';
+      if ((0, _isUndefined3.default)(element)) {
+        //We have reach the end of the input stream and we most likely have some left over elements below the batch threshold.
+        //So insert the final batch now...
+        if (this.elementValuesToInsert.length > 0) {
+          //We can't use the original batch statement becauase the value count is different
+          var lastInsertSql = databasePlugin.getBoilerplateStreamBulkInsertStatement(tableName, this.dbInfo.sampleElement, this.elementValuesToInsert.length, false);
 
-    //To batch INSERTs we need to construct a statement like this:
-    //INSERT INTO tbl_name (c1,c2,c3) VALUES(1,2,3),(4,5,6),(7,8,9);
-    //In this case the values defined here are "?" and will be subbed using sqlReplacements
-    collectionLength = collection.length;
-    sqlReplacementGroups = [];
-    valuesPlaceholder = '(' + (0, _repeat3.default)('?', columnsToInsert.length).split('').join(',') + ')';
-    batchGroupsRequired = collectionLength > batchAmount ? Math.ceil(collectionLength / batchAmount) : 1;
+          dbInstance.query(lastInsertSql, {
+            replacements: (0, _flatten3.default)(this.elementValuesToInsert),
+            type: dbInstance.QueryTypes.INSERT
+          }).then(function () {
+            that.elementValuesToInsert = null; //done, clear it
+            return callback(null, null);
+          }).catch(function (err) {
+            databasePlugin.ETL.logger.error('Invalid INSERT request:', err);
+            throw new Error(err);
+          });
+        } else {
+          return callback();
+        }
+      } else {
+        //We need to setup the INSERT sql when encountering the first element in the stream
+        if ((0, _isUndefined3.default)(this.dbInfo)) {
+          this.elementValuesToInsert = [];
 
-    //Using the values placeholder string we create an array of batch values for each batch group. This
-    //will end up being a (?, ?, ...) block for each incoming collection row up to the max batch amount.
-    batchValues = [];
-    for (var i = 0; i < collectionLength; i++) {
-      batchValues[batchValues.length] = valuesPlaceholder;
+          this.dbInfo = {
+            columns: (0, _keys3.default)(element),
+            sampleElement: element,
+            tableName: tableName,
+            insertSql: databasePlugin.getBoilerplateStreamBulkInsertStatement(tableName, element, batchAmount, false)
+          };
 
-      if (i === collectionLength - 1 || batchValues.length === batchAmount) {
-        sqlReplacementGroups[sqlReplacementGroups.length] = batchValues.join(', ');
-        batchValues = []; //reset for next group
+          this.elementValuesToInsert[this.elementValuesToInsert.length] = getInOrderValues(element, columnsToInsert);
+
+          return callback(null, null); //We have to push something to keep the stream moving...
+        } else {
+          //Add this element to the batch
+          this.elementValuesToInsert[this.elementValuesToInsert.length] = getInOrderValues(element, columnsToInsert);
+
+          //Do the batch INSERT if we have hit the batch limit
+          if (this.elementValuesToInsert.length === batchAmount) {
+            this.elementValuesToInsert = []; //reset for next batch
+
+            dbInstance.query(this.dbInfo.insertSql, {
+              replacements: (0, _flatten3.default)(that.elementValuesToInsert),
+              type: dbInstance.QueryTypes.INSERT
+            }).then(function () {
+              that.elementValuesToInsert = null; //done, clear it
+              return callback(null, null);
+            }).catch(function (err) {
+              databasePlugin.ETL.logger.error('Invalid INSERT request:', err);
+              throw new Error(err);
+            });
+          } else {
+            //That one was added to the batch, lets move to the next.
+            return callback(null, null);
+          }
+        }
       }
     }
 
-    //If the incoming collection length is greater than the batch threshold we'll need to send multiple
-    //SQL INSERT commands to the database.  Here we prep each batch.
-    sqlJobs = [];
-    for (var _i = 0; _i < batchGroupsRequired; _i++) {
-      var workingBatch = collection.splice(0, batchAmount);
-      var collectionsToParams = (0, _map3.default)(workingBatch, function (batch) {
-        //We can't gauruntee the order of JavaScript properties and its possible each collection
-        //item contains more properties than the ones being requested as part of the insert. So
-        //we must handpick them out in the right order here.
-        var inOrderVales = [];
-        columnsToInsert.forEach(function (col) {
-          inOrderVales[inOrderVales.length] = batch[col];
-        });
+    //FIXME: Right now sortOut method is not properly sending the end signal that should come from sending a final null element.
+    //This means that if you go from sortOut to Insert and have some leftover elementValuesToInsert that didn't quite met
+    //the final batchAmount then they would not be inserted.  We'll use the flush function to force the last bacth in. This
+    //is not a great end solution because the user may want to immediately select these back out, join against then, etc and
+    //flush is not called until the entire stream has ended.  Good enough for benchmarking...
+    function bulkFlush() {
+      var that = this;
 
-        return inOrderVales;
-      });
+      if (this.elementValuesToInsert.length > 0) {
+        //We can't use the original batch statement becauase the value count is different
+        var lastInsertSql = databasePlugin.getBoilerplateStreamBulkInsertStatement(tableName, this.dbInfo.sampleElement, this.elementValuesToInsert.length, false);
 
-      sqlJobs[sqlJobs.length] = {
-        sql: baseQuery + sqlReplacementGroups[_i],
-        sqlParams: (0, _flatten3.default)(collectionsToParams)
-      };
-    }
-
-    return new Promise(function (resolve, reject) {
-      var dbInstance = getInstance(dbName);
-
-      //Run each job and return once all are done
-      return (0, _eachSeries2.default)(sqlJobs, function (sqlJob, callback) {
-        dbInstance.query(sqlJob.sql, {
-          replacements: sqlJob.sqlParams,
+        dbInstance.query(lastInsertSql, {
+          replacements: (0, _flatten3.default)(this.elementValuesToInsert),
           type: dbInstance.QueryTypes.INSERT
         }).then(function () {
-          callback(); //Tells async that we are done with this item
-        });
-      }, function (err) {
-        if (err) {
+          console.log("Forcing insert flush!");
+          that.elementValuesToInsert = null; //done, clear it
+        }).catch(function (err) {
           databasePlugin.ETL.logger.error('Invalid INSERT request:', err);
-          reject('Invalid INSERT request:', err);
-        } else {
-          //All queries are done
-          resolve();
-        }
-      });
-    });
+          throw new Error(err);
+        });
+      }
+    }
+
+    return databasePlugin.buildStreamTransform(processStreamInput, bulkFlush, 'standard');
   },
 
   /**
@@ -444,12 +476,11 @@ module.exports = {
    * @example
    *     var joinColumnsToReturn = ['first_name', 'last_name'];
    * @example
-   *     ETL.Plugins.Core.Database.joinQuery('nextract_sample', joinSQL, queryResults, true, joinColumnsToReturn);
+   *     ETL.Plugins.Core.Database.joinQuery(streamElement, 'nextract_sample', joinSQL, queryResults, true, joinColumnsToReturn);
    *
    * @param {String} dbName A database name that matches a object key defined in your Nextract config file
    * @param {String} sqlStatment The sql to run for each row in the collection. The WHERE clause should contain
    * some :propertyName reference to match on against the current row. The query must return only 1 matching row.
-   * @param {Array} collection The collection to iterate on
    * @param {Boolean} returnedUnmatched (optional: defaults to true) Returns all original collection items
    * will null as the value for properties missed in the join.  If true, then joinColumnsToReturn must be given.
    * @param {Array} joinColumnsToReturn A list of the properties to return in the unmatched case. Should
@@ -457,15 +488,19 @@ module.exports = {
    *
    * @return {Promise} Promise resolved once all queries have completed
    */
-  joinQuery: function joinQuery(dbName, sqlStatement, collection) {
-    var returnedUnmatched = arguments.length <= 3 || arguments[3] === undefined ? true : arguments[3];
-    var joinColumnsToReturn = arguments.length <= 4 || arguments[4] === undefined ? [] : arguments[4];
+  joinQuery: function joinQuery(dbName, sqlStatement) {
+    var returnedUnmatched = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
+    var joinColumnsToReturn = arguments.length <= 3 || arguments[3] === undefined ? [] : arguments[3];
 
-    return new Promise(function (resolve, reject) {
-      var dbInstance = getInstance(dbName);
+    var dbInstance = getInstance(dbName);
 
-      //Run each job and return once all are done
-      return (0, _eachOfSeries2.default)(collection, function (element, index, callback) {
+    var streamFunction = function streamFunction(element, encoding, callback) {
+      var that = this;
+
+      if ((0, _isEmpty3.default)(element)) {
+        this.push(element);
+        return callback();
+      } else {
         dbInstance.query(sqlStatement, {
           replacements: element,
           type: dbInstance.QueryTypes.SELECT
@@ -475,48 +510,37 @@ module.exports = {
             //Add the join data to the original element
             element = (0, _merge3.default)(element, joinData[0]);
           } else if (joinData.length === 0 && returnedUnmatched === true) {
+            //They want the original element back even though there is no matching join. Add the missing
+            //properties and set each to null (like an outer join).
             if ((0, _isArray3.default)(joinColumnsToReturn) && joinColumnsToReturn.length > 0) {
               joinColumnsToReturn.map(function (c) {
                 return element[c] = null;
               });
             } else {
-              throw "To returned unmatched elements joinColumnsToReturn must be an array of property names!";
+              throw new Error("To returned unmatched elements joinColumnsToReturn must be an array of property names!");
             }
           } else if (joinData.length === 0 && returnedUnmatched === false) {
             //We want to drop this element from the collection for lack of a join.
-            //This will remove the item from the array, but not reindex the array. Important because something like slice
-            //Will reindex and invalidate the eachOfSeries iteration cycle. We'll cleanup in the next step before returning.
-            delete collection[index];
+            element = null;
           } else if (joinData.length > 1) {
             //A throw here will trigger the reject in our catch
-            throw "Too many rows returned from join operation!";
+            throw new Error("Too many rows returned from join operation!");
           } else {
             //Should never get here
-            throw "Unhandled join exception!";
+            throw new Error("Unhandled join exception!");
           }
 
-          callback(); //Tells async that we are done with this item
+          that.push(element);
+          return callback();
         }).catch(function (err) {
-          databasePlugin.ETL.logger.error(err);
-          reject(err);
-        });
-      }, function (err) {
-        if (err) {
           databasePlugin.ETL.logger.error('Invalid join/lookup request:', err);
-          reject('Invalid join/lookup request:', err);
-        } else {
-          //All queries are done
-          var collectionWithjoinedData = collection;
+        });
+      }
+    };
 
-          //Remove any unmatched results if neeeded
-          if (returnedUnmatched === false) {
-            collectionWithjoinedData = (0, _pull3.default)(collectionWithjoinedData, undefined);
-          }
-
-          resolve(collectionWithjoinedData);
-        }
-      });
-    });
+    //This is kind of like a map, except through2-map doesn't allow us to remmove
+    //elements from the stream (i.e.) that.push(null);
+    return databasePlugin.buildStreamTransform(streamFunction, null, 'standard');
   }
 
 };
