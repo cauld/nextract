@@ -1,5 +1,9 @@
 'use strict';
 
+var _isUndefined2 = require('lodash/isUndefined');
+
+var _isUndefined3 = _interopRequireDefault(_isUndefined2);
+
 var _repeat2 = require('lodash/repeat');
 
 var _repeat3 = _interopRequireDefault(_repeat2);
@@ -490,6 +494,17 @@ var PluginBase = function PluginBase() {
     insertSql = 'INSERT INTO ' + temporaryTableName + ' (' + columnReplacementString + ') VALUES ' + valueReplacementString;
 
     return insertSql;
+  };
+
+  this.getStreamPassthroughForPipe = function () {
+    //Just get a handle on the stream so that we can do some internal piping
+    function processStreamInput(element) {
+      if (!(0, _isUndefined3.default)(element)) {
+        return element;
+      }
+    }
+
+    return this.buildStreamTransform(processStreamInput, null, 'map');
   };
 };
 

@@ -421,6 +421,17 @@ var PluginBase = function(pluginName = null, pluginType = null) {
     return insertSql;
   };
 
+  this.getStreamPassthroughForPipe = function() {
+    //Just get a handle on the stream so that we can do some internal piping
+    function processStreamInput(element) {
+      if (!_.isUndefined(element)) {
+        return element;
+      }
+    }
+
+    return this.buildStreamTransform(processStreamInput, null, 'map');
+  };
+
 };
 
 module.exports = PluginBase;

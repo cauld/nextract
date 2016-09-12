@@ -31,35 +31,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 /*
 TODO:
-1) Migrate to setupTaskEngine, startTask, endTask format
-2) Implement excel
+2) Implement excel writer
 */
 
 var outputPlugin = new _pluginBase2.default('Input', 'Core');
-
-//FIXME: Still not working.... see - http://csv.adaltas.com/stringify/examples/
-function writeCsvFile(filePath) {
-  var formattingConfig = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-
-
-  var writeStream = _fs2.default.createWriteStream(filePath);
-  var stringifier = _csv2.default.stringify(formattingConfig);
-
-  return outputPlugin.buildStreamTransform(stringifier, null, 'standard').pipe(writeStream);
-}
-
-//TODO: Implement with https://www.npmjs.com/package/excel4node
-function writeExcelFile(filePath, data) {
-  var formattingConfig = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
-
-  return new Promise(function (resolve, reject) {
-
-    //Can remove console.log once implemented, just preventing ununsed var build error
-    console.log(formattingConfig);
-
-    reject('Not implemented yet!');
-  });
-}
 
 //Ref: https://www.npmjs.com/package/jsonfile
 function writeJsonFile(filePath, data) {
@@ -85,31 +60,46 @@ function writeJsonFile(filePath, data) {
 module.exports = {
 
   /**
-   * Used to output files
+   * Converts stream objects to csv strings (usually paired with toFile).
    *
-   * @method writeFile
+   * @method toCsvString
+   * @for Nextract.Plugins.Core.Output
+   *
    * @example
-   *     ETL.Plugins.Core.Output.writeFile('csv', "path/to/file.csv", { header: true }, data);
+   *     var formattingConfig = { headers: true, columns: { first_name: 'first_name', last_name: 'last_name', ... } };
+   * @example
+   *     transform.Plugins.Core.Output.toCsvString(formattingConfig);
    *
-   * @param {String} fileType Type of file to write; json, csv, or excel
-   * @param {Array} data An array of objects to be wrtten to the file
-   * @param {String} filePath Full path of file to write (include filename and extension)
    * @param {Object} formattingConfig Object contain config options for the file type being written.
-   * 1) If cvs - all options allowed by cvs-stringify (http://csv.adaltas.com/stringify/) are supported
-   * 2) If json - the only option is formatting with X number of spaces (e.g.) {spaces: 2}
-   * 3) If excel - see https://www.npmjs.com/package/excel4node
+   * All options allowed by cvs-stringify (http://csv.adaltas.com/stringify/) are supported.
    */
-  writeFile: function writeFile(fileType, filePath, formattingConfig) {
-    switch (fileType) {
-      case 'csv':
-        return writeCsvFile(filePath, formattingConfig);
-      case 'json':
-        return writeJsonFile(filePath, formattingConfig);
-      case 'excel':
-        return writeExcelFile(filePath, formattingConfig);
-      default:
-        return new Promise.reject("Invalid file type given in writeFile!");
-    }
+  //Ref: http://csv.adaltas.com/stringify/examples/
+  toCsvString: function toCsvString() {
+    var formattingConfig = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+    var stringifier = _csv2.default.stringify(formattingConfig);
+
+    return outputPlugin.getStreamPassthroughForPipe().pipe(stringifier);
+  },
+
+  /**
+   * Writes stream to a file (usually preceeded by a call to toCsv, toExcel, toJSON, etc).
+   *
+   * @method toFile
+   * @for Nextract.Plugins.Core.Output
+   *
+   * @example
+   *     var outputFilePath = '/path/to/file.extension';
+   * @example
+   *     transform.Plugins.Core.Output.toFile(outputFilePath);
+   *
+   * @param {Object} formattingConfig Object contain config options for the file type being written.
+   * All options allowed by cvs-stringify (http://csv.adaltas.com/stringify/) are supported.
+   */
+  toFile: function toFile(filePath) {
+    var writeStream = _fs2.default.createWriteStream(filePath);
+
+    return outputPlugin.getStreamPassthroughForPipe().pipe(writeStream);
   }
 
 };
