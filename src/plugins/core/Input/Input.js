@@ -6,72 +6,25 @@
 
 /*
 TODO:
-1) Migrate to setupTaskEngine, startTask, endTask format
-2) Implement excel
+1) Implement excel
 */
 
-import jsonfile from 'jsonfile';
 import fs from 'fs';
 import csv from 'csv';
+import JSONStream from 'JSONStream';
 import pluginBase from '../../pluginBase';
 
 //Instantiate the plugin
 var inputPlugin = new pluginBase('Input', 'Core');
 
-function readJsonFile(filePath) {
-  return new Promise(function (resolve, reject) {
-    jsonfile.readFile(filePath, function(err, fileData) {
-      if (err) {
-        inputPlugin.logger.error('readJsonFile', err);
-        reject(err);
-      } else {
-        resolve(fileData);
-      }
-    });
-  });
-}
-
-//TODO: Implement. Perhaps with https://www.npmjs.com/package/excel-data.
-function readExcelFile(filePath) {
-  return new Promise(function (resolve, reject) {
-
-    reject('Not implemented yet!');
-
-  });
-}
-
-//Returns csv rows as a stream of objects
-function readCsvFile(filePath, parserConfig = { delimiter: ',', columns: true }) {
-  var parser,
-      input;
-
-  parser = csv.parse(parserConfig);
-  input = fs.createReadStream(filePath);
-
-  function processStreamInput(element, encoding, callback) {
-    callback(null, element);
-  }
-
-  function inputFlush(callback) {
-    //Trying to force an end of data notifcation... doesn't work!
-    this.push(null);
-    parser.end();
-
-    callback();
-  }
-
-  return input.pipe(parser).pipe(inputPlugin.buildStreamTransform(processStreamInput, inputFlush, 'standard'));
-  //return input.pipe(parser);
-}
-
 module.exports = {
 
   /**
-   * Used to read files
+   * Streams in a CSV file
    *
-   * @method readFile
+   * @method readCsvFile
    * @example
-   *     ETL.Plugins.Core.Input.readFile('json', sampleUsersInputFilePath);
+   *     ETL.Plugins.Core.Input.readCsvFile(filePath, parserConfig);
    *
    * @param {String} fileType Type of file to write; json, csv, or excel
    * @param {String} filePath Full path of file to read (include filename and extension)
@@ -80,22 +33,50 @@ module.exports = {
    * is given then a default config of { delimiter: ',', columns: true } is used. The parserConfig
    * object allow all paser options supported by cvs-parse (http://csv.adaltas.com/parse/).
    */
-  readFile: function(fileType, filePath, parserConfig = null) {
-    switch (fileType) {
-      case 'csv':
-        if (parserConfig === null) {
-          //Don't pass null along since readCsvFile has a more proper default when not overridden
-          return readCsvFile(filePath);
-        } else {
-          return readCsvFile(filePath, parserConfig);
-        }
-      case 'json':
-        return readJsonFile(filePath);
-      case 'excel':
-        return readExcelFile(filePath);
-      default:
-        return new Promise.reject("Invalid file type given in readFile!");
+  readCsvFile: function(filePath, parserConfig = { delimiter: ',', columns: true }) {
+    var parser,
+        input;
+
+    parser = csv.parse(parserConfig);
+    input = fs.createReadStream(filePath);
+
+    function processStreamInput(element, encoding, callback) {
+      callback(null, element);
     }
-  }
+
+    function inputFlush(callback) {
+      //Trying to force an end of data notification... doesn't work!
+      this.push(null);
+      parser.end();
+
+      callback();
+    }
+
+    return input.pipe(parser).pipe(inputPlugin.buildStreamTransform(processStreamInput, inputFlush, 'standard'));
+  },
+
+  /**
+   * Streams in a JSON file
+   *
+   * @method readJsonFile
+   * @example
+   *     ETL.Plugins.Core.Input.readJsonFile(filePath, pathToParse);
+   *
+   * @param {String} filePath Full path of file to read (include filename and extension)
+   * @param {Object} pathToParse Parses stream of values that match a path. To understand this format of
+   * this param place see the following doc - https://www.npmjs.com/package/JSONStream#jsonstreamparsepath.
+   */
+  readJsonFile: function(filePath, pathToParse) {
+    var jsonStream,
+        jsonParser;
+
+    jsonStream = fs.createReadStream(filePath, {encoding: 'utf8'});
+    jsonParser = JSONStream.parse('data.employees.*');
+
+    return jsonStream.pipe(jsonParser);
+  },
+
+  //TODO: Implement...
+  readExcelFile: function() { }
 
 };

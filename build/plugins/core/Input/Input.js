@@ -1,9 +1,5 @@
 'use strict';
 
-var _jsonfile = require('jsonfile');
-
-var _jsonfile2 = _interopRequireDefault(_jsonfile);
-
 var _fs = require('fs');
 
 var _fs2 = _interopRequireDefault(_fs);
@@ -11,6 +7,10 @@ var _fs2 = _interopRequireDefault(_fs);
 var _csv = require('csv');
 
 var _csv2 = _interopRequireDefault(_csv);
+
+var _JSONStream = require('JSONStream');
+
+var _JSONStream2 = _interopRequireDefault(_JSONStream);
 
 var _pluginBase = require('../../pluginBase');
 
@@ -27,66 +27,19 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 /*
 TODO:
-1) Migrate to setupTaskEngine, startTask, endTask format
-2) Implement excel
+1) Implement excel
 */
 
 var inputPlugin = new _pluginBase2.default('Input', 'Core');
 
-function readJsonFile(filePath) {
-  return new Promise(function (resolve, reject) {
-    _jsonfile2.default.readFile(filePath, function (err, fileData) {
-      if (err) {
-        inputPlugin.logger.error('readJsonFile', err);
-        reject(err);
-      } else {
-        resolve(fileData);
-      }
-    });
-  });
-}
-
-//TODO: Implement. Perhaps with https://www.npmjs.com/package/excel-data.
-function readExcelFile(filePath) {
-  return new Promise(function (resolve, reject) {
-
-    reject('Not implemented yet!');
-  });
-}
-
-//Returns csv rows as a stream of objects
-function readCsvFile(filePath) {
-  var parserConfig = arguments.length <= 1 || arguments[1] === undefined ? { delimiter: ',', columns: true } : arguments[1];
-
-  var parser, input;
-
-  parser = _csv2.default.parse(parserConfig);
-  input = _fs2.default.createReadStream(filePath);
-
-  function processStreamInput(element, encoding, callback) {
-    callback(null, element);
-  }
-
-  function inputFlush(callback) {
-    //Trying to force an end of data notifcation... doesn't work!
-    this.push(null);
-    parser.end();
-
-    callback();
-  }
-
-  return input.pipe(parser).pipe(inputPlugin.buildStreamTransform(processStreamInput, inputFlush, 'standard'));
-  //return input.pipe(parser);
-}
-
 module.exports = {
 
   /**
-   * Used to read files
+   * Streams in a CSV file
    *
-   * @method readFile
+   * @method readCsvFile
    * @example
-   *     ETL.Plugins.Core.Input.readFile('json', sampleUsersInputFilePath);
+   *     ETL.Plugins.Core.Input.readCsvFile(filePath, parserConfig);
    *
    * @param {String} fileType Type of file to write; json, csv, or excel
    * @param {String} filePath Full path of file to read (include filename and extension)
@@ -95,24 +48,50 @@ module.exports = {
    * is given then a default config of { delimiter: ',', columns: true } is used. The parserConfig
    * object allow all paser options supported by cvs-parse (http://csv.adaltas.com/parse/).
    */
-  readFile: function readFile(fileType, filePath) {
-    var parserConfig = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
+  readCsvFile: function readCsvFile(filePath) {
+    var parserConfig = arguments.length <= 1 || arguments[1] === undefined ? { delimiter: ',', columns: true } : arguments[1];
 
-    switch (fileType) {
-      case 'csv':
-        if (parserConfig === null) {
-          //Don't pass null along since readCsvFile has a more proper default when not overridden
-          return readCsvFile(filePath);
-        } else {
-          return readCsvFile(filePath, parserConfig);
-        }
-      case 'json':
-        return readJsonFile(filePath);
-      case 'excel':
-        return readExcelFile(filePath);
-      default:
-        return new Promise.reject("Invalid file type given in readFile!");
+    var parser, input;
+
+    parser = _csv2.default.parse(parserConfig);
+    input = _fs2.default.createReadStream(filePath);
+
+    function processStreamInput(element, encoding, callback) {
+      callback(null, element);
     }
-  }
+
+    function inputFlush(callback) {
+      //Trying to force an end of data notification... doesn't work!
+      this.push(null);
+      parser.end();
+
+      callback();
+    }
+
+    return input.pipe(parser).pipe(inputPlugin.buildStreamTransform(processStreamInput, inputFlush, 'standard'));
+  },
+
+  /**
+   * Streams in a JSON file
+   *
+   * @method readJsonFile
+   * @example
+   *     ETL.Plugins.Core.Input.readJsonFile(filePath, pathToParse);
+   *
+   * @param {String} filePath Full path of file to read (include filename and extension)
+   * @param {Object} pathToParse Parses stream of values that match a path. To understand this format of
+   * this param place see the following doc - https://www.npmjs.com/package/JSONStream#jsonstreamparsepath.
+   */
+  readJsonFile: function readJsonFile(filePath, pathToParse) {
+    var jsonStream, jsonParser;
+
+    jsonStream = _fs2.default.createReadStream(filePath, { encoding: 'utf8' });
+    jsonParser = _JSONStream2.default.parse('data.employees.*');
+
+    return jsonStream.pipe(jsonParser);
+  },
+
+  //TODO: Implement...
+  readExcelFile: function readExcelFile() {}
 
 };

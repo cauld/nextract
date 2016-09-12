@@ -100,8 +100,10 @@ module.exports = {
    * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
    */
   greaterThan: function greaterThan(propertyToTest, valueToTest) {
-    var streamFunction = function streamFunction(element, index) {
+    var streamFunction = function streamFunction(element) {
       if (!(0, _isUndefined3.default)(element) && (0, _has3.default)(element, propertyToTest)) {
+        //console.log("FOOOO", element[propertyToTest], valueToTest, (element[propertyToTest] > valueToTest));
+
         return element[propertyToTest] > valueToTest;
       }
     };

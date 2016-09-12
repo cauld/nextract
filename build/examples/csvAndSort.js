@@ -24,7 +24,7 @@ transform.loadPlugins('Core', ['Input', 'Output', 'Sort', 'Logger']).then(functi
     }
   };
 
-  transform.Plugins.Core.Input.readFile('csv', sampleEmployeesInputFilePath)
+  transform.Plugins.Core.Input.readCsvFile(sampleEmployeesInputFilePath)
   //FIXME: Sort never gets the EOF signal from Input.readFile...
   //.pipe(transform.Plugins.Core.Sort.sortIn(['last_name'], ['asc']))
   //.pipe(transform.Plugins.Core.Sort.sortOut())

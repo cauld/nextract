@@ -95,7 +95,7 @@ module.exports = {
           });
         } else {
           this.push(this.dbInfo); //sortOut expects this 1 element
-          return callback();
+          return callback(null, null);
         }
       } else {
         //We need to setup the INSERT sql when encountering the first element in the stream

@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Nextract.Plugins.Core.Database - nextract</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="icon" href="../assets/favicon.ico">
+    <script src="http://yui.yahooapis.com/combo?3.9.1/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+            <h1>nextract</h1>
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: 0.0.1</em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+                    <h2 class="off-left">APIs</h2>
+                    <div id="api-tabview" class="tabview">
+                        <ul class="tabs">
+                            <li><a href="#api-classes">Classes</a></li>
+                            <li><a href="#api-modules">Modules</a></li>
+                        </ul>
+                
+                        <div id="api-tabview-filter">
+                            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+                        </div>
+                
+                        <div id="api-tabview-panel">
+                            <ul id="api-classes" class="apis classes">
+                                <li><a href="../classes/Nextract.html">Nextract</a></li>
+                                <li><a href="../classes/Nextract.PluginBase.html">Nextract.PluginBase</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Calculator.html">Nextract.Plugins.Core.Calculator</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Database.html">Nextract.Plugins.Core.Database</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Filter.html">Nextract.Plugins.Core.Filter</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Http.html">Nextract.Plugins.Core.Http</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Input.html">Nextract.Plugins.Core.Input</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Output.html">Nextract.Plugins.Core.Output</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Sort.html">Nextract.Plugins.Core.Sort</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Utils.html">Nextract.Plugins.Core.Utils</a></li>
+                            </ul>
+                
+                
+                            <ul id="api-modules" class="apis modules">
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+                    Show:
+                    <label for="api-show-inherited">
+                        <input type="checkbox" id="api-show-inherited" checked>
+                        Inherited
+                    </label>
+            
+                    <label for="api-show-protected">
+                        <input type="checkbox" id="api-show-protected">
+                        Protected
+                    </label>
+            
+                    <label for="api-show-private">
+                        <input type="checkbox" id="api-show-private">
+                        Private
+                    </label>
+                    <label for="api-show-deprecated">
+                        <input type="checkbox" id="api-show-deprecated">
+                        Deprecated
+                    </label>
+            
+                </div>
+            
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+                      <h1>Nextract.Plugins.Core.Database Class</h1>
+                      <div class="box meta">
+                      
+                      
+                              <div class="foundat">
+                                  Defined in: <a href="../files/build_plugins_core_Database_Database.js.html#l57"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:57</code></a>
+                              </div>
+                      
+                      
+                      </div>
+                      
+                      
+                      <div class="box intro">
+                          <p>Mixes in methods used to work with a database</p>
+                      
+                      </div>
+                      
+                      
+                      <div id="classdocs" class="tabview">
+                          <ul class="api-class-tabs">
+                              <li class="api-class-tab index"><a href="#index">Index</a></li>
+                      
+                                  <li class="api-class-tab methods"><a href="#methods">Methods</a></li>
+                          </ul>
+                      
+                          <div>
+                              <div id="index" class="api-class-tabpanel index">
+                                  <h2 class="off-left">Item Index</h2>
+                      
+                                      <div class="index-section methods">
+                                          <h3>Methods</h3>
+                      
+                                          <ul class="index-list methods">
+                                                  <li class="index-item method">
+                                                      <a href="#method_deleteQuery">deleteQuery</a>
+                      
+                                                  </li>
+                                                  <li class="index-item method">
+                                                      <a href="#method_insertQuery">insertQuery</a>
+                      
+                                                  </li>
+                                                  <li class="index-item method">
+                                                      <a href="#method_joinQuery">joinQuery</a>
+                      
+                                                  </li>
+                                                  <li class="index-item method">
+                                                      <a href="#method_rawQuery">rawQuery</a>
+                      
+                                                  </li>
+                                                  <li class="index-item method">
+                                                      <a href="#method_selectQuery">selectQuery</a>
+                      
+                                                  </li>
+                                                  <li class="index-item method">
+                                                      <a href="#method_updateQuery">updateQuery</a>
+                      
+                                                  </li>
+                                          </ul>
+                                      </div>
+                      
+                      
+                      
+                              </div>
+                      
+                                  <div id="methods" class="api-class-tabpanel">
+                                      <h2 class="off-left">Methods</h2>
+                      
+                      <div id="method_deleteQuery" class="method item">
+                          <h3 class="name"><code>deleteQuery</code></h3>
+                      
+                              <div class="args">
+                                  <span class="paren">(</span><ul class="args-list inline commas">
+                                      <li class="arg">
+                                              <code>dbName</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>tableName</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>matchCriteria</code>
+                                      </li>
+                                  </ul><span class="paren">)</span>
+                              </div>
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                          <div class="meta">
+                                      <p>
+                                      Defined in
+                              <a href="../files/build_plugins_core_Database_Database.js.html#l230"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:230</code></a>
+                              </p>
+                      
+                      
+                      
+                          </div>
+                      
+                          <div class="description">
+                              <p>Allows you to run an DELETE query against a database using data obtained from previous steps. Runs
+                      a query for each element in the stream.</p>
+                      
+                          </div>
+                      
+                              <div class="params">
+                                  <h4>Parameters:</h4>
+                      
+                                  <ul class="params-list">
+                                      <li class="param">
+                                              <code class="param-name">dbName</code>
+                                              <span class="type">String</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>A database name that matches a object key defined in your Nextract config file</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">tableName</code>
+                                              <span class="type">String</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>Table name</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">matchCriteria</code>
+                                              <span class="type">Array</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>Array of objects with key/value params to be subbed out in a
+                      parameterized query. The expected format is  [{ tableColumn: '', comparator: '', collectionField: '' }].</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                  </ul>
+                              </div>
+                      
+                      
+                      
+                              <div class="example">
+                                  <h4>Example:</h4>
+                      
+                                  <div class="example-content">
+                                      <pre class="code prettyprint"><code>var matchCriteria = [
+                       { tableColumn: 'first_name', comparator: '=', collectionField: 'first_name' },
+                       { tableColumn: 'last_name', comparator: '=', collectionField: 'last_name' }
+                      ];</code></pre>
+                      <pre class="code prettyprint"><code>return ETL.Plugins.Core.Database.deleteQuery('nextract_sample', 'users', matchCriteria);</code></pre>
+                      
+                                  </div>
+                              </div>
+                      </div>
+                      <div id="method_insertQuery" class="method item">
+                          <h3 class="name"><code>insertQuery</code></h3>
+                      
+                              <div class="args">
+                                  <span class="paren">(</span><ul class="args-list inline commas">
+                                      <li class="arg">
+                                              <code>dbName</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>tableName</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>collection</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>columnsToInsert</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>batchAmount</code>
+                                      </li>
+                                  </ul><span class="paren">)</span>
+                              </div>
+                      
+                              <span class="returns-inline">
+                                  <span class="type">Promise</span>
+                              </span>
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                          <div class="meta">
+                                      <p>
+                                      Defined in
+                              <a href="../files/build_plugins_core_Database_Database.js.html#l334"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:334</code></a>
+                              </p>
+                      
+                      
+                      
+                          </div>
+                      
+                          <div class="description">
+                              <p>Insert query for collections. Will insert each collection item into a database table.
+                      Uses batched inserts for performance gains.</p>
+                      
+                          </div>
+                      
+                              <div class="params">
+                                  <h4>Parameters:</h4>
+                      
+                                  <ul class="params-list">
+                                      <li class="param">
+                                              <code class="param-name">dbName</code>
+                                              <span class="type">String</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>A database name that matches a object key defined in your Nextract config file</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">tableName</code>
+                                              <span class="type">String</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>Table name</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">collection</code>
+                                              <span class="type">Array</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>The collection to iterate on</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">columnsToInsert</code>
+                                              <span class="type">Array</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>Array of property (column) names to use in the INSERT</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">batchAmount</code>
+                                              <span class="type">Integer</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>(optional) Number of rows to batch insert (defaults to 1000)</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                  </ul>
+                              </div>
+                      
+                              <div class="returns">
+                                  <h4>Returns:</h4>
+                      
+                                  <div class="returns-description">
+                                              <span class="type">Promise</span>:
+                                          <p>Promise resolved with the give collection once all queries have completed</p>
+                      
+                                  </div>
+                              </div>
+                      
+                      
+                              <div class="example">
+                                  <h4>Example:</h4>
+                      
+                                  <div class="example-content">
+                                      <pre class="code prettyprint"><code>var columnsToInsert = ['first_name', 'last_name', 'age'];</code></pre>
+                      <pre class="code prettyprint"><code>var collectionsToInsert = [
+                       { 'first_name': 'foo', 'last_name': 'bar', 'age': 25 },
+                       { 'first_name': 'foo', 'last_name': 'baz', 'age': 48 }
+                      ];</code></pre>
+                      <pre class="code prettyprint"><code>return ETL.Plugins.Core.Database.insertQuery('nextract_sample', 'users', collectionsToInsert, columnsToInsert);</code></pre>
+                      
+                                  </div>
+                              </div>
+                      </div>
+                      <div id="method_joinQuery" class="method item">
+                          <h3 class="name"><code>joinQuery</code></h3>
+                      
+                              <div class="args">
+                                  <span class="paren">(</span><ul class="args-list inline commas">
+                                      <li class="arg">
+                                              <code>dbName</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>sqlStatment</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>returnedUnmatched</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>joinColumnsToReturn</code>
+                                      </li>
+                                  </ul><span class="paren">)</span>
+                              </div>
+                      
+                              <span class="returns-inline">
+                                  <span class="type">Promise</span>
+                              </span>
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                          <div class="meta">
+                                      <p>
+                                      Defined in
+                              <a href="../files/build_plugins_core_Database_Database.js.html#l453"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:453</code></a>
+                              </p>
+                      
+                      
+                      
+                          </div>
+                      
+                          <div class="description">
+                              <p>Allows you to run a select query against a database using data obtained from previous steps. Runs
+                      a query for each row in the collection. The collection will be returned with the properties of the
+                      original item data + the properties of the joined data.  Optionally returns all or just matched rows.</p>
+                      
+                          </div>
+                      
+                              <div class="params">
+                                  <h4>Parameters:</h4>
+                      
+                                  <ul class="params-list">
+                                      <li class="param">
+                                              <code class="param-name">dbName</code>
+                                              <span class="type">String</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>A database name that matches a object key defined in your Nextract config file</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">sqlStatment</code>
+                                              <span class="type">String</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>The sql to run for each row in the collection. The WHERE clause should contain
+                      some :propertyName reference to match on against the current row. The query must return only 1 matching row.</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">returnedUnmatched</code>
+                                              <span class="type">Boolean</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>(optional: defaults to true) Returns all original collection items
+                      will null as the value for properties missed in the join.  If true, then joinColumnsToReturn must be given.</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">joinColumnsToReturn</code>
+                                              <span class="type">Array</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>A list of the properties to return in the unmatched case. Should
+                      normally match the columns defined in the SELECT clause. Only required if returnedUnmatched is set to true.</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                  </ul>
+                              </div>
+                      
+                              <div class="returns">
+                                  <h4>Returns:</h4>
+                      
+                                  <div class="returns-description">
+                                              <span class="type">Promise</span>:
+                                          <p>Promise resolved once all queries have completed</p>
+                      
+                                  </div>
+                              </div>
+                      
+                      
+                              <div class="example">
+                                  <h4>Example:</h4>
+                      
+                                  <div class="example-content">
+                                      <pre class="code prettyprint"><code>var joinSQL = 'select first_name, last_name from users where id = :id';</code></pre>
+                      <pre class="code prettyprint"><code>var joinColumnsToReturn = ['first_name', 'last_name'];</code></pre>
+                      <pre class="code prettyprint"><code>ETL.Plugins.Core.Database.joinQuery(streamElement, 'nextract_sample', joinSQL, queryResults, true, joinColumnsToReturn);</code></pre>
+                      
+                                  </div>
+                              </div>
+                      </div>
+                      <div id="method_rawQuery" class="method item">
+                          <h3 class="name"><code>rawQuery</code></h3>
+                      
+                              <div class="args">
+                                  <span class="paren">(</span><ul class="args-list inline commas">
+                                      <li class="arg">
+                                              <code>dbName</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>sql</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>sqlParams</code>
+                                      </li>
+                                  </ul><span class="paren">)</span>
+                              </div>
+                      
+                              <span class="returns-inline">
+                                  <span class="type">stream.Transform</span>
+                              </span>
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                          <div class="meta">
+                                      <p>
+                                      Defined in
+                              <a href="../files/build_plugins_core_Database_Database.js.html#l158"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:158</code></a>
+                              </p>
+                      
+                      
+                      
+                          </div>
+                      
+                          <div class="description">
+                              <p>Raw query interface</p>
+                      
+                          </div>
+                      
+                              <div class="params">
+                                  <h4>Parameters:</h4>
+                      
+                                  <ul class="params-list">
+                                      <li class="param">
+                                              <code class="param-name">dbName</code>
+                                              <span class="type">String</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>A database name that matches a object key defined in your Nextract config file</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">sql</code>
+                                              <span class="type">String</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>SQL statement to execute. Can be a fully formed SQL select statement or
+                      a parameterized one with &quot;:key&quot; placeholders. If the later, then sqlParams
+                      must be an object of key/values to be replaced.</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">sqlParams</code>
+                                              <span class="type">Object</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>(optional) List of key/value params to be subbed out in a parameterized query</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                  </ul>
+                              </div>
+                      
+                              <div class="returns">
+                                  <h4>Returns:</h4>
+                      
+                                  <div class="returns-description">
+                                              <span class="type">stream.Transform</span>:
+                                          <p>Read/write stream transform to use in conjuction with pipe()</p>
+                      
+                                  </div>
+                              </div>
+                      
+                      
+                              <div class="example">
+                                  <h4>Example:</h4>
+                      
+                                  <div class="example-content">
+                                      <pre class="code prettyprint"><code>var sql = 'select first_name, last_name, age, salary from users where id = :id';</code></pre>
+                      <pre class="code prettyprint"><code>var sqlParams = { id: id };</code></pre>
+                      <pre class="code prettyprint"><code>ETL.Plugins.Core.Database.rawQuery('dbname', sql, sqlParams);</code></pre>
+                      
+                                  </div>
+                              </div>
+                      </div>
+                      <div id="method_selectQuery" class="method item">
+                          <h3 class="name"><code>selectQuery</code></h3>
+                      
+                              <div class="args">
+                                  <span class="paren">(</span><ul class="args-list inline commas">
+                                      <li class="arg">
+                                              <code>dbName</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>sql</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>sqlReplacements</code>
+                                      </li>
+                                  </ul><span class="paren">)</span>
+                              </div>
+                      
+                              <span class="returns-inline">
+                                  <span class="type">Promise</span>
+                              </span>
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                          <div class="meta">
+                                      <p>
+                                      Defined in
+                              <a href="../files/build_plugins_core_Database_Database.js.html#l194"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:194</code></a>
+                              </p>
+                      
+                      
+                      
+                          </div>
+                      
+                          <div class="description">
+                              <p>Query interface for select statements</p>
+                      
+                          </div>
+                      
+                              <div class="params">
+                                  <h4>Parameters:</h4>
+                      
+                                  <ul class="params-list">
+                                      <li class="param">
+                                              <code class="param-name">dbName</code>
+                                              <span class="type">String</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>A database name that matches a object key defined in your Nextract config file</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">sql</code>
+                                              <span class="type">String</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>SQL statement to execute. Can be a fully formed SQL select statement or
+                      a parameterized one with &quot;:key&quot; placeholders. If the later, then sqlReplacements
+                      must be an object of key/values to be replaced.</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">sqlReplacements</code>
+                                              <span class="type">Object</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>(optional) List of key/value params to be subbed out in a parameterized query</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                  </ul>
+                              </div>
+                      
+                              <div class="returns">
+                                  <h4>Returns:</h4>
+                      
+                                  <div class="returns-description">
+                                              <span class="type">Promise</span>:
+                                          <p>Returns a promise resolved with a read stream to use in conjuction with pipe()</p>
+                      
+                                  </div>
+                              </div>
+                      
+                      
+                              <div class="example">
+                                  <h4>Example:</h4>
+                      
+                                  <div class="example-content">
+                                      <pre class="code prettyprint"><code>var sql = 'select first_name, last_name, age, salary from users where id = :id';</code></pre>
+                      <pre class="code prettyprint"><code>var sqlParams = { id: id };</code></pre>
+                      <pre class="code prettyprint"><code>ETL.Plugins.Core.Database.selectQuery('dbname', sql, sqlParams);</code></pre>
+                      
+                                  </div>
+                              </div>
+                      </div>
+                      <div id="method_updateQuery" class="method item">
+                          <h3 class="name"><code>updateQuery</code></h3>
+                      
+                              <div class="args">
+                                  <span class="paren">(</span><ul class="args-list inline commas">
+                                      <li class="arg">
+                                              <code>dbName</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>tableName</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>columnsToUpdate</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>matchCriteria</code>
+                                      </li>
+                                  </ul><span class="paren">)</span>
+                              </div>
+                      
+                              <span class="returns-inline">
+                                  <span class="type">stream.Transform</span>
+                              </span>
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                          <div class="meta">
+                                      <p>
+                                      Defined in
+                              <a href="../files/build_plugins_core_Database_Database.js.html#l278"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:278</code></a>
+                              </p>
+                      
+                      
+                      
+                          </div>
+                      
+                          <div class="description">
+                              <p>Allows you to run an UPDATE query against a database using data obtained from previous steps. Runs
+                      a query for each element in the stream.</p>
+                      
+                          </div>
+                      
+                              <div class="params">
+                                  <h4>Parameters:</h4>
+                      
+                                  <ul class="params-list">
+                                      <li class="param">
+                                              <code class="param-name">dbName</code>
+                                              <span class="type">String</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>A database name that matches a object key defined in your Nextract config file</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">tableName</code>
+                                              <span class="type">String</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>Table name</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">columnsToUpdate</code>
+                                              <span class="type">Array</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>Array of property (column) names to use in the UPDATE</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">matchCriteria</code>
+                                              <span class="type">Array</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>Array of objects with key/value params to be subbed out in a
+                      parameterized query. The expected format is  [{ tableColumn: '', comparator: '', collectionField: '' }].</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                  </ul>
+                              </div>
+                      
+                              <div class="returns">
+                                  <h4>Returns:</h4>
+                      
+                                  <div class="returns-description">
+                                              <span class="type">stream.Transform</span>:
+                                          <p>Read/write stream transform to use in conjuction with pipe()</p>
+                      
+                                  </div>
+                              </div>
+                      
+                      
+                              <div class="example">
+                                  <h4>Example:</h4>
+                      
+                                  <div class="example-content">
+                                      <pre class="code prettyprint"><code>var matchCriteria = [{ tableColumn: 'id', comparator: '=', collectionField: 'id' }];</code></pre>
+                      <pre class="code prettyprint"><code>return ETL.Plugins.Core.Database.updateQuery('nextract_sample', 'users', ['first_name'], matchCriteria);</code></pre>
+                      
+                                  </div>
+                              </div>
+                      </div>
+                                  </div>
+                      
+                      
+                      
+                          </div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
+</body>
+</html>

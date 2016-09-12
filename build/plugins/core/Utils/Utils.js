@@ -54,7 +54,7 @@ module.exports = {
    * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
    */
   pluckProperties: function pluckProperties(propertiesToTake) {
-    var streamFunction = function streamFunction(element, index) {
+    var streamFunction = function streamFunction(element) {
       var elementKeys = (0, _keys3.default)(element);
 
       elementKeys.forEach(function (key) {
@@ -83,8 +83,32 @@ module.exports = {
    * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
    */
   streamConvertBufferToString: function streamConvertBufferToString() {
-    var streamFunction = function streamFunction(element, index) {
+    var streamFunction = function streamFunction(element) {
       return element.toString();
+    };
+
+    return utilsPlugin.buildStreamTransform(streamFunction, null, 'map');
+  },
+
+  /**
+   * Logs the current element flowing through the stream. Useful in debugging.
+   *
+   * @method streamConsoleLogStreamItem
+   * @for Nextract.Plugins.Core.Utils
+   *
+   * @example
+   *     someReadableStream.pipe(yourTransformInstance.Plugins.Core.Utils.streamConsoleLogStreamItem("DEBUGGING: "))
+   *
+   * @param {String} openingLogMsg A string preceeding the element output (defaults to 'Stream debug: ').
+   *
+   * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
+   */
+  streamConsoleLogStreamItem: function streamConsoleLogStreamItem() {
+    var openingLogMsg = arguments.length <= 0 || arguments[0] === undefined ? 'Stream debug: ' : arguments[0];
+
+    var streamFunction = function streamFunction(element) {
+      utilsPlugin.ETL.logger.debug(openingLogMsg, element);
+      return element;
     };
 
     return utilsPlugin.buildStreamTransform(streamFunction, null, 'map');

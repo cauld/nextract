@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>build/plugins/pluginBase.js - nextract</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="icon" href="../assets/favicon.ico">
+    <script src="http://yui.yahooapis.com/combo?3.9.1/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+            <h1>nextract</h1>
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: 0.0.1</em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+                    <h2 class="off-left">APIs</h2>
+                    <div id="api-tabview" class="tabview">
+                        <ul class="tabs">
+                            <li><a href="#api-classes">Classes</a></li>
+                            <li><a href="#api-modules">Modules</a></li>
+                        </ul>
+                
+                        <div id="api-tabview-filter">
+                            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+                        </div>
+                
+                        <div id="api-tabview-panel">
+                            <ul id="api-classes" class="apis classes">
+                                <li><a href="../classes/Nextract.html">Nextract</a></li>
+                                <li><a href="../classes/Nextract.PluginBase.html">Nextract.PluginBase</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Calculator.html">Nextract.Plugins.Core.Calculator</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Database.html">Nextract.Plugins.Core.Database</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Filter.html">Nextract.Plugins.Core.Filter</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Http.html">Nextract.Plugins.Core.Http</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Input.html">Nextract.Plugins.Core.Input</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Output.html">Nextract.Plugins.Core.Output</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Sort.html">Nextract.Plugins.Core.Sort</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Utils.html">Nextract.Plugins.Core.Utils</a></li>
+                            </ul>
+                
+                
+                            <ul id="api-modules" class="apis modules">
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+                    Show:
+                    <label for="api-show-inherited">
+                        <input type="checkbox" id="api-show-inherited" checked>
+                        Inherited
+                    </label>
+            
+                    <label for="api-show-protected">
+                        <input type="checkbox" id="api-show-protected">
+                        Protected
+                    </label>
+            
+                    <label for="api-show-private">
+                        <input type="checkbox" id="api-show-private">
+                        Private
+                    </label>
+                    <label for="api-show-deprecated">
+                        <input type="checkbox" id="api-show-deprecated">
+                        Deprecated
+                    </label>
+            
+                </div>
+            
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+                      <h1 class="file-heading">File: build/plugins/pluginBase.js</h1>
+                      
+                      <div class="file">
+                          <pre class="code prettyprint linenums">
+                      &#x27;use strict&#x27;;
+                      
+                      var _isUndefined2 = require(&#x27;lodash/isUndefined&#x27;);
+                      
+                      var _isUndefined3 = _interopRequireDefault(_isUndefined2);
+                      
+                      var _repeat2 = require(&#x27;lodash/repeat&#x27;);
+                      
+                      var _repeat3 = _interopRequireDefault(_repeat2);
+                      
+                      var _keys2 = require(&#x27;lodash/keys&#x27;);
+                      
+                      var _keys3 = _interopRequireDefault(_keys2);
+                      
+                      var _isString2 = require(&#x27;lodash/isString&#x27;);
+                      
+                      var _isString3 = _interopRequireDefault(_isString2);
+                      
+                      var _isNumber2 = require(&#x27;lodash/isNumber&#x27;);
+                      
+                      var _isNumber3 = _interopRequireDefault(_isNumber2);
+                      
+                      var _isInteger2 = require(&#x27;lodash/isInteger&#x27;);
+                      
+                      var _isInteger3 = _interopRequireDefault(_isInteger2);
+                      
+                      var _isBoolean2 = require(&#x27;lodash/isBoolean&#x27;);
+                      
+                      var _isBoolean3 = _interopRequireDefault(_isBoolean2);
+                      
+                      var _isDate2 = require(&#x27;lodash/isDate&#x27;);
+                      
+                      var _isDate3 = _interopRequireDefault(_isDate2);
+                      
+                      var _forOwn2 = require(&#x27;lodash/forOwn&#x27;);
+                      
+                      var _forOwn3 = _interopRequireDefault(_forOwn2);
+                      
+                      var _default = require(&#x27;./config/default&#x27;);
+                      
+                      var _default2 = _interopRequireDefault(_default);
+                      
+                      var _Logger = require(&#x27;./core/Logger/Logger&#x27;);
+                      
+                      var logger = _interopRequireWildcard(_Logger);
+                      
+                      var _fs = require(&#x27;fs&#x27;);
+                      
+                      var _fs2 = _interopRequireDefault(_fs);
+                      
+                      var _path = require(&#x27;path&#x27;);
+                      
+                      var _path2 = _interopRequireDefault(_path);
+                      
+                      var _workerjs = require(&#x27;workerjs&#x27;);
+                      
+                      var _workerjs2 = _interopRequireDefault(_workerjs);
+                      
+                      var _through = require(&#x27;through2&#x27;);
+                      
+                      var _through2 = _interopRequireDefault(_through);
+                      
+                      var _through2Filter = require(&#x27;through2-filter&#x27;);
+                      
+                      var _through2Filter2 = _interopRequireDefault(_through2Filter);
+                      
+                      var _through2Map = require(&#x27;through2-map&#x27;);
+                      
+                      var _through2Map2 = _interopRequireDefault(_through2Map);
+                      
+                      var _through2Reduce = require(&#x27;through2-reduce&#x27;);
+                      
+                      var _through2Reduce2 = _interopRequireDefault(_through2Reduce);
+                      
+                      var _through2Spy = require(&#x27;through2-spy&#x27;);
+                      
+                      var _through2Spy2 = _interopRequireDefault(_through2Spy);
+                      
+                      function _interopRequireWildcard(obj) { if (obj &amp;&amp; obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+                      
+                      function _interopRequireDefault(obj) { return obj &amp;&amp; obj.__esModule ? obj : { default: obj }; }
+                      
+                      /**
+                       * The base plugin class that all plugins inherit from
+                       *
+                       * @class Nextract.PluginBase
+                       */
+                      
+                      var sqlite3 = require(&#x27;sqlite3&#x27;);
+                      //var sqlite3 = require(&#x27;sqlite3&#x27;).verbose();
+                      
+                      var internalDbConnectionInstance = null,
+                          internalDbPath = _path2.default.resolve(__dirname, &#x27;../../internal/db/nextract.sqlite3&#x27;);
+                      
+                      //Provides a connection to the internal Sqlite database
+                      function getInternalDbInstance() {
+                        if (internalDbConnectionInstance === null) {
+                          internalDbConnectionInstance = new sqlite3.Database(internalDbPath, function (err) {
+                            if (err !== null) {
+                              logger.log.erro(&#x27;Error opening internal database!&#x27;);
+                            }
+                          });
+                      
+                          //We want to be able to run many inserts without hitting the busy error.  References:
+                          //https://github.com/mapbox/node-sqlite3/issues/9
+                          //http://www.sqlite.org/pragma.html#pragma_journal_mode
+                          internalDbConnectionInstance.run(&#x27;PRAGMA journal_mode = WAL;&#x27;);
+                      
+                          //Turn on autovacuum
+                          //https://www.techonthenet.com/sqlite/auto_vacuum.php
+                          internalDbConnectionInstance.run(&#x27;PRAGMA main.auto_vacuum = 1;&#x27;);
+                        }
+                      
+                        return internalDbConnectionInstance;
+                      }
+                      
+                      //Based on http://stackoverflow.com/a/1349462
+                      function getRandomTemporaryTableName() {
+                        var charSet = &#x27;abcdefghijklmnopqrstuvwxyz_&#x27;;
+                        var randomString = &#x27;&#x27;;
+                        for (var i = 0; i &lt; 50; i++) {
+                          var randomPoz = Math.floor(Math.random() * charSet.length);
+                          randomString += charSet.substring(randomPoz, randomPoz + 1);
+                        }
+                      
+                        return randomString;
+                      }
+                      
+                      var PluginBase = function PluginBase() {
+                        var pluginName = arguments.length &lt;= 0 || arguments[0] === undefined ? null : arguments[0];
+                        var pluginType = arguments.length &lt;= 1 || arguments[1] === undefined ? null : arguments[1];
+                      
+                        var self = this;
+                      
+                        if (pluginName === null) {
+                          throw &quot;A plugin name must be provided to initPlugin!&quot;;
+                        }
+                      
+                        if (pluginType === null) {
+                          throw &quot;A plugin type (Core or Vendor) must be provided to initPlugin!&quot;;
+                        }
+                      
+                        /**
+                         * Plugin name
+                         *
+                         * @property pluginName
+                         * @for Nextract.PluginBase
+                         * @type String
+                         */
+                        this.pluginName = pluginName;
+                      
+                        /**
+                         * Plugin type (Core or Vendor)
+                         *
+                         * @property pluginType
+                         * @for Nextract.PluginBase
+                         * @type String
+                         */
+                        this.pluginType = pluginType;
+                      
+                        /**
+                         * Core system functionality is namespaced under this ETL object
+                         *
+                         * @property ETL
+                         * @for Nextract.PluginBase
+                         * @type Object
+                         */
+                        this.ETL = {
+                          /**
+                           * Provides convient access to the core system config variables
+                           *
+                           * @property ETL.config
+                           * @for Nextract.PluginBase
+                           * @type Object
+                           */
+                          config: _default2.default,
+                      
+                          /**
+                           * Provides convient access to core logging functionality
+                           *
+                           * @property ELT.logger
+                           * @for Nextract.PluginBase
+                           * @type Object
+                           */
+                          logger: logger
+                        };
+                      
+                        /**
+                         * Provides access to internal sqlite3 database. Allows plugins to run raw queries as needed
+                         * to create tables, query them, cleanup,etc.
+                         *
+                         * @method runInternalQuery
+                         * @for Nextract.PluginBase
+                         * @example
+                         *     var sql = &#x27;select first_name, last_name, age, salary from users where id = :id&#x27;;
+                         * @example
+                         *     var sqlParams = { id: id };
+                         * @example
+                         *     somePlugin.runInternalQuery(insertSql, sqlReplacements, false, callbackFunction);
+                         *
+                         * @param {String} sql SQL statement to execute. Can be a fully formed SQL select statement or
+                         * a parameterized one with &quot;:key&quot; placeholders. If the later, then sqlReplacements
+                         * must be an object of key/values to be replaced.
+                         * @param {Object} sqlReplacements (optional) List of key/value params to be subbed out
+                         * in a parameterized query
+                         * @param {Boolean} expectsResults Should this query return results?
+                         * @param {Function} callback Function to be called once the temporary table has been completed
+                         *
+                         * @return {Array/undefined} If expectsResults was true then the return should include an
+                         * array of query results. Otherwise, nothing is returned.
+                         */
+                        this.runInternalQuery = function (sql, sqlReplacements, expectsResults, callback) {
+                          var dbInstance = getInternalDbInstance();
+                      
+                          if (expectsResults === false) {
+                            dbInstance.run(sql, sqlReplacements, function () {
+                              callback();
+                            });
+                          } else {
+                            dbInstance.all(sql, sqlReplacements, function (err, rows) {
+                              callback(err, rows);
+                            });
+                          }
+                        };
+                      
+                        /**
+                         * Convinence method used by plugins to run code in a background web worker thread. A worker
+                         * script must exist in the same directory as the plugin itself with a name of Worker.js. The
+                         * format of the worker script must match the one defined by the npm workerjs module -
+                         * https://www.npmjs.com/package/workerjs#node-mode---allowing-require
+                         *
+                         * @method runInWorker
+                         * @for Nextract.PluginBase
+                         *
+                         * @example
+                         *     var workerMsg = { cmd: &#x27;orderBy&#x27;, args: [collection, iteratees, orders] };
+                         *
+                         * @example
+                         *     return pluginUtils.runInWorker(workerMsg);
+                         *
+                         * @param {Object} workerMsg The message to be passed to the worker (can be an object)
+                         *
+                         * @return {Promise} Promise resolved with worker response msg
+                         */
+                        this.runInWorker = function (workerMsg) {
+                          return new Promise(function (resolve, reject) {
+                            //Verify a web worker script for this plugin exists
+                            var workerScript = _path2.default.resolve(__dirname, &#x27;./&#x27; + self.pluginType.toLowerCase() + &#x27;/&#x27; + self.pluginName + &#x27;/Worker.js&#x27;);
+                            _fs2.default.stat(workerScript, function (err, stat) {
+                              if (err) {
+                                reject(&#x27;Plugin worker file not found for&#x27;, self.pluginName);
+                              } else {
+                                var worker = new _workerjs2.default(workerScript, true);
+                      
+                                //Worker callback success handler
+                                worker.onmessage = function (workerResponse) {
+                                  worker.terminate();
+                                  resolve(workerResponse.data);
+                                };
+                      
+                                //Worker callback error handler
+                                worker.onerror = function (event) {
+                                  worker.terminate();
+                                  var rejectMsg = event.message + &quot; (&quot; + event.filename + &quot;:&quot; + event.lineno + &quot;)&quot;;
+                                  reject(rejectMsg);
+                                };
+                      
+                                worker.postMessage(workerMsg);
+                              }
+                            });
+                          });
+                        };
+                      
+                        /**
+                         * Accepts a stream transform function that conforms to the through2.obj stream wrapper
+                         * API. Caller can choose to use through2 or one of the through2 helper modules (map, filter, spy).
+                         * For more information see - https://github.com/rvagg/through2.
+                         *
+                         * @method buildStreamTransform
+                         * @for Nextract.PluginBase
+                         *
+                         * @example
+                         *     var streamFunction = function(element, index) { return element.foo &lt;= 10 };
+                         * @example
+                         *     return pluginName.runTask(&#x27;sometaskname&#x27;, streamFunction, &#x27;filter&#x27;);
+                         *
+                         * @param {Function} streamFunction Function that conforms to the through2.obj stream wrapper API
+                         * @param {Function} streamFlushFunction Function that conforms to the through2.obj stream flush method API (pass null for no flush)
+                         * @param {String} streamFunctionType (optional, defaults to standard through2) standard, filter, map, reduce, or spy
+                         *
+                         * @return {Function} Returns stream transform wrapped using through2
+                         */
+                        this.buildStreamTransform = function (streamFunction) {
+                          var streamFlushFunction = arguments.length &lt;= 1 || arguments[1] === undefined ? null : arguments[1];
+                          var streamFunctionType = arguments.length &lt;= 2 || arguments[2] === undefined ? &#x27;standard&#x27; : arguments[2];
+                      
+                          var streamWrappedFunction;
+                      
+                          switch (streamFunctionType) {
+                            case &#x27;filter&#x27;:
+                              streamWrappedFunction = _through2Filter2.default.obj(streamFunction);
+                              break;
+                            case &#x27;map&#x27;:
+                              streamWrappedFunction = _through2Map2.default.obj(streamFunction);
+                              break;
+                            case &#x27;reduce&#x27;:
+                              streamWrappedFunction = _through2Reduce2.default.obj(streamFunction);
+                              break;
+                            case &#x27;spy&#x27;:
+                              streamWrappedFunction = _through2Spy2.default.obj(streamFunction);
+                              break;
+                            default:
+                              streamWrappedFunction = _through2.default.obj(streamFunction, streamFlushFunction);
+                              break;
+                          }
+                      
+                          return streamWrappedFunction;
+                        };
+                      
+                        /**
+                         * Some streams require a more traditional blocking like operation (e.g.) Sort, Group By, etc. We
+                         * want to process the stream and return back a stream without breaking the stream pipe or giving
+                         * the appearance of a blocking action.  This method will take the first item of a stream and use it
+                         * to create a temporary table in our internal database by inspecting its keys and values.
+                         *
+                         * @method createTemporaryTableForStream
+                         * @for Nextract.PluginBase
+                         *
+                         * @example
+                         *     See the sortBy method of the core Sort plugin
+                         *
+                         * @param {Object} streamFunction The first object/element of a stream
+                         * @param {Function} callback Function to be called once the temporary table has been completed
+                         *
+                         * @return {String} Returns the temporary table name
+                         */
+                        this.createTemporaryTableForStream = function (streamElement, callback) {
+                          var createTableSql,
+                              temporaryTableName = getRandomTemporaryTableName(),
+                              columnDefs = [];
+                      
+                          //Note: Sqlite doesn&#x27;t really have standard data types.  It has type affinity instead so out guesses
+                          //here just help it out (http://www.sqlite.org/datatype3.html).
+                          (0, _forOwn3.default)(streamElement, function (value, key) {
+                            var columnDataType;
+                      
+                            if ((0, _isDate3.default)(value)) {
+                              columnDataType = &#x27;DATETIME&#x27;;
+                            } else if ((0, _isBoolean3.default)(value)) {
+                              columnDataType = &#x27;BOOLEAN&#x27;;
+                            } else if ((0, _isInteger3.default)(value)) {
+                              columnDataType = &#x27;INTEGER&#x27;;
+                            } else if ((0, _isNumber3.default)(value)) {
+                              columnDataType = &#x27;REAL&#x27;;
+                            } else if ((0, _isString3.default)(value)) {
+                              columnDataType = &#x27;TEXT&#x27;;
+                            } else {
+                              //For other types like object or when we don&#x27;t know since the value is null
+                              //we&#x27;ll go with a blob.
+                              columnDataType = &#x27;BLOB&#x27;;
+                            }
+                      
+                            columnDefs[columnDefs.length] = &#x27;&#x60;&#x27; + key + &#x27;&#x60; &#x27; + columnDataType + &#x27; DEFAULT NULL&#x27;;
+                          });
+                      
+                          createTableSql = &#x27;CREATE TABLE &#x27; + temporaryTableName + &#x27; (&#x27; + columnDefs.join(&#x27;,&#x27;) + &#x27;); COMMIT;&#x27;;
+                      
+                          self.runInternalQuery(createTableSql, [], false, function (err) {
+                            if (err) self.ETL.logger.error(&#x27;Invalid CREATE TABLE request:&#x27;, err);
+                      
+                            return callback(temporaryTableName);
+                          });
+                        };
+                      
+                        /**
+                         * Removes temporary internal database tables creates from usage of createTemporaryTableForStream.
+                         *
+                         * @method dropTemporaryTableForStream
+                         * @for Nextract.PluginBase
+                         *
+                         * @param {String} tableName Name of the internal table to be dropped
+                         * @param {Function} callback Function to be called once the internal table has been dropped
+                         */
+                        this.dropTemporaryTableForStream = function (tableName, callback) {
+                          var dropTableSql = &#x27;DROP TABLE IF EXISTS &#x27; + tableName + &#x27;; COMMIT;&#x27;;
+                      
+                          self.runInternalQuery(dropTableSql, [], false, function (err) {
+                            if (err) self.ETL.logger.error(&#x27;Invalid DROP TABLE request:&#x27;, err);
+                            return callback();
+                          });
+                        };
+                      
+                        /**
+                         * Some streams require a more traditional blocking like operation (e.g.) Sort, Group By, etc. We
+                         * want to process the stream and return back a stream without breaking the stream pipe or giving
+                         * the appearance of a blocking action.  This method will take the first item of a stream and use it
+                         * to create a boilerplate INSERT statement for all items in a stream. Par this method with
+                         * createTemporaryTableForStream.  See getBoilerplateStreamBulkInsertStatement for bulk inserts.
+                         *
+                         * @method getBoilerplateStreamInsertStatement
+                         * @for Nextract.PluginBase
+                         *
+                         * @example
+                         *     See the sortBy method of the core Sort plugin
+                         *
+                         * @param {String} temporaryTableName The temporary table name created by a call to createTemporaryTableForStream
+                         * @param {Object} streamFunction The first object/element of a stream
+                         * @param {Boolean} escapeColumnNames If true columns names are escaped (e.g.) &#x60;column_foo&#x60;
+                         *
+                         * @return {String} Returns the boilerplate INSERT statement with &quot;?&quot; value placeholders
+                         */
+                        this.getBoilerplateStreamInsertStatement = function (temporaryTableName, element) {
+                          var escapeColumnNames = arguments.length &lt;= 2 || arguments[2] === undefined ? true : arguments[2];
+                      
+                          var keys, replaceMarks, valueReplacementString, columns, columnReplacementString, insertSql;
+                      
+                          keys = (0, _keys3.default)(element);
+                      
+                          replaceMarks = [];
+                          for (var i = 0; i &lt; keys.length; i++) {
+                            replaceMarks[replaceMarks.length] = &#x27;?&#x27;;
+                          }
+                      
+                          valueReplacementString = replaceMarks.join(&#x27;,&#x27;);
+                      
+                          //Build the columns replacement string
+                          if (escapeColumnNames === true) {
+                            //Wrap the property name to be safe (not supported by all databases)
+                            columns = keys.map(function (v) {
+                              return &#x27;&#x60;&#x27; + v + &#x27;&#x60;&#x27;;
+                            });
+                          } else {
+                            columns = keys.map(function (v) {
+                              return v;
+                            });
+                          }
+                      
+                          columnReplacementString = columns.join(&#x27;,&#x27;);
+                      
+                          insertSql = &#x27;INSERT INTO &#x27; + temporaryTableName + &#x27; (&#x27; + columnReplacementString + &#x27;) VALUES (&#x27; + valueReplacementString + &#x27;)&#x27;;
+                      
+                          return insertSql;
+                        };
+                      
+                        /**
+                         * Some streams require a more traditional blocking like operation (e.g.) Sort, Group By, etc. We
+                         * want to process the stream and return back a stream without breaking the stream pipe or giving
+                         * the appearance of a blocking action.  This method will take the first item of a stream and use it
+                         * to create a boilerplate bulk INSERT statement. Par this method with
+                         * createTemporaryTableForStream.
+                         *
+                         * @method getBoilerplateStreamBulkInsertStatement
+                         * @for Nextract.PluginBase
+                         *
+                         * @example
+                         *     See the sortBy method of the core Sort plugin
+                         *
+                         * @param {String} temporaryTableName The temporary table name created by a call to createTemporaryTableForStream
+                         * @param {Object} streamFunction The first object/element of a stream
+                         * @param {Integer} batchCount The number of items to prep for bulk insert (creates the proper number of &quot;?&quot; placeholders)
+                         * @param {Boolean} escapeColumnNames If true columns names are escaped (e.g.) &#x60;column_foo&#x60;
+                         *
+                         * @return {String} Returns the boilerplate INSERT statement with &quot;?&quot; value placeholders
+                         */
+                        this.getBoilerplateStreamBulkInsertStatement = function (temporaryTableName, firstElement, batchCount) {
+                          var escapeColumnNames = arguments.length &lt;= 3 || arguments[3] === undefined ? true : arguments[3];
+                      
+                          var keys, batchValues, valuesPlaceholder, valueReplacementString, columns, columnReplacementString, insertSql;
+                      
+                          keys = (0, _keys3.default)(firstElement);
+                      
+                          //Build the columns replacement string
+                          if (escapeColumnNames === true) {
+                            //Wrap the property name to be safe (not supported by all databases)
+                            columns = keys.map(function (v) {
+                              return &#x27;&#x60;&#x27; + v + &#x27;&#x60;&#x27;;
+                            });
+                          } else {
+                            columns = keys.map(function (v) {
+                              return v;
+                            });
+                          }
+                      
+                          columnReplacementString = columns.join(&#x27;,&#x27;);
+                      
+                          //Build the values replacement string
+                          valuesPlaceholder = &#x27;(&#x27; + (0, _repeat3.default)(&#x27;?&#x27;, columns.length).split(&#x27;&#x27;).join(&#x27;,&#x27;) + &#x27;)&#x27;;
+                          batchValues = [];
+                          for (var i = 0; i &lt; batchCount; i++) {
+                            batchValues[batchValues.length] = valuesPlaceholder;
+                          }
+                          valueReplacementString = batchValues.join(&#x27;, &#x27;);
+                      
+                          insertSql = &#x27;INSERT INTO &#x27; + temporaryTableName + &#x27; (&#x27; + columnReplacementString + &#x27;) VALUES &#x27; + valueReplacementString;
+                      
+                          return insertSql;
+                        };
+                      
+                        this.getStreamPassthroughForPipe = function () {
+                          //Just get a handle on the stream so that we can do some internal piping
+                          function processStreamInput(element) {
+                            if (!(0, _isUndefined3.default)(element)) {
+                              return element;
+                            }
+                          }
+                      
+                          return this.buildStreamTransform(processStreamInput, null, &#x27;map&#x27;);
+                        };
+                      };
+                      
+                      module.exports = PluginBase;
+                      
+                          </pre>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
+</body>
+</html>

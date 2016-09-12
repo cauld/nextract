@@ -209,7 +209,7 @@ module.exports = {
    * must be an object of key/values to be replaced.
    * @param {Object} sqlReplacements (optional) List of key/value params to be subbed out in a parameterized query
    *
-   * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
+   * @return {Promise} Returns a promise resolved with a read stream to use in conjuction with pipe()
    */
   selectQuery: function selectQuery(dbName, sql) {
     var sqlReplacements = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
@@ -252,21 +252,27 @@ module.exports = {
     var dbInstance = getInstance(dbName);
     var baseQuery = 'DELETE FROM ' + tableName + ' WHERE ';
 
-    var deleteFilter = function deleteFilter(element) {
-      var sqlObject = buildSqlObjectsForCollectionWithMatchCriteria(element, matchCriteria, null);
+    function processStreamDelete(element, encoding, callback) {
+      if (!(0, _isUndefined3.default)(element)) {
+        var sqlObject = buildSqlObjectsForCollectionWithMatchCriteria(element, matchCriteria, null);
 
-      dbInstance.query(baseQuery + sqlObject.extraSql, {
-        replacements: sqlObject.sqlParams,
-        type: dbInstance.QueryTypes.DELETE
-      }).then(function () {
-        return false; //Nothing to return as this was a delete
-      }).catch(function (err) {
-        databasePlugin.logger.error(err);
-        throw new Error(err);
-      });
-    };
+        dbInstance.query(baseQuery + sqlObject.extraSql, {
+          replacements: sqlObject.sqlParams,
+          type: dbInstance.QueryTypes.DELETE
+        }).then(function () {
+          //Nothing to return as this was a delete
+          callback(null, null);
+        }).catch(function (err) {
+          databasePlugin.logger.error(err);
+          throw new Error(err);
+        });
+      } else {
+        console.log("HERERERERER");
+        callback(null, {});
+      }
+    }
 
-    return databasePlugin.buildStreamTransform(deleteFilter, null, 'filter');
+    return databasePlugin.buildStreamTransform(processStreamDelete, null, 'standard');
   },
 
   /**
@@ -292,33 +298,37 @@ module.exports = {
   updateQuery: function updateQuery(dbName, tableName, columnsToUpdate) {
     var matchCriteria = arguments.length <= 3 || arguments[3] === undefined ? [] : arguments[3];
 
-    var dbInstance = getInstance(dbName);
-    var baseQuery = 'UPDATE ' + tableName + ' SET ';
+    var baseQuery,
+        dbInstance = getInstance(dbName);
 
+    baseQuery = 'UPDATE ' + tableName + ' SET ';
     columnsToUpdate.forEach(function (column, index) {
       if (index > 0) {
         baseQuery += ', ';
       }
       baseQuery += column + ' = :' + column;
     });
-
     baseQuery += ' WHERE ';
 
-    var updateMap = function updateMap(element) {
-      var sqlObject = buildSqlObjectsForCollectionWithMatchCriteria(element, matchCriteria, columnsToUpdate);
+    function processStreamUpdate(element, encoding, callback) {
+      if (!(0, _isUndefined3.default)(element)) {
+        var sqlObject = buildSqlObjectsForCollectionWithMatchCriteria(element, matchCriteria, columnsToUpdate);
 
-      dbInstance.query(baseQuery + sqlObject.extraSql, {
-        replacements: sqlObject.sqlParams,
-        type: dbInstance.QueryTypes.DELETE
-      }).then(function () {
-        return element; //Return the same element to allow for stream chaining to continue
-      }).catch(function (err) {
-        databasePlugin.logger.error(err);
-        throw new Error(err);
-      });
-    };
+        dbInstance.query(baseQuery + sqlObject.extraSql, {
+          replacements: sqlObject.sqlParams,
+          type: dbInstance.QueryTypes.DELETE
+        }).then(function () {
+          return callback(null, element);
+        }).catch(function (err) {
+          databasePlugin.logger.error(err);
+          throw new Error(err);
+        });
+      } else {
+        return callback(null, null);
+      }
+    }
 
-    return databasePlugin.buildStreamTransform(updateMap, null, 'map');
+    return databasePlugin.buildStreamTransform(processStreamUpdate, null, 'standard');
   },
 
   /**

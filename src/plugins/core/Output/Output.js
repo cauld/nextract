@@ -11,33 +11,13 @@ TODO:
 
 import _ from 'lodash';
 import { isEmpty } from 'lodash/fp';
-import jsonfile from 'jsonfile';
+import JSONStream from 'JSONStream';
 import fs from 'fs';
 import csv from 'csv';
 import pluginBase from '../../pluginBase';
 
 //Instantiate the plugin
 var outputPlugin = new pluginBase('Input', 'Core');
-
-
-//Ref: https://www.npmjs.com/package/jsonfile
-function writeJsonFile(filePath, data, formattingConfig = {}) {
-  return new Promise(function (resolve, reject) {
-    if (!_.isEmpty(data)) {
-      jsonfile.writeFile(filePath, { "data": data }, formattingConfig, function (err) {
-        if (err) {
-          outputPlugin.logger.error('writeJsonFile', err);
-          reject(err);
-        } else {
-          resolve();
-        }
-      });
-    } else {
-      outputPlugin.logger.error('writeJsonFile', 'Input data is empty!');
-      reject('Input data is empty!');
-    }
-  });
-}
 
 module.exports = {
 
@@ -54,12 +34,37 @@ module.exports = {
    *
    * @param {Object} formattingConfig Object contain config options for the file type being written.
    * All options allowed by cvs-stringify (http://csv.adaltas.com/stringify/) are supported.
+   *
+   * @return {String} Returns a string formatted as a CSV
    */
-  //Ref: http://csv.adaltas.com/stringify/examples/
   toCsvString: function(formattingConfig = {}) {
     var stringifier = csv.stringify(formattingConfig);
 
     return outputPlugin.getStreamPassthroughForPipe().pipe(stringifier);
+  },
+
+  /**
+   * Converts stream objects to JSON strings (usually paired with toFile).
+   *
+   * @method toJsonString
+   * @for Nextract.Plugins.Core.Output
+   *
+   * @example
+   *     transform.Plugins.Core.Output.toJsonString(true);
+   *
+   * @param {Boolean} wrapJsonArray (defaults to true)
+   * @param {String} open Custom opening string placed before JSON array. Defaults to '{\n\t"data": [\n\t'.
+   * @param {String} close Custom close string placed after JSON array. Defaults to ',\n\t'.
+   * @param {String} seperator Custom seperator places between array object elements. Defaults to '\n\t]\n}\n'.
+   *
+   * @return {String} Returns a string formatted as JSON
+   */
+  toJsonString: function(wrapJsonArray = true, open = '{\n\t"data": [\n\t', close = ',\n\t', seperator = '\n\t]\n}\n') {
+    if (wrapJsonArray === true) {
+      return outputPlugin.getStreamPassthroughForPipe().pipe(JSONStream.stringify(open, close, seperator));
+    } else {
+      return outputPlugin.getStreamPassthroughForPipe().pipe(JSONStream.stringify(false));
+    }
   },
 
   /**

@@ -1,12 +1,8 @@
 'use strict';
 
-var _isEmpty2 = require('lodash/isEmpty');
+var _JSONStream = require('JSONStream');
 
-var _isEmpty3 = _interopRequireDefault(_isEmpty2);
-
-var _jsonfile = require('jsonfile');
-
-var _jsonfile2 = _interopRequireDefault(_jsonfile);
+var _JSONStream2 = _interopRequireDefault(_JSONStream);
 
 var _fs = require('fs');
 
@@ -36,27 +32,6 @@ TODO:
 
 var outputPlugin = new _pluginBase2.default('Input', 'Core');
 
-//Ref: https://www.npmjs.com/package/jsonfile
-function writeJsonFile(filePath, data) {
-  var formattingConfig = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
-
-  return new Promise(function (resolve, reject) {
-    if (!(0, _isEmpty3.default)(data)) {
-      _jsonfile2.default.writeFile(filePath, { "data": data }, formattingConfig, function (err) {
-        if (err) {
-          outputPlugin.logger.error('writeJsonFile', err);
-          reject(err);
-        } else {
-          resolve();
-        }
-      });
-    } else {
-      outputPlugin.logger.error('writeJsonFile', 'Input data is empty!');
-      reject('Input data is empty!');
-    }
-  });
-}
-
 module.exports = {
 
   /**
@@ -72,14 +47,44 @@ module.exports = {
    *
    * @param {Object} formattingConfig Object contain config options for the file type being written.
    * All options allowed by cvs-stringify (http://csv.adaltas.com/stringify/) are supported.
+   *
+   * @return {String} Returns a string formatted as a CSV
    */
-  //Ref: http://csv.adaltas.com/stringify/examples/
   toCsvString: function toCsvString() {
     var formattingConfig = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
     var stringifier = _csv2.default.stringify(formattingConfig);
 
     return outputPlugin.getStreamPassthroughForPipe().pipe(stringifier);
+  },
+
+  /**
+   * Converts stream objects to JSON strings (usually paired with toFile).
+   *
+   * @method toJsonString
+   * @for Nextract.Plugins.Core.Output
+   *
+   * @example
+   *     transform.Plugins.Core.Output.toJsonString(true);
+   *
+   * @param {Boolean} wrapJsonArray (defaults to true)
+   * @param {String} open Custom opening string placed before JSON array. Defaults to '{\n\t"data": [\n\t'.
+   * @param {String} close Custom close string placed after JSON array. Defaults to ',\n\t'.
+   * @param {String} seperator Custom seperator places between array object elements. Defaults to '\n\t]\n}\n'.
+   *
+   * @return {String} Returns a string formatted as JSON
+   */
+  toJsonString: function toJsonString() {
+    var wrapJsonArray = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
+    var open = arguments.length <= 1 || arguments[1] === undefined ? '{\n\t"data": [\n\t' : arguments[1];
+    var close = arguments.length <= 2 || arguments[2] === undefined ? ',\n\t' : arguments[2];
+    var seperator = arguments.length <= 3 || arguments[3] === undefined ? '\n\t]\n}\n' : arguments[3];
+
+    if (wrapJsonArray === true) {
+      return outputPlugin.getStreamPassthroughForPipe().pipe(_JSONStream2.default.stringify(open, close, seperator));
+    } else {
+      return outputPlugin.getStreamPassthroughForPipe().pipe(_JSONStream2.default.stringify(false));
+    }
   },
 
   /**
