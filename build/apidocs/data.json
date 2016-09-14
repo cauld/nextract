@@ -13,6 +13,13 @@
             "fors": {},
             "namespaces": {}
         },
+        "build/examples/benchmarkWithProfiling2.js": {
+            "name": "build/examples/benchmarkWithProfiling2.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
         "build/examples/csvAndSort.js": {
             "name": "build/examples/csvAndSort.js",
             "modules": {},
@@ -316,6 +323,12 @@
     "classitems": [
         {
             "file": "build/examples/benchmarkWithProfiling.js",
+            "line": 3,
+            "description": "Example: Query and sort...",
+            "class": "Nextract.Plugins.Core.Calculator"
+        },
+        {
+            "file": "build/examples/benchmarkWithProfiling2.js",
             "line": 3,
             "description": "Example: Query and sort...",
             "class": "Nextract.Plugins.Core.Calculator"
@@ -797,7 +810,7 @@
         },
         {
             "file": "build/plugins/core/Filter/Filter.js",
-            "line": 57,
+            "line": 59,
             "description": "Filters a stream, passing along all elements that do not equal the given testValue",
             "itemtype": "method",
             "name": "notEquals",
@@ -829,7 +842,7 @@
         },
         {
             "file": "build/plugins/core/Filter/Filter.js",
-            "line": 88,
+            "line": 92,
             "description": "Filters a stream, passing along all elements that are great than the given testValue",
             "itemtype": "method",
             "name": "greaterThan",
@@ -845,7 +858,7 @@
                 {
                     "name": "valueToTest",
                     "description": "The value being against",
-                    "type": "String|Number"
+                    "type": "Number"
                 }
             ],
             "return": {
@@ -856,7 +869,7 @@
         },
         {
             "file": "build/plugins/core/Filter/Filter.js",
-            "line": 114,
+            "line": 118,
             "description": "Filters a stream, passing along all elements that are great than or equal to the given testValue",
             "itemtype": "method",
             "name": "greaterThanOrEqualTo",
@@ -872,7 +885,7 @@
                 {
                     "name": "valueToTest",
                     "description": "The value being against",
-                    "type": "String|Number"
+                    "type": "Number"
                 }
             ],
             "return": {
@@ -883,7 +896,7 @@
         },
         {
             "file": "build/plugins/core/Filter/Filter.js",
-            "line": 138,
+            "line": 144,
             "description": "Filters a stream, passing along all elements that are less than the given testValue",
             "itemtype": "method",
             "name": "lessThan",
@@ -899,7 +912,7 @@
                 {
                     "name": "valueToTest",
                     "description": "The value being against",
-                    "type": "String|Number"
+                    "type": "Number"
                 }
             ],
             "return": {
@@ -910,7 +923,7 @@
         },
         {
             "file": "build/plugins/core/Filter/Filter.js",
-            "line": 162,
+            "line": 170,
             "description": "Filters a stream, passing along all elements that are less or equal to than the given testValue",
             "itemtype": "method",
             "name": "lessThanOrEqualTo",
@@ -926,7 +939,7 @@
                 {
                     "name": "valueToTest",
                     "description": "The value being against",
-                    "type": "String|Number"
+                    "type": "Number"
                 }
             ],
             "return": {
@@ -1694,6 +1707,10 @@
         {
             "message": "Missing item type\nExample: Query and sort...",
             "line": " build/examples/benchmarkWithProfiling.js:3"
+        },
+        {
+            "message": "Missing item type\nExample: Query and sort...",
+            "line": " build/examples/benchmarkWithProfiling2.js:3"
         },
         {
             "message": "Missing item type\nExample: CSV input and sort...",

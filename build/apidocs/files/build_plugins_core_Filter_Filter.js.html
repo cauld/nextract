@@ -139,6 +139,8 @@
                               } else {
                                 return element[propertyToTest] == valueToTest;
                               }
+                            } else {
+                              return false;
                             }
                           };
                       
@@ -170,6 +172,8 @@
                               } else {
                                 return element[propertyToTest] != valueToTest;
                               }
+                            } else {
+                              return false;
                             }
                           };
                       
@@ -186,16 +190,16 @@
                          *     someReadableStream.pipe(yourTransformInstance.Plugins.Core.Filter.greaterThan(&#x27;age&#x27;, 30))
                          *
                          * @param {String} propertyToTest The object property name being tested against
-                         * @param {String|Number} valueToTest The value being against
+                         * @param {Number} valueToTest The value being against
                          *
                          * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
                          */
                         greaterThan: function greaterThan(propertyToTest, valueToTest) {
                           var streamFunction = function streamFunction(element) {
                             if (!(0, _isUndefined3.default)(element) &amp;&amp; (0, _has3.default)(element, propertyToTest)) {
-                              //console.log(&quot;FOOOO&quot;, element[propertyToTest], valueToTest, (element[propertyToTest] &gt; valueToTest));
-                      
                               return element[propertyToTest] &gt; valueToTest;
+                            } else {
+                              return false;
                             }
                           };
                       
@@ -212,7 +216,7 @@
                          *     someReadableStream.pipe(yourTransformInstance.Plugins.Core.Filter.greaterThanOrEqualTo(&#x27;age&#x27;, 30))
                          *
                          * @param {String} propertyToTest The object property name being tested against
-                         * @param {String|Number} valueToTest The value being against
+                         * @param {Number} valueToTest The value being against
                          *
                          * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
                          */
@@ -220,6 +224,8 @@
                           var streamFunction = function streamFunction(element, index) {
                             if (!(0, _isUndefined3.default)(element) &amp;&amp; (0, _has3.default)(element, propertyToTest)) {
                               return element[propertyToTest] &gt;= valueToTest;
+                            } else {
+                              return false;
                             }
                           };
                       
@@ -236,7 +242,7 @@
                          *     someReadableStream.pipe(yourTransformInstance.Plugins.Core.Filter.lessThan(&#x27;age&#x27;, 30))
                          *
                          * @param {String} propertyToTest The object property name being tested against
-                         * @param {String|Number} valueToTest The value being against
+                         * @param {Number} valueToTest The value being against
                          *
                          * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
                          */
@@ -244,6 +250,8 @@
                           var streamFunction = function streamFunction(element, index) {
                             if (!(0, _isUndefined3.default)(element) &amp;&amp; (0, _has3.default)(element, propertyToTest)) {
                               return element[propertyToTest] &lt; valueToTest;
+                            } else {
+                              return false;
                             }
                           };
                       
@@ -260,7 +268,7 @@
                          *     someReadableStream.pipe(yourTransformInstance.Plugins.Core.Filter.lessThanOrEqualTo(&#x27;age&#x27;, 30))
                          *
                          * @param {String} propertyToTest The object property name being tested against
-                         * @param {String|Number} valueToTest The value being against
+                         * @param {Number} valueToTest The value being against
                          *
                          * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
                          */
@@ -268,6 +276,8 @@
                           var streamFunction = function streamFunction(element, index) {
                             if (!(0, _isUndefined3.default)(element) &amp;&amp; (0, _has3.default)(element, propertyToTest)) {
                               return element[propertyToTest] &lt;= valueToTest;
+                            } else {
+                              return false;
                             }
                           };
                       

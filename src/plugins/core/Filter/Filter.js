@@ -36,6 +36,8 @@ module.exports = {
         } else {
           return element[propertyToTest] == valueToTest;
         }
+      } else {
+        return false;
       }
     };
 
@@ -65,6 +67,8 @@ module.exports = {
         } else {
           return element[propertyToTest] != valueToTest;
         }
+      } else {
+        return false;
       }
     };
 
@@ -81,16 +85,16 @@ module.exports = {
    *     someReadableStream.pipe(yourTransformInstance.Plugins.Core.Filter.greaterThan('age', 30))
    *
    * @param {String} propertyToTest The object property name being tested against
-   * @param {String|Number} valueToTest The value being against
+   * @param {Number} valueToTest The value being against
    *
    * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
    */
   greaterThan: function(propertyToTest, valueToTest) {
     var streamFunction = function(element) {
       if (!_.isUndefined(element) && _.has(element, propertyToTest)) {
-        //console.log("FOOOO", element[propertyToTest], valueToTest, (element[propertyToTest] > valueToTest));
-
         return element[propertyToTest] > valueToTest;
+      } else {
+        return false;
       }
     };
 
@@ -107,7 +111,7 @@ module.exports = {
    *     someReadableStream.pipe(yourTransformInstance.Plugins.Core.Filter.greaterThanOrEqualTo('age', 30))
    *
    * @param {String} propertyToTest The object property name being tested against
-   * @param {String|Number} valueToTest The value being against
+   * @param {Number} valueToTest The value being against
    *
    * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
    */
@@ -115,6 +119,8 @@ module.exports = {
     var streamFunction = function(element, index) {
       if (!_.isUndefined(element) && _.has(element, propertyToTest)) {
         return element[propertyToTest] >= valueToTest;
+      } else {
+        return false;
       }
     };
 
@@ -131,7 +137,7 @@ module.exports = {
    *     someReadableStream.pipe(yourTransformInstance.Plugins.Core.Filter.lessThan('age', 30))
    *
    * @param {String} propertyToTest The object property name being tested against
-   * @param {String|Number} valueToTest The value being against
+   * @param {Number} valueToTest The value being against
    *
    * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
    */
@@ -139,6 +145,8 @@ module.exports = {
     var streamFunction = function(element, index) {
       if (!_.isUndefined(element) && _.has(element, propertyToTest)) {
         return element[propertyToTest] < valueToTest;
+      } else {
+        return false;
       }
     };
 
@@ -155,7 +163,7 @@ module.exports = {
    *     someReadableStream.pipe(yourTransformInstance.Plugins.Core.Filter.lessThanOrEqualTo('age', 30))
    *
    * @param {String} propertyToTest The object property name being tested against
-   * @param {String|Number} valueToTest The value being against
+   * @param {Number} valueToTest The value being against
    *
    * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
    */
@@ -163,6 +171,8 @@ module.exports = {
     var streamFunction = function(element, index) {
       if (!_.isUndefined(element) && _.has(element, propertyToTest)) {
         return element[propertyToTest] <= valueToTest;
+      } else {
+        return false;
       }
     };
 
