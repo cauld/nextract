@@ -10,6 +10,9 @@ src/examples/data/employees_output.json
 build/examples/data/employees_output.csv
 build/examples/data/employees_output.json
 
+#Internal database
+internal/db/nextract*
+
 #Config files (probably have sensitive data)
 src/plugins/config/*
 build/plugins/config/*
