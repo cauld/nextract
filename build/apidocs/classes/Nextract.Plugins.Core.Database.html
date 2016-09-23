@@ -90,7 +90,7 @@
                       
                       
                               <div class="foundat">
-                                  Defined in: <a href="../files/build_plugins_core_Database_Database.js.html#l57"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:57</code></a>
+                                  Defined in: <a href="../files/build_plugins_core_Database_Database.js.html#l60"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:60</code></a>
                               </div>
                       
                       
@@ -128,10 +128,6 @@
                                                   </li>
                                                   <li class="index-item method">
                                                       <a href="#method_joinQuery">joinQuery</a>
-                      
-                                                  </li>
-                                                  <li class="index-item method">
-                                                      <a href="#method_rawQuery">rawQuery</a>
                       
                                                   </li>
                                                   <li class="index-item method">
@@ -179,7 +175,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_core_Database_Database.js.html#l230"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:230</code></a>
+                              <a href="../files/build_plugins_core_Database_Database.js.html#l183"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:183</code></a>
                               </p>
                       
                       
@@ -260,20 +256,11 @@
                                               <code>tableName</code>
                                       </li>
                                       <li class="arg">
-                                              <code>collection</code>
-                                      </li>
-                                      <li class="arg">
-                                              <code>columnsToInsert</code>
-                                      </li>
-                                      <li class="arg">
                                               <code>batchAmount</code>
                                       </li>
                                   </ul><span class="paren">)</span>
                               </div>
                       
-                              <span class="returns-inline">
-                                  <span class="type">Promise</span>
-                              </span>
                       
                       
                       
@@ -284,7 +271,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_core_Database_Database.js.html#l334"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:334</code></a>
+                              <a href="../files/build_plugins_core_Database_Database.js.html#l286"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:286</code></a>
                               </p>
                       
                       
@@ -292,8 +279,7 @@
                           </div>
                       
                           <div class="description">
-                              <p>Insert query for collections. Will insert each collection item into a database table.
-                      Uses batched inserts for performance gains.</p>
+                              <p>Will insert each stream item into a database table. Uses batched inserts for performance gains.</p>
                       
                           </div>
                       
@@ -324,28 +310,6 @@
                       
                                       </li>
                                       <li class="param">
-                                              <code class="param-name">collection</code>
-                                              <span class="type">Array</span>
-                      
-                      
-                                          <div class="param-description">
-                                              <p>The collection to iterate on</p>
-                      
-                                          </div>
-                      
-                                      </li>
-                                      <li class="param">
-                                              <code class="param-name">columnsToInsert</code>
-                                              <span class="type">Array</span>
-                      
-                      
-                                          <div class="param-description">
-                                              <p>Array of property (column) names to use in the INSERT</p>
-                      
-                                          </div>
-                      
-                                      </li>
-                                      <li class="param">
                                               <code class="param-name">batchAmount</code>
                                               <span class="type">Integer</span>
                       
@@ -359,27 +323,13 @@
                                   </ul>
                               </div>
                       
-                              <div class="returns">
-                                  <h4>Returns:</h4>
-                      
-                                  <div class="returns-description">
-                                              <span class="type">Promise</span>:
-                                          <p>Promise resolved with the give collection once all queries have completed</p>
-                      
-                                  </div>
-                              </div>
                       
                       
                               <div class="example">
                                   <h4>Example:</h4>
                       
                                   <div class="example-content">
-                                      <pre class="code prettyprint"><code>var columnsToInsert = ['first_name', 'last_name', 'age'];</code></pre>
-                      <pre class="code prettyprint"><code>var collectionsToInsert = [
-                       { 'first_name': 'foo', 'last_name': 'bar', 'age': 25 },
-                       { 'first_name': 'foo', 'last_name': 'baz', 'age': 48 }
-                      ];</code></pre>
-                      <pre class="code prettyprint"><code>return ETL.Plugins.Core.Database.insertQuery('nextract_sample', 'users', collectionsToInsert, columnsToInsert);</code></pre>
+                                      <pre class="code prettyprint"><code>transform.Plugins.Core.Database.insertQuery('nextract_sample', 'page')</code></pre>
                       
                                   </div>
                               </div>
@@ -417,7 +367,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_core_Database_Database.js.html#l453"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:453</code></a>
+                              <a href="../files/build_plugins_core_Database_Database.js.html#l360"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:360</code></a>
                               </p>
                       
                       
@@ -507,112 +457,6 @@
                                   </div>
                               </div>
                       </div>
-                      <div id="method_rawQuery" class="method item">
-                          <h3 class="name"><code>rawQuery</code></h3>
-                      
-                              <div class="args">
-                                  <span class="paren">(</span><ul class="args-list inline commas">
-                                      <li class="arg">
-                                              <code>dbName</code>
-                                      </li>
-                                      <li class="arg">
-                                              <code>sql</code>
-                                      </li>
-                                      <li class="arg">
-                                              <code>sqlParams</code>
-                                      </li>
-                                  </ul><span class="paren">)</span>
-                              </div>
-                      
-                              <span class="returns-inline">
-                                  <span class="type">stream.Transform</span>
-                              </span>
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                          <div class="meta">
-                                      <p>
-                                      Defined in
-                              <a href="../files/build_plugins_core_Database_Database.js.html#l158"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:158</code></a>
-                              </p>
-                      
-                      
-                      
-                          </div>
-                      
-                          <div class="description">
-                              <p>Raw query interface</p>
-                      
-                          </div>
-                      
-                              <div class="params">
-                                  <h4>Parameters:</h4>
-                      
-                                  <ul class="params-list">
-                                      <li class="param">
-                                              <code class="param-name">dbName</code>
-                                              <span class="type">String</span>
-                      
-                      
-                                          <div class="param-description">
-                                              <p>A database name that matches a object key defined in your Nextract config file</p>
-                      
-                                          </div>
-                      
-                                      </li>
-                                      <li class="param">
-                                              <code class="param-name">sql</code>
-                                              <span class="type">String</span>
-                      
-                      
-                                          <div class="param-description">
-                                              <p>SQL statement to execute. Can be a fully formed SQL select statement or
-                      a parameterized one with &quot;:key&quot; placeholders. If the later, then sqlParams
-                      must be an object of key/values to be replaced.</p>
-                      
-                                          </div>
-                      
-                                      </li>
-                                      <li class="param">
-                                              <code class="param-name">sqlParams</code>
-                                              <span class="type">Object</span>
-                      
-                      
-                                          <div class="param-description">
-                                              <p>(optional) List of key/value params to be subbed out in a parameterized query</p>
-                      
-                                          </div>
-                      
-                                      </li>
-                                  </ul>
-                              </div>
-                      
-                              <div class="returns">
-                                  <h4>Returns:</h4>
-                      
-                                  <div class="returns-description">
-                                              <span class="type">stream.Transform</span>:
-                                          <p>Read/write stream transform to use in conjuction with pipe()</p>
-                      
-                                  </div>
-                              </div>
-                      
-                      
-                              <div class="example">
-                                  <h4>Example:</h4>
-                      
-                                  <div class="example-content">
-                                      <pre class="code prettyprint"><code>var sql = 'select first_name, last_name, age, salary from users where id = :id';</code></pre>
-                      <pre class="code prettyprint"><code>var sqlParams = { id: id };</code></pre>
-                      <pre class="code prettyprint"><code>ETL.Plugins.Core.Database.rawQuery('dbname', sql, sqlParams);</code></pre>
-                      
-                                  </div>
-                              </div>
-                      </div>
                       <div id="method_selectQuery" class="method item">
                           <h3 class="name"><code>selectQuery</code></h3>
                       
@@ -643,7 +487,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_core_Database_Database.js.html#l194"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:194</code></a>
+                              <a href="../files/build_plugins_core_Database_Database.js.html#l155"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:155</code></a>
                               </p>
                       
                       
@@ -752,7 +596,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_core_Database_Database.js.html#l278"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:278</code></a>
+                              <a href="../files/build_plugins_core_Database_Database.js.html#l230"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:230</code></a>
                               </p>
                       
                       

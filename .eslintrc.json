@@ -10,7 +10,9 @@
     "_path2": true,
     "self": true,
     "postMessage": true,
-    "EP": true
+    "EP": true,
+    "resolve": true,
+    "reject": true
   },
   "env": {
     "node": true,

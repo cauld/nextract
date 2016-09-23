@@ -13,17 +13,14 @@ defaultConfig = {
 
   "databases": {
     "nextract_sample": {
-      "dialect": "mysql",
+      "client": "mysql",
       "host": "127.0.0.1",
       "port": 3306,
-      "name": "nextract",
+      "database": "nextract",
       "user": "root",
-      "password": ""
+      "password": "",
+      "debug": false
     }
-  },
-
-  "collections": {
-    "sizeToBackground": 1000
   }
 };
 

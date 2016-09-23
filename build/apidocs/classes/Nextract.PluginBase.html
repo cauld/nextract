@@ -90,7 +90,7 @@
                       
                       
                               <div class="foundat">
-                                  Defined in: <a href="../files/build_plugins_pluginBase.js.html#l83"><code>build&#x2F;plugins&#x2F;pluginBase.js:83</code></a>
+                                  Defined in: <a href="../files/build_plugins_pluginBase.js.html#l87"><code>build&#x2F;plugins&#x2F;pluginBase.js:87</code></a>
                               </div>
                       
                       
@@ -132,15 +132,15 @@
                       
                                                   </li>
                                                   <li class="index-item method">
-                                                      <a href="#method_getBoilerplateStreamBulkInsertStatement">getBoilerplateStreamBulkInsertStatement</a>
-                      
-                                                  </li>
-                                                  <li class="index-item method">
-                                                      <a href="#method_getBoilerplateStreamInsertStatement">getBoilerplateStreamInsertStatement</a>
+                                                      <a href="#method_getStreamPassthroughForPipe">getStreamPassthroughForPipe</a>
                       
                                                   </li>
                                                   <li class="index-item method">
                                                       <a href="#method_runInternalQuery">runInternalQuery</a>
+                      
+                                                  </li>
+                                                  <li class="index-item method">
+                                                      <a href="#method_runInternalSelectQueryForStream">runInternalSelectQueryForStream</a>
                       
                                                   </li>
                                                   <li class="index-item method">
@@ -213,7 +213,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_pluginBase.js.html#l274"><code>build&#x2F;plugins&#x2F;pluginBase.js:274</code></a>
+                              <a href="../files/build_plugins_pluginBase.js.html#l425"><code>build&#x2F;plugins&#x2F;pluginBase.js:425</code></a>
                               </p>
                       
                       
@@ -296,14 +296,11 @@
                                       <li class="arg">
                                               <code>streamFunction</code>
                                       </li>
-                                      <li class="arg">
-                                              <code>callback</code>
-                                      </li>
                                   </ul><span class="paren">)</span>
                               </div>
                       
                               <span class="returns-inline">
-                                  <span class="type">String</span>
+                                  <span class="type">Promise</span>
                               </span>
                       
                       
@@ -315,7 +312,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_pluginBase.js.html#l320"><code>build&#x2F;plugins&#x2F;pluginBase.js:320</code></a>
+                              <a href="../files/build_plugins_pluginBase.js.html#l296"><code>build&#x2F;plugins&#x2F;pluginBase.js:296</code></a>
                               </p>
                       
                       
@@ -345,17 +342,6 @@
                                           </div>
                       
                                       </li>
-                                      <li class="param">
-                                              <code class="param-name">callback</code>
-                                              <span class="type">Function</span>
-                      
-                      
-                                          <div class="param-description">
-                                              <p>Function to be called once the temporary table has been completed</p>
-                      
-                                          </div>
-                      
-                                      </li>
                                   </ul>
                               </div>
                       
@@ -363,8 +349,8 @@
                                   <h4>Returns:</h4>
                       
                                   <div class="returns-description">
-                                              <span class="type">String</span>:
-                                          <p>Returns the temporary table name</p>
+                                              <span class="type">Promise</span>:
+                                          <p>Resolves with the temporary table name</p>
                       
                                   </div>
                               </div>
@@ -387,12 +373,12 @@
                                       <li class="arg">
                                               <code>tableName</code>
                                       </li>
-                                      <li class="arg">
-                                              <code>callback</code>
-                                      </li>
                                   </ul><span class="paren">)</span>
                               </div>
                       
+                              <span class="returns-inline">
+                                  <span class="type">Promise</span>
+                              </span>
                       
                       
                       
@@ -403,7 +389,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_pluginBase.js.html#l375"><code>build&#x2F;plugins&#x2F;pluginBase.js:375</code></a>
+                              <a href="../files/build_plugins_pluginBase.js.html#l352"><code>build&#x2F;plugins&#x2F;pluginBase.js:352</code></a>
                               </p>
                       
                       
@@ -430,45 +416,28 @@
                                           </div>
                       
                                       </li>
-                                      <li class="param">
-                                              <code class="param-name">callback</code>
-                                              <span class="type">Function</span>
-                      
-                      
-                                          <div class="param-description">
-                                              <p>Function to be called once the internal table has been dropped</p>
-                      
-                                          </div>
-                      
-                                      </li>
                                   </ul>
                               </div>
                       
+                              <div class="returns">
+                                  <h4>Returns:</h4>
+                      
+                                  <div class="returns-description">
+                                              <span class="type">Promise</span>:
+                                          <p>Promise resolved once table has been resolved</p>
+                      
+                                  </div>
+                              </div>
                       
                       
                       </div>
-                      <div id="method_getBoilerplateStreamBulkInsertStatement" class="method item">
-                          <h3 class="name"><code>getBoilerplateStreamBulkInsertStatement</code></h3>
+                      <div id="method_getStreamPassthroughForPipe" class="method item">
+                          <h3 class="name"><code>getStreamPassthroughForPipe</code></h3>
                       
-                              <div class="args">
-                                  <span class="paren">(</span><ul class="args-list inline commas">
-                                      <li class="arg">
-                                              <code>temporaryTableName</code>
-                                      </li>
-                                      <li class="arg">
-                                              <code>streamFunction</code>
-                                      </li>
-                                      <li class="arg">
-                                              <code>batchCount</code>
-                                      </li>
-                                      <li class="arg">
-                                              <code>escapeColumnNames</code>
-                                      </li>
-                                  </ul><span class="paren">)</span>
-                              </div>
+                              <span class="paren">()</span>
                       
                               <span class="returns-inline">
-                                  <span class="type">String</span>
+                                  <span class="type">Stream</span>
                               </span>
                       
                       
@@ -480,7 +449,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_pluginBase.js.html#l445"><code>build&#x2F;plugins&#x2F;pluginBase.js:445</code></a>
+                              <a href="../files/build_plugins_pluginBase.js.html#l471"><code>build&#x2F;plugins&#x2F;pluginBase.js:471</code></a>
                               </p>
                       
                       
@@ -488,71 +457,19 @@
                           </div>
                       
                           <div class="description">
-                              <p>Some streams require a more traditional blocking like operation (e.g.) Sort, Group By, etc. We
-                      want to process the stream and return back a stream without breaking the stream pipe or giving
-                      the appearance of a blocking action.  This method will take the first item of a stream and use it
-                      to create a boilerplate bulk INSERT statement. Par this method with
-                      createTemporaryTableForStream.</p>
+                              <p>When a plugin needs to get a handle on an incoming stream without using something like through2
+                      directly this method can be useful.  It gets a handle in the incoming stream and acts as a passthrough
+                      that can be immediately used with another pipe() call.</p>
                       
                           </div>
                       
-                              <div class="params">
-                                  <h4>Parameters:</h4>
-                      
-                                  <ul class="params-list">
-                                      <li class="param">
-                                              <code class="param-name">temporaryTableName</code>
-                                              <span class="type">String</span>
-                      
-                      
-                                          <div class="param-description">
-                                              <p>The temporary table name created by a call to createTemporaryTableForStream</p>
-                      
-                                          </div>
-                      
-                                      </li>
-                                      <li class="param">
-                                              <code class="param-name">streamFunction</code>
-                                              <span class="type">Object</span>
-                      
-                      
-                                          <div class="param-description">
-                                              <p>The first object/element of a stream</p>
-                      
-                                          </div>
-                      
-                                      </li>
-                                      <li class="param">
-                                              <code class="param-name">batchCount</code>
-                                              <span class="type">Integer</span>
-                      
-                      
-                                          <div class="param-description">
-                                              <p>The number of items to prep for bulk insert (creates the proper number of &quot;?&quot; placeholders)</p>
-                      
-                                          </div>
-                      
-                                      </li>
-                                      <li class="param">
-                                              <code class="param-name">escapeColumnNames</code>
-                                              <span class="type">Boolean</span>
-                      
-                      
-                                          <div class="param-description">
-                                              <p>If true columns names are escaped (e.g.) <code>column_foo</code></p>
-                      
-                                          </div>
-                      
-                                      </li>
-                                  </ul>
-                              </div>
                       
                               <div class="returns">
                                   <h4>Returns:</h4>
                       
                                   <div class="returns-description">
-                                              <span class="type">String</span>:
-                                          <p>Returns the boilerplate INSERT statement with &quot;?&quot; value placeholders</p>
+                                              <span class="type">Stream</span>:
+                                          <p>Returns passthrough stream</p>
                       
                                   </div>
                               </div>
@@ -562,113 +479,7 @@
                                   <h4>Example:</h4>
                       
                                   <div class="example-content">
-                                      <pre class="code prettyprint"><code>See the sortBy method of the core Sort plugin</code></pre>
-                      
-                                  </div>
-                              </div>
-                      </div>
-                      <div id="method_getBoilerplateStreamInsertStatement" class="method item">
-                          <h3 class="name"><code>getBoilerplateStreamInsertStatement</code></h3>
-                      
-                              <div class="args">
-                                  <span class="paren">(</span><ul class="args-list inline commas">
-                                      <li class="arg">
-                                              <code>temporaryTableName</code>
-                                      </li>
-                                      <li class="arg">
-                                              <code>streamFunction</code>
-                                      </li>
-                                      <li class="arg">
-                                              <code>escapeColumnNames</code>
-                                      </li>
-                                  </ul><span class="paren">)</span>
-                              </div>
-                      
-                              <span class="returns-inline">
-                                  <span class="type">String</span>
-                              </span>
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                          <div class="meta">
-                                      <p>
-                                      Defined in
-                              <a href="../files/build_plugins_pluginBase.js.html#l393"><code>build&#x2F;plugins&#x2F;pluginBase.js:393</code></a>
-                              </p>
-                      
-                      
-                      
-                          </div>
-                      
-                          <div class="description">
-                              <p>Some streams require a more traditional blocking like operation (e.g.) Sort, Group By, etc. We
-                      want to process the stream and return back a stream without breaking the stream pipe or giving
-                      the appearance of a blocking action.  This method will take the first item of a stream and use it
-                      to create a boilerplate INSERT statement for all items in a stream. Par this method with
-                      createTemporaryTableForStream.  See getBoilerplateStreamBulkInsertStatement for bulk inserts.</p>
-                      
-                          </div>
-                      
-                              <div class="params">
-                                  <h4>Parameters:</h4>
-                      
-                                  <ul class="params-list">
-                                      <li class="param">
-                                              <code class="param-name">temporaryTableName</code>
-                                              <span class="type">String</span>
-                      
-                      
-                                          <div class="param-description">
-                                              <p>The temporary table name created by a call to createTemporaryTableForStream</p>
-                      
-                                          </div>
-                      
-                                      </li>
-                                      <li class="param">
-                                              <code class="param-name">streamFunction</code>
-                                              <span class="type">Object</span>
-                      
-                      
-                                          <div class="param-description">
-                                              <p>The first object/element of a stream</p>
-                      
-                                          </div>
-                      
-                                      </li>
-                                      <li class="param">
-                                              <code class="param-name">escapeColumnNames</code>
-                                              <span class="type">Boolean</span>
-                      
-                      
-                                          <div class="param-description">
-                                              <p>If true columns names are escaped (e.g.) <code>column_foo</code></p>
-                      
-                                          </div>
-                      
-                                      </li>
-                                  </ul>
-                              </div>
-                      
-                              <div class="returns">
-                                  <h4>Returns:</h4>
-                      
-                                  <div class="returns-description">
-                                              <span class="type">String</span>:
-                                          <p>Returns the boilerplate INSERT statement with &quot;?&quot; value placeholders</p>
-                      
-                                  </div>
-                              </div>
-                      
-                      
-                              <div class="example">
-                                  <h4>Example:</h4>
-                      
-                                  <div class="example-content">
-                                      <pre class="code prettyprint"><code>See the sortBy method of the core Sort plugin</code></pre>
+                                      <pre class="code prettyprint"><code>pluginName.getStreamPassthroughForPipe().pipe(someStreamMethod);</code></pre>
                       
                                   </div>
                               </div>
@@ -687,14 +498,11 @@
                                       <li class="arg">
                                               <code>expectsResults</code>
                                       </li>
-                                      <li class="arg">
-                                              <code>callback</code>
-                                      </li>
                                   </ul><span class="paren">)</span>
                               </div>
                       
                               <span class="returns-inline">
-                                  <span class="type">Array/undefined</span>
+                                  <span class="type">Promise</span>
                               </span>
                       
                       
@@ -706,7 +514,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_pluginBase.js.html#l188"><code>build&#x2F;plugins&#x2F;pluginBase.js:188</code></a>
+                              <a href="../files/build_plugins_pluginBase.js.html#l225"><code>build&#x2F;plugins&#x2F;pluginBase.js:225</code></a>
                               </p>
                       
                       
@@ -714,8 +522,7 @@
                           </div>
                       
                           <div class="description">
-                              <p>Provides access to internal sqlite3 database. Allows plugins to run raw queries as needed
-                      to create tables, query them, cleanup,etc.</p>
+                              <p>Provides access to internal sqlite3 database. Allows plugins to run raw db queries as needed.</p>
                       
                           </div>
                       
@@ -759,17 +566,6 @@
                                           </div>
                       
                                       </li>
-                                      <li class="param">
-                                              <code class="param-name">callback</code>
-                                              <span class="type">Function</span>
-                      
-                      
-                                          <div class="param-description">
-                                              <p>Function to be called once the temporary table has been completed</p>
-                      
-                                          </div>
-                      
-                                      </li>
                                   </ul>
                               </div>
                       
@@ -777,9 +573,9 @@
                                   <h4>Returns:</h4>
                       
                                   <div class="returns-description">
-                                              <span class="type">Array/undefined</span>:
-                                          <p>If expectsResults was true then the return should include an
-                      array of query results. Otherwise, nothing is returned.</p>
+                                              <span class="type">Promise</span>:
+                                          <p>If expectsResults was true then the resolved promise should include an
+                      array of query results. Otherwise, resolve is empty.</p>
                       
                                   </div>
                               </div>
@@ -791,7 +587,101 @@
                                   <div class="example-content">
                                       <pre class="code prettyprint"><code>var sql = 'select first_name, last_name, age, salary from users where id = :id';</code></pre>
                       <pre class="code prettyprint"><code>var sqlParams = { id: id };</code></pre>
-                      <pre class="code prettyprint"><code>somePlugin.runInternalQuery(insertSql, sqlReplacements, false, callbackFunction);</code></pre>
+                      <pre class="code prettyprint"><code>somePlugin.runInternalQuery(insertSql, sqlReplacements, false);</code></pre>
+                      
+                                  </div>
+                              </div>
+                      </div>
+                      <div id="method_runInternalSelectQueryForStream" class="method item">
+                          <h3 class="name"><code>runInternalSelectQueryForStream</code></h3>
+                      
+                              <div class="args">
+                                  <span class="paren">(</span><ul class="args-list inline commas">
+                                      <li class="arg">
+                                              <code>sql</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>sqlReplacements</code>
+                                      </li>
+                                  </ul><span class="paren">)</span>
+                              </div>
+                      
+                              <span class="returns-inline">
+                                  <span class="type">Stream</span>
+                              </span>
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                          <div class="meta">
+                                      <p>
+                                      Defined in
+                              <a href="../files/build_plugins_pluginBase.js.html#l269"><code>build&#x2F;plugins&#x2F;pluginBase.js:269</code></a>
+                              </p>
+                      
+                      
+                      
+                          </div>
+                      
+                          <div class="description">
+                              <p>Provides access to run a select query against the internal sqlite3 database with
+                      a streamed response.</p>
+                      
+                          </div>
+                      
+                              <div class="params">
+                                  <h4>Parameters:</h4>
+                      
+                                  <ul class="params-list">
+                                      <li class="param">
+                                              <code class="param-name">sql</code>
+                                              <span class="type">String</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>SQL statement to execute. Can be a fully formed SQL select statement or
+                      a parameterized one with &quot;:key&quot; placeholders. If the later, then sqlReplacements
+                      must be an object of key/values to be replaced.</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                      <li class="param">
+                                              <code class="param-name">sqlReplacements</code>
+                                              <span class="type">Object</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>(optional) List of key/value params to be subbed out
+                      in a parameterized query.</p>
+                      
+                                          </div>
+                      
+                                      </li>
+                                  </ul>
+                              </div>
+                      
+                              <div class="returns">
+                                  <h4>Returns:</h4>
+                      
+                                  <div class="returns-description">
+                                              <span class="type">Stream</span>:
+                                          <p>Streams the results of the select query</p>
+                      
+                                  </div>
+                              </div>
+                      
+                      
+                              <div class="example">
+                                  <h4>Example:</h4>
+                      
+                                  <div class="example-content">
+                                      <pre class="code prettyprint"><code>var sql = 'select first_name, last_name, age, salary from users where id = :id';</code></pre>
+                      <pre class="code prettyprint"><code>var sqlParams = { id: id };</code></pre>
+                      <pre class="code prettyprint"><code>var stream = somePlugin.runInternalSelectQueryForStream(insertSql, sqlReplacements);</code></pre>
                       
                                   </div>
                               </div>
@@ -820,7 +710,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_pluginBase.js.html#l226"><code>build&#x2F;plugins&#x2F;pluginBase.js:226</code></a>
+                              <a href="../files/build_plugins_pluginBase.js.html#l377"><code>build&#x2F;plugins&#x2F;pluginBase.js:377</code></a>
                               </p>
                       
                       
@@ -890,7 +780,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_pluginBase.js.html#l178"><code>build&#x2F;plugins&#x2F;pluginBase.js:178</code></a>
+                              <a href="../files/build_plugins_pluginBase.js.html#l211"><code>build&#x2F;plugins&#x2F;pluginBase.js:211</code></a>
                               </p>
                       
                       
@@ -915,7 +805,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_pluginBase.js.html#l161"><code>build&#x2F;plugins&#x2F;pluginBase.js:161</code></a>
+                              <a href="../files/build_plugins_pluginBase.js.html#l194"><code>build&#x2F;plugins&#x2F;pluginBase.js:194</code></a>
                               </p>
                       
                       
@@ -940,7 +830,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_pluginBase.js.html#l169"><code>build&#x2F;plugins&#x2F;pluginBase.js:169</code></a>
+                              <a href="../files/build_plugins_pluginBase.js.html#l202"><code>build&#x2F;plugins&#x2F;pluginBase.js:202</code></a>
                               </p>
                       
                       
@@ -965,7 +855,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_pluginBase.js.html#l143"><code>build&#x2F;plugins&#x2F;pluginBase.js:143</code></a>
+                              <a href="../files/build_plugins_pluginBase.js.html#l176"><code>build&#x2F;plugins&#x2F;pluginBase.js:176</code></a>
                               </p>
                       
                       
@@ -990,7 +880,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_pluginBase.js.html#l152"><code>build&#x2F;plugins&#x2F;pluginBase.js:152</code></a>
+                              <a href="../files/build_plugins_pluginBase.js.html#l185"><code>build&#x2F;plugins&#x2F;pluginBase.js:185</code></a>
                               </p>
                       
                       

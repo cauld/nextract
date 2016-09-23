@@ -86,7 +86,7 @@ module.exports = {
     var jsonStream, jsonParser;
 
     jsonStream = _fs2.default.createReadStream(filePath, { encoding: 'utf8' });
-    jsonParser = _JSONStream2.default.parse('data.employees.*');
+    jsonParser = _JSONStream2.default.parse(pathToParse); //'data.employees.*'
 
     return jsonStream.pipe(jsonParser);
   },

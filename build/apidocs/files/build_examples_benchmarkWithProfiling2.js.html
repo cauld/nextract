@@ -103,36 +103,40 @@
                       console.log(&quot;Starting transform... &quot;, new Date());
                       
                       transform.loadPlugins(&#x27;Core&#x27;, [&#x27;Database&#x27;, &#x27;Filter&#x27;, &#x27;Calculator&#x27;, &#x27;Sort&#x27;, &#x27;Utils&#x27;, &#x27;Logger&#x27;]).then(function () {
-                        //STEP 1: Simulate large join on the database
-                        var selectSql = &#x27;select page.page_id, page_details_view.page_namespace, page_details_view.page_title, page_details_view.page_counter, page_details_view.page_is_redirect,&#x27; + &#x27; page_details_view.page_is_new, page_details_view.page_random, page_details_view.page_touched, page_details_view.page_latest, page_details_view.page_len&#x27; + &#x27; from page, page_details_view where page.page_id = page_details_view.page_id order by page.page_id asc limit 1000000&#x27;;
+                        return new Promise(function (resolve) {
+                          //STEP 1: Simulate large join on the database
+                          var step1SelectSql = &#x27;select page.page_id, page_details_view.page_namespace, page_details_view.page_title, page_details_view.page_counter, page_details_view.page_is_redirect,&#x27; + &#x27; page_details_view.page_is_new, page_details_view.page_random, page_details_view.page_touched, page_details_view.page_latest, page_details_view.page_len&#x27; + &#x27; from page, page_details_view where page.page_id = page_details_view.page_id order by page.page_id asc limit 101&#x27;; //1000001
                       
-                        return transform.Plugins.Core.Database.selectQuery(&#x27;nextract_sample&#x27;, selectSql, {});
-                      }).then(function (dbDataStream) {
-                        var step7ColumnsToInsert = [&#x27;page_title&#x27;, &#x27;page_counter&#x27;, &#x27;page_random&#x27;, &#x27;page_latest&#x27;, &#x27;page_len&#x27;];
+                          transform.Plugins.Core.Database.selectQuery(&#x27;nextract_sample&#x27;, step1SelectSql, {})
+                          //STEP 2: ETL operations are most often performed on the entire collection. Here we are taking the page_counter of each collection item
+                          //and raising it by 100.  We could choose to store this new value in new collection properity or simply overwrite the existing one.
+                          //Here we&#x27;ll just overwrite the existing one.
+                          .pipe(transform.Plugins.Core.Calculator.add(&#x27;page_counter&#x27;, 100, &#x27;page_counter&#x27;))
+                          //STEP 3: It is always best to reduce the collection down to only the data you really need for performance reasons.
+                          //So here we pick out only a subject of the current collection properties.
+                          .pipe(transform.Plugins.Core.Utils.pluckProperties([&#x27;page_title&#x27;, &#x27;page_counter&#x27;, &#x27;page_random&#x27;, &#x27;page_latest&#x27;, &#x27;page_len&#x27;]))
+                          //STEP 4: Pass data in to be sorted (1 element is pushed back and it is the expected input for a new stream read call to sortOut)
+                          .pipe(transform.Plugins.Core.Sort.sortIn([&#x27;page_title&#x27;], [&#x27;asc&#x27;])).on(&#x27;data&#x27;, function (sortInDbInfo) {
+                            if (sortInDbInfo !== undefined) {
+                              resolve(sortInDbInfo);
+                            }
+                          });
+                        });
+                      }).then(function (sortInDbInfo) {
+                        console.log(&quot;sortInDbInfo@@@@@&quot;, sortInDbInfo);
                       
-                        dbDataStream
-                        //STEP 2: ETL operations are most often performed on the entire collection. Here we are taking the page_counter of each collection item
-                        //and raising it by 100.  We could choose to store this new value in new collection properity or simply overwrite the existing one.
-                        //Here we&#x27;ll just overwrite the existing one.
-                        .pipe(transform.Plugins.Core.Calculator.add(&#x27;page_counter&#x27;, 100, &#x27;page_counter&#x27;))
-                        //STEP 3: It is always best to reduce the collection down to only the data you really need for performance reasons.
-                        //So here we pick out only a subject of the current collection properties.
-                        .pipe(transform.Plugins.Core.Utils.pluckProperties([&#x27;page_title&#x27;, &#x27;page_counter&#x27;, &#x27;page_random&#x27;, &#x27;page_latest&#x27;, &#x27;page_len&#x27;]))
-                        //STEP 4: Sort the data
-                        .pipe(transform.Plugins.Core.Sort.sortIn([&#x27;page_title&#x27;], [&#x27;asc&#x27;])).pipe(transform.Plugins.Core.Sort.sortOut())
-                        //STEP 5: Filter collection for records with page_counter &gt; 200
-                        .pipe(transform.Plugins.Core.Filter.greaterThan(&#x27;page_counter&#x27;, 100))
+                        transform.Plugins.Core.Sort.sortOut(sortInDbInfo)
+                        //STEP 5: Filter collection for records with page_counter &gt; 100
+                        //.pipe(transform.Plugins.Core.Filter.greaterThan(&#x27;page_counter&#x27;, 100))
                         //STEP 6: Insert into a 2nd database (to demo cross db support)
-                        .pipe(transform.Plugins.Core.Database.insertQuery(&#x27;nextract_pg_sample&#x27;, &#x27;page&#x27;, step7ColumnsToInsert)).on(&#x27;data&#x27;, function (resultingData) {
-                          //NOTE: This listener must exist, even if it does nothing. Otherwise, the end event is not fired.
-                      
-                          //Uncomment to dump the resulting data for debugging
-                          //console.log(&quot;resultingData&quot;, resultingData.length);
+                        .pipe(transform.Plugins.Core.Database.insertQuery(&#x27;nextract_pg_sample&#x27;, &#x27;page&#x27;)).on(&#x27;data&#x27;, function (resultingData) {
                           //console.log(&quot;resultingData&quot;, resultingData);
                         }).on(&#x27;finish&#x27;, function () {
                           transform.Plugins.Core.Logger.info(&#x27;Transform finished!&#x27;, new Date());
+                          //process.exit();
                         }).on(&#x27;end&#x27;, function () {
                           transform.Plugins.Core.Logger.info(&#x27;Transform ended!&#x27;);
+                          process.exit();
                         });
                       }).catch(function (err) {
                         transform.Plugins.Core.Logger.error(&#x27;Transform failed: &#x27;, err);

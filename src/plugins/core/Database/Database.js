@@ -9,52 +9,64 @@ TODO:
 1) Transactions (http://docs.sequelizejs.com/en/v3/docs/transactions/)
 */
 
+import async from 'async';
 import _ from 'lodash';
 import { has, isArray, isUndefined, isNull, pull, repeat, values, flatten, map, merge } from 'lodash/fp';
 import pluginBase from '../../pluginBase';
 import eachOfSeries from 'async/eachOfSeries';
 import eachSeries from 'async/eachSeries';
 import eachOfLimit from 'async/eachOfLimit';
+import knex from 'knex';
+
+//TODO: Remove...
 import Sequelize from 'sequelize';
-import objectStream from 'object-stream';
+
 
 
 var databasePlugin,
-    connectionInstances = {},
-    queryLogging,
-    enableQueryLogging = false;
-
-queryLogging = (enableQueryLogging === false) ? false : sequelizeQueryLogging;
+    connectionInstances = {};
 
 //Instantiate the plugin
 databasePlugin = new pluginBase('Database', 'Core');
 
-
-//Sequelize expects a function for logging or false for no logging
-function sequelizeQueryLogging(sql) {
-  databasePlugin.ETL.logger.info('SQL Debugging:', sql);
-}
-
+//TODO: Document db connection options/configuration
+//Ref - http://knexjs.org/#Installation-client
 function buildNewConnection(dbName) {
   //TODO: add error handling if db does not exist in pluginConfig
   let dbpluginConfig = databasePlugin.ETL.config.databases[dbName];
 
-  connectionInstances[dbName] = new Sequelize(dbpluginConfig.name, dbpluginConfig.user, dbpluginConfig.password, {
-    host: dbpluginConfig.host,
-    dialect: dbpluginConfig.dialect,
-    searchPath: _.has(dbpluginConfig, 'searchPath') ? dbpluginConfig.searchPath : '',
-    dialectOptions: {
-      prependSearchPath: _.has(dbpluginConfig, 'dialectOptions') &&
-                            _.has(dbpluginConfig.dialectOptions, 'prependSearchPath') ? dbpluginConfig.dialectOptions.searchPath : ''
-    },
-    storage: _.has(dbpluginConfig, 'storage') ? dbpluginConfig.storage : '', //SQLite only
-    pool: {
-      max: 5,
-      min: 0,
-      idle: 10000
-    },
-    logging: queryLogging
-  });
+  let dbConfigObject = {
+    client: dbpluginConfig.client
+  };
+
+  if (dbpluginConfig.client === 'sqlite3') {
+    dbConfigObject.connection = {
+      filename: dbpluginConfig.filename
+    };
+  } else {
+    dbConfigObject.connection = {
+      host: dbpluginConfig.host,
+      user: dbpluginConfig.user,
+      password: dbpluginConfig.password,
+      database: dbpluginConfig.database
+    };
+  }
+
+  //Enable searchPath for pg if user wants to set the schema (public by default)
+  if (dbpluginConfig.client === 'pg' && _.has(dbpluginConfig, 'searchPath') === true) {
+    dbConfigObject.searchPath = dbpluginConfig.searchPath;
+  }
+
+  //Enable db connection pool?
+  //Can be any setting supported by https://github.com/coopernurse/node-pool
+  if (_.has(dbpluginConfig, 'pool') === true) {
+    dbConfigObject.pool = dbpluginConfig.pool;
+  }
+
+  //Enable db debugging?
+  dbConfigObject.debug = (_.has(dbpluginConfig, 'debug') === true) ? true : false;
+
+  connectionInstances[dbName] = require('knex')(dbConfigObject);
 }
 
 //Database singleton mgmt
@@ -95,56 +107,7 @@ function buildSqlObjectsForCollectionWithMatchCriteria(element, matchCriteria, c
   return sqlObject;
 }
 
-//We can't guarantee the order of JavaScript properties and its possible each collection
-//item contains more properties than the ones being requested as part of the insert. So
-//we must handpick them out in the right order here.
-function getInOrderValues(streamElement, columnsToInsert) {
-  var inOrderValues = [];
-  columnsToInsert.forEach(function(col) {
-    inOrderValues[inOrderValues.length] = streamElement[col];
-  });
-
-  return inOrderValues;
-}
-
-
 module.exports = {
-
-  /**
-   * Raw query interface
-   *
-   * @method rawQuery
-   * @for Nextract.Plugins.Core.Database
-   * @example
-   *     var sql = 'select first_name, last_name, age, salary from users where id = :id';
-   * @example
-   *     var sqlParams = { id: id };
-   * @example
-   *     ETL.Plugins.Core.Database.rawQuery('dbname', sql, sqlParams);
-   *
-   * @param {String} dbName A database name that matches a object key defined in your Nextract config file
-   * @param {String} sql SQL statement to execute. Can be a fully formed SQL select statement or
-   * a parameterized one with ":key" placeholders. If the later, then sqlParams
-   * must be an object of key/values to be replaced.
-   * @param {Object} sqlParams (optional) List of key/value params to be subbed out in a parameterized query
-   *
-   * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
-   */
-  rawQuery: function(dbName, sql, sqlReplacements = {}) {
-    var dbInstance = getInstance(dbName);
-
-    return dbInstance.query(sql, {
-      replacements: sqlReplacements,
-      type: dbInstance.QueryTypes.RAW
-    })
-    .then(function(data) {
-      var readableStream = objectStream.fromArray(data);
-      return readableStream;
-    })
-    .catch(function(err) {
-      databasePlugin.ETL.logger.error('Invalid RAW request:', err);
-    });
-  },
 
   /**
    * Query interface for select statements
@@ -167,19 +130,9 @@ module.exports = {
    * @return {Promise} Returns a promise resolved with a read stream to use in conjuction with pipe()
    */
   selectQuery: function(dbName, sql, sqlReplacements = {}) {
-    var dbInstance = getInstance(dbName);
-
-    return dbInstance.query(sql, {
-      replacements: sqlReplacements,
-      type: dbInstance.QueryTypes.SELECT
-    })
-    .then(function(data) {
-      var readableStream = objectStream.fromArray(data);
-      return readableStream;
-    })
-    .catch(function(err) {
-      databasePlugin.ETL.logger.error('Invalid SELECT request:', err);
-    });
+    let dbInstance = getInstance(dbName);
+    let stream = dbInstance.raw(sql, sqlReplacements).stream();
+    return stream;
   },
 
   /**
@@ -222,7 +175,6 @@ module.exports = {
           throw new Error(err);
         });
       } else {
-        console.log("HERERERERER");
         callback(null, {});
       }
     }
@@ -287,126 +239,75 @@ module.exports = {
   },
 
   /**
-   * Insert query for collections. Will insert each collection item into a database table.
-   * Uses batched inserts for performance gains.
+   * Will insert each stream item into a database table. Uses batched inserts for performance gains.
    *
    * @method insertQuery
    * @for Nextract.Plugins.Core.Database
    * @example
-   *     var columnsToInsert = ['first_name', 'last_name', 'age'];
-   * @example
-   *     var collectionsToInsert = [
-   *      { 'first_name': 'foo', 'last_name': 'bar', 'age': 25 },
-   *      { 'first_name': 'foo', 'last_name': 'baz', 'age': 48 }
-   *     ];
-   * @example
-   *     return ETL.Plugins.Core.Database.insertQuery('nextract_sample', 'users', collectionsToInsert, columnsToInsert);
+   *     transform.Plugins.Core.Database.insertQuery('nextract_sample', 'page')
    *
    * @param {String} dbName A database name that matches a object key defined in your Nextract config file
    * @param {String} tableName Table name
-   * @param {Array} collection The collection to iterate on
-   * @param {Array} columnsToInsert Array of property (column) names to use in the INSERT
    * @param {Integer} batchAmount (optional) Number of rows to batch insert (defaults to 1000)
-   *
-   * @return {Promise} Promise resolved with the give collection once all queries have completed
    */
-  insertQuery: function(dbName, tableName, columnsToInsert, batchAmount = 25) {
+  insertQuery: function(dbName, tableName, batchSize = 1000) {
     let dbInstance = getInstance(dbName);
+    let elementsToInsert = [];
+    let stream = null;
 
-    function processStreamInput(element, encoding, callback) {
-      var that = this;
+    var q = async.queue(function(element, callback) {
+      //Add to the batch
+      elementsToInsert[elementsToInsert.length] = element;
 
-      if (_.isUndefined(element)) {
-        //We have reach the end of the input stream and we most likely have some left over elements below the batch threshold.
-        //So insert the final batch now...
-        if (this.elementValuesToInsert.length > 0) {
-          //We can't use the original batch statement becauase the value count is different
-          var lastInsertSql = databasePlugin.getBoilerplateStreamBulkInsertStatement(tableName, this.dbInfo.sampleElement, this.elementValuesToInsert.length, false);
-
-          dbInstance.query(lastInsertSql, {
-            replacements: _.flatten(this.elementValuesToInsert),
-            type: dbInstance.QueryTypes.INSERT
-          })
+      //Insert the batch if we've reached the limit
+      if (elementsToInsert.length === batchSize) {
+        dbInstance.batchInsert(tableName, elementsToInsert, batchSize)
           .then(function() {
-            that.elementValuesToInsert = null; //done, clear it
-            return callback(null, null);
+            elementsToInsert = []; //reset
+            //Calling callback in sync fashion gets lost in the shuffle when many many items are queued up.
+            //Calling through setImmediate solves this.
+            setImmediate(function() { callback() });
           })
           .catch(function(err) {
             databasePlugin.ETL.logger.error('Invalid INSERT request:', err);
-            throw new Error(err);
           });
-        } else {
-          return callback();
-        }
       } else {
-        //We need to setup the INSERT sql when encountering the first element in the stream
-        if (_.isUndefined(this.dbInfo)) {
-          this.elementValuesToInsert = [];
-
-          this.dbInfo = {
-            columns: _.keys(element),
-            sampleElement: element,
-            tableName: tableName,
-            insertSql: databasePlugin.getBoilerplateStreamBulkInsertStatement(tableName, element, batchAmount, false)
-          };
-
-          this.elementValuesToInsert[this.elementValuesToInsert.length] = getInOrderValues(element, columnsToInsert);
-
-          return callback(null, null); //We have to push something to keep the stream moving...
-        } else {
-          //Add this element to the batch
-          this.elementValuesToInsert[this.elementValuesToInsert.length] = getInOrderValues(element, columnsToInsert);
-
-          //Do the batch INSERT if we have hit the batch limit
-          if (this.elementValuesToInsert.length === batchAmount) {
-            dbInstance.query(this.dbInfo.insertSql, {
-              replacements: _.flatten(that.elementValuesToInsert),
-              type: dbInstance.QueryTypes.INSERT
-            })
-            .then(function() {
-              that.elementValuesToInsert = []; //reset for next batch
-              return callback(null, null);
-            })
-            .catch(function(err) {
-              databasePlugin.ETL.logger.error('Invalid INSERT request:', err);
-              throw new Error(err);
-            });
-          } else {
-            //That one was added to the batch, lets move to the next.
-            return callback(null, null);
-          }
-        }
+        //Batch limit not reached, just continue...
+        setImmediate(function() { callback() });
       }
-    }
+    }, 1);
 
-    //FIXME: Right now sortOut method is not properly sending the end signal that should come from sending a final null element.
-    //This means that if you go from sortOut to Insert and have some leftover elementValuesToInsert that didn't quite met
-    //the final batchAmount then they would not be inserted.  We'll use the flush function to force the last bacth in. This
-    //is not a great end solution because the user may want to immediately select these back out, join against then, etc and
-    //flush is not called until the entire stream has ended.  Good enough for benchmarking...
-    function bulkFlush() {
-      var that = this;
+    function processStreamInput(element, encoding, callback) {
+      stream = this;
 
-      if (_.isArray(this.elementValuesToInsert) && this.elementValuesToInsert.length > 0) {
-        //We can't use the original batch statement becauase the value count is different
-        var lastInsertSql = databasePlugin.getBoilerplateStreamBulkInsertStatement(tableName, this.dbInfo.sampleElement, this.elementValuesToInsert.length, false);
-
-        dbInstance.query(lastInsertSql, {
-          replacements: _.flatten(that.elementValuesToInsert),
-          type: dbInstance.QueryTypes.INSERT
-        })
-        .then(function() {
-          console.log("Forcing insert flush!");
-          that.elementValuesToInsert = null; //done, clear it
-        })
-        .catch(function(err) {
-          databasePlugin.ETL.logger.error('Invalid INSERT request:', err);
-          throw new Error(err);
+      if (!_.isUndefined(element)) {
+        q.push(element, function() {
+          callback(null, null);
         });
+      } else {
+        callback(null, null);
       }
     }
 
-    return databasePlugin.buildStreamTransform(processStreamInput, bulkFlush, 'standard');
+    //Takes the place of q.drain (more appropriate when using through2)
+    function flushInsert(callback) {
+      if (elementsToInsert.length > 0) {
+        dbInstance.batchInsert(tableName, elementsToInsert, elementsToInsert.length)
+          .then(function() {
+            stream.push(null);
+            callback();
+          })
+          .catch(function(err) {
+            databasePlugin.ETL.logger.error('Invalid INSERT request:', err);
+          });
+      } else {
+        //Nothing left, just continue...
+        stream.push(null);
+        callback();
+      }
+    }
+
+    return databasePlugin.buildStreamTransform(processStreamInput, flushInsert, 'standard');
   },
 
   /**

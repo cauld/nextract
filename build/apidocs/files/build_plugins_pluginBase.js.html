@@ -95,14 +95,6 @@
                       
                       var _isUndefined3 = _interopRequireDefault(_isUndefined2);
                       
-                      var _repeat2 = require(&#x27;lodash/repeat&#x27;);
-                      
-                      var _repeat3 = _interopRequireDefault(_repeat2);
-                      
-                      var _keys2 = require(&#x27;lodash/keys&#x27;);
-                      
-                      var _keys3 = _interopRequireDefault(_keys2);
-                      
                       var _isString2 = require(&#x27;lodash/isString&#x27;);
                       
                       var _isString3 = _interopRequireDefault(_isString2);
@@ -126,6 +118,10 @@
                       var _forOwn2 = require(&#x27;lodash/forOwn&#x27;);
                       
                       var _forOwn3 = _interopRequireDefault(_forOwn2);
+                      
+                      var _isNull2 = require(&#x27;lodash/isNull&#x27;);
+                      
+                      var _isNull3 = _interopRequireDefault(_isNull2);
                       
                       var _default = require(&#x27;./config/default&#x27;);
                       
@@ -167,6 +163,14 @@
                       
                       var _through2Spy2 = _interopRequireDefault(_through2Spy);
                       
+                      var _knex = require(&#x27;knex&#x27;);
+                      
+                      var _knex2 = _interopRequireDefault(_knex);
+                      
+                      var _events = require(&#x27;events&#x27;);
+                      
+                      var _events2 = _interopRequireDefault(_events);
+                      
                       function _interopRequireWildcard(obj) { if (obj &amp;&amp; obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
                       
                       function _interopRequireDefault(obj) { return obj &amp;&amp; obj.__esModule ? obj : { default: obj }; }
@@ -177,32 +181,61 @@
                        * @class Nextract.PluginBase
                        */
                       
-                      var sqlite3 = require(&#x27;sqlite3&#x27;);
-                      //var sqlite3 = require(&#x27;sqlite3&#x27;).verbose();
+                      var internalDbInstance = void 0,
+                          internalDbPath = void 0,
+                          eventEmitter = void 0;
                       
-                      var internalDbConnectionInstance = null,
-                          internalDbPath = _path2.default.resolve(__dirname, &#x27;../../internal/db/nextract.sqlite3&#x27;);
+                      internalDbInstance = null;
+                      internalDbPath = _path2.default.resolve(__dirname, &#x27;../../internal/db/nextract.sqlite3&#x27;);
                       
                       //Provides a connection to the internal Sqlite database
                       function getInternalDbInstance() {
-                        if (internalDbConnectionInstance === null) {
-                          internalDbConnectionInstance = new sqlite3.Database(internalDbPath, function (err) {
-                            if (err !== null) {
-                              logger.log.erro(&#x27;Error opening internal database!&#x27;);
-                            }
+                        if (internalDbInstance === null) {
+                          internalDbInstance = require(&#x27;knex&#x27;)({
+                            client: &#x27;sqlite3&#x27;,
+                            connection: {
+                              filename: internalDbPath
+                            },
+                            useNullAsDefault: true,
+                            debug: false
                           });
                       
                           //We want to be able to run many inserts without hitting the busy error.  References:
                           //https://github.com/mapbox/node-sqlite3/issues/9
                           //http://www.sqlite.org/pragma.html#pragma_journal_mode
-                          internalDbConnectionInstance.run(&#x27;PRAGMA journal_mode = WAL;&#x27;);
+                          internalDbInstance.schema.raw(&#x27;PRAGMA journal_mode = WAL&#x27;);
                       
-                          //Turn on autovacuum
-                          //https://www.techonthenet.com/sqlite/auto_vacuum.php
-                          internalDbConnectionInstance.run(&#x27;PRAGMA main.auto_vacuum = 1;&#x27;);
+                          //Turn on autovacuum (https://www.techonthenet.com/sqlite/auto_vacuum.php)
+                          internalDbInstance.schema.raw(&#x27;PRAGMA auto_vacuum = 1&#x27;);
+                      
+                          /*
+                          FIXME: autovacuum is pretty hit or miss. Have even tried truncting and vacuuming
+                          manually. Sometimes the space is just never reclaimed! Have a feeling it
+                          thinks there are still open transactions or connections, but even forcing a
+                          connection destroy doesn&#x27;t seem to work. One thing that does work is running
+                          this from the commandline once the job has completed:
+                          sqlite3 /path/to/nextract/internal/db/nextract.sqlite3 &quot;VACUUM;&quot;
+                           So for now we&#x27;ll force it to happen this way...
+                          */
+                          eventEmitter = new _events2.default.EventEmitter();
+                          eventEmitter.on(&#x27;vacuum&#x27;, forceInternalDatabaseCleanup);
                         }
                       
-                        return internalDbConnectionInstance;
+                        return internalDbInstance;
+                      }
+                      
+                      //See comment in getInternalDbInstance
+                      function forceInternalDatabaseCleanup() {
+                        var exec = require(&#x27;child_process&#x27;).exec;
+                        var findSqliteCmd = &#x27;which sqlite3&#x27;;
+                      
+                        exec(findSqliteCmd, function (error, stdout) {
+                          if (!(0, _isNull3.default)(error)) return false; //Just skip it
+                      
+                          var pathToSqlite = stdout;
+                          var sqliteVacuumCmd = pathToSqlite + &#x27; &#x27; + internalDbPath + &#x27; &quot;VACUUM;&quot;&#x27;;
+                          exec(sqliteVacuumCmd);
+                        });
                       }
                       
                       //Based on http://stackoverflow.com/a/1349462
@@ -276,9 +309,12 @@
                           logger: logger
                         };
                       
+                        this.getInternalDbInstance = function () {
+                          return getInternalDbInstance();
+                        };
+                      
                         /**
-                         * Provides access to internal sqlite3 database. Allows plugins to run raw queries as needed
-                         * to create tables, query them, cleanup,etc.
+                         * Provides access to internal sqlite3 database. Allows plugins to run raw db queries as needed.
                          *
                          * @method runInternalQuery
                          * @for Nextract.PluginBase
@@ -287,7 +323,7 @@
                          * @example
                          *     var sqlParams = { id: id };
                          * @example
-                         *     somePlugin.runInternalQuery(insertSql, sqlReplacements, false, callbackFunction);
+                         *     somePlugin.runInternalQuery(insertSql, sqlReplacements, false);
                          *
                          * @param {String} sql SQL statement to execute. Can be a fully formed SQL select statement or
                          * a parameterized one with &quot;:key&quot; placeholders. If the later, then sqlReplacements
@@ -295,23 +331,138 @@
                          * @param {Object} sqlReplacements (optional) List of key/value params to be subbed out
                          * in a parameterized query
                          * @param {Boolean} expectsResults Should this query return results?
-                         * @param {Function} callback Function to be called once the temporary table has been completed
                          *
-                         * @return {Array/undefined} If expectsResults was true then the return should include an
-                         * array of query results. Otherwise, nothing is returned.
+                         * @return {Promise} If expectsResults was true then the resolved promise should include an
+                         * array of query results. Otherwise, resolve is empty.
                          */
-                        this.runInternalQuery = function (sql, sqlReplacements, expectsResults, callback) {
-                          var dbInstance = getInternalDbInstance();
+                        this.runInternalQuery = function (sql, sqlReplacements, expectsResults) {
+                          return new Promise(function (resolve, reject) {
+                            var internalDbInstance = getInternalDbInstance();
                       
-                          if (expectsResults === false) {
-                            dbInstance.run(sql, sqlReplacements, function () {
-                              callback();
+                            if (expectsResults === false) {
+                              internalDbInstance.raw(sql, sqlReplacements).then(function () {
+                                resolve();
+                              }).catch(function (err) {
+                                self.ETL.logger.error(&#x27;Invalid runInternalQuery request:&#x27;, err);
+                                reject(err);
+                              });
+                            } else {
+                              internalDbInstance.raw(sql, sqlReplacements).then(function (resp) {
+                                resolve(resp);
+                              }).catch(function (err) {
+                                self.ETL.logger.error(&#x27;Invalid runInternalQuery request:&#x27;, err);
+                                reject(err);
+                              });
+                            }
+                          });
+                        };
+                      
+                        /**
+                         * Provides access to run a select query against the internal sqlite3 database with
+                         * a streamed response.
+                         *
+                         * @method runInternalSelectQueryForStream
+                         * @for Nextract.PluginBase
+                         * @example
+                         *     var sql = &#x27;select first_name, last_name, age, salary from users where id = :id&#x27;;
+                         * @example
+                         *     var sqlParams = { id: id };
+                         * @example
+                         *     var stream = somePlugin.runInternalSelectQueryForStream(insertSql, sqlReplacements);
+                         *
+                         * @param {String} sql SQL statement to execute. Can be a fully formed SQL select statement or
+                         * a parameterized one with &quot;:key&quot; placeholders. If the later, then sqlReplacements
+                         * must be an object of key/values to be replaced.
+                         * @param {Object} sqlReplacements (optional) List of key/value params to be subbed out
+                         * in a parameterized query.
+                         *
+                         * @return {Stream} Streams the results of the select query
+                         */
+                        this.runInternalSelectQueryForStream = function (sql, sqlReplacements) {
+                          var internalDbInstance = getInternalDbInstance();
+                          var stream = internalDbInstance.raw(sql, sqlReplacements).stream();
+                          return stream;
+                        };
+                      
+                        /**
+                         * Some streams require a more traditional blocking like operation (e.g.) Sort, Group By, etc. We
+                         * want to process the stream and return back a stream without breaking the stream pipe or giving
+                         * the appearance of a blocking action.  This method will take the first item of a stream and use it
+                         * to create a temporary table in our internal database by inspecting its keys and values.
+                         *
+                         * @method createTemporaryTableForStream
+                         * @for Nextract.PluginBase
+                         *
+                         * @example
+                         *     See the sortBy method of the core Sort plugin
+                         *
+                         * @param {Object} streamFunction The first object/element of a stream
+                         *
+                         * @return {Promise} Resolves with the temporary table name
+                         */
+                        this.createTemporaryTableForStream = function (streamElement) {
+                          return new Promise(function (resolve, reject) {
+                            var temporaryTableName = getRandomTemporaryTableName(),
+                                internalDbInstance = getInternalDbInstance();
+                      
+                            internalDbInstance.schema.createTable(temporaryTableName, function (table) {
+                              //Use the first stream element to create a column for each key using the key&#x27;s value
+                              //to determine the right data type.
+                      
+                              //Note: Sqlite doesn&#x27;t really have standard data types.  It has type affinity instead so out guesses
+                              //here just help it out (http://www.sqlite.org/datatype3.html).
+                              (0, _forOwn3.default)(streamElement, function (value, key) {
+                                if ((0, _isDate3.default)(value)) {
+                                  //TODO: do we need timestamp as well?
+                                  table.dateTime(key);
+                                } else if ((0, _isBoolean3.default)(value)) {
+                                  table.boolean(key);
+                                } else if ((0, _isInteger3.default)(value)) {
+                                  table.bigInteger(key);
+                                } else if ((0, _isNumber3.default)(value)) {
+                                  //TODO: revisit with some real world example. JavaScrip and floating point math
+                                  //is a touchy subject.
+                                  table.decimal(key);
+                                } else if ((0, _isString3.default)(value)) {
+                                  table.text(key);
+                                } else {
+                                  //For other types like object or when we don&#x27;t know since the value is null
+                                  //we&#x27;ll go with a blob.
+                                  table.binary(key);
+                                }
+                              });
+                            }).then(function () {
+                              resolve(temporaryTableName);
+                            }).catch(function (err) {
+                              self.ETL.logger.error(&#x27;Invalid CREATE TABLE request:&#x27;, err);
+                              reject(err);
                             });
-                          } else {
-                            dbInstance.all(sql, sqlReplacements, function (err, rows) {
-                              callback(err, rows);
+                          });
+                        };
+                      
+                        /**
+                         * Removes temporary internal database tables creates from usage of createTemporaryTableForStream.
+                         *
+                         * @method dropTemporaryTableForStream
+                         * @for Nextract.PluginBase
+                         *
+                         * @param {String} tableName Name of the internal table to be dropped
+                         * @return {Promise} Promise resolved once table has been resolved
+                         */
+                        this.dropTemporaryTableForStream = function (tableName) {
+                          return new Promise(function (resolve, reject) {
+                            var internalDbInstance = getInternalDbInstance();
+                      
+                            internalDbInstance.schema.dropTable(tableName).then(function () {
+                              resolve();
+                            }).catch(function (err) {
+                              self.ETL.logger.warn(&#x27;Invalid DROP TABLE request:&#x27;, err);
+                              reject(err);
+                            }).finally(function () {
+                              internalDbInstance.destroy();
+                              eventEmitter.emit(&#x27;vacuum&#x27;);
                             });
-                          }
+                          });
                         };
                       
                         /**
@@ -409,186 +560,19 @@
                         };
                       
                         /**
-                         * Some streams require a more traditional blocking like operation (e.g.) Sort, Group By, etc. We
-                         * want to process the stream and return back a stream without breaking the stream pipe or giving
-                         * the appearance of a blocking action.  This method will take the first item of a stream and use it
-                         * to create a temporary table in our internal database by inspecting its keys and values.
+                         * When a plugin needs to get a handle on an incoming stream without using something like through2
+                         * directly this method can be useful.  It gets a handle in the incoming stream and acts as a passthrough
+                         * that can be immediately used with another pipe() call.
                          *
-                         * @method createTemporaryTableForStream
+                         * @method getStreamPassthroughForPipe
                          * @for Nextract.PluginBase
                          *
                          * @example
-                         *     See the sortBy method of the core Sort plugin
+                         *     pluginName.getStreamPassthroughForPipe().pipe(someStreamMethod);
                          *
-                         * @param {Object} streamFunction The first object/element of a stream
-                         * @param {Function} callback Function to be called once the temporary table has been completed
-                         *
-                         * @return {String} Returns the temporary table name
+                         * @return {Stream} Returns passthrough stream
                          */
-                        this.createTemporaryTableForStream = function (streamElement, callback) {
-                          var createTableSql,
-                              temporaryTableName = getRandomTemporaryTableName(),
-                              columnDefs = [];
-                      
-                          //Note: Sqlite doesn&#x27;t really have standard data types.  It has type affinity instead so out guesses
-                          //here just help it out (http://www.sqlite.org/datatype3.html).
-                          (0, _forOwn3.default)(streamElement, function (value, key) {
-                            var columnDataType;
-                      
-                            if ((0, _isDate3.default)(value)) {
-                              columnDataType = &#x27;DATETIME&#x27;;
-                            } else if ((0, _isBoolean3.default)(value)) {
-                              columnDataType = &#x27;BOOLEAN&#x27;;
-                            } else if ((0, _isInteger3.default)(value)) {
-                              columnDataType = &#x27;INTEGER&#x27;;
-                            } else if ((0, _isNumber3.default)(value)) {
-                              columnDataType = &#x27;REAL&#x27;;
-                            } else if ((0, _isString3.default)(value)) {
-                              columnDataType = &#x27;TEXT&#x27;;
-                            } else {
-                              //For other types like object or when we don&#x27;t know since the value is null
-                              //we&#x27;ll go with a blob.
-                              columnDataType = &#x27;BLOB&#x27;;
-                            }
-                      
-                            columnDefs[columnDefs.length] = &#x27;&#x60;&#x27; + key + &#x27;&#x60; &#x27; + columnDataType + &#x27; DEFAULT NULL&#x27;;
-                          });
-                      
-                          createTableSql = &#x27;CREATE TABLE &#x27; + temporaryTableName + &#x27; (&#x27; + columnDefs.join(&#x27;,&#x27;) + &#x27;); COMMIT;&#x27;;
-                      
-                          self.runInternalQuery(createTableSql, [], false, function (err) {
-                            if (err) self.ETL.logger.error(&#x27;Invalid CREATE TABLE request:&#x27;, err);
-                      
-                            return callback(temporaryTableName);
-                          });
-                        };
-                      
-                        /**
-                         * Removes temporary internal database tables creates from usage of createTemporaryTableForStream.
-                         *
-                         * @method dropTemporaryTableForStream
-                         * @for Nextract.PluginBase
-                         *
-                         * @param {String} tableName Name of the internal table to be dropped
-                         * @param {Function} callback Function to be called once the internal table has been dropped
-                         */
-                        this.dropTemporaryTableForStream = function (tableName, callback) {
-                          var dropTableSql = &#x27;DROP TABLE IF EXISTS &#x27; + tableName + &#x27;; COMMIT;&#x27;;
-                      
-                          self.runInternalQuery(dropTableSql, [], false, function (err) {
-                            if (err) self.ETL.logger.error(&#x27;Invalid DROP TABLE request:&#x27;, err);
-                            return callback();
-                          });
-                        };
-                      
-                        /**
-                         * Some streams require a more traditional blocking like operation (e.g.) Sort, Group By, etc. We
-                         * want to process the stream and return back a stream without breaking the stream pipe or giving
-                         * the appearance of a blocking action.  This method will take the first item of a stream and use it
-                         * to create a boilerplate INSERT statement for all items in a stream. Par this method with
-                         * createTemporaryTableForStream.  See getBoilerplateStreamBulkInsertStatement for bulk inserts.
-                         *
-                         * @method getBoilerplateStreamInsertStatement
-                         * @for Nextract.PluginBase
-                         *
-                         * @example
-                         *     See the sortBy method of the core Sort plugin
-                         *
-                         * @param {String} temporaryTableName The temporary table name created by a call to createTemporaryTableForStream
-                         * @param {Object} streamFunction The first object/element of a stream
-                         * @param {Boolean} escapeColumnNames If true columns names are escaped (e.g.) &#x60;column_foo&#x60;
-                         *
-                         * @return {String} Returns the boilerplate INSERT statement with &quot;?&quot; value placeholders
-                         */
-                        this.getBoilerplateStreamInsertStatement = function (temporaryTableName, element) {
-                          var escapeColumnNames = arguments.length &lt;= 2 || arguments[2] === undefined ? true : arguments[2];
-                      
-                          var keys, replaceMarks, valueReplacementString, columns, columnReplacementString, insertSql;
-                      
-                          keys = (0, _keys3.default)(element);
-                      
-                          replaceMarks = [];
-                          for (var i = 0; i &lt; keys.length; i++) {
-                            replaceMarks[replaceMarks.length] = &#x27;?&#x27;;
-                          }
-                      
-                          valueReplacementString = replaceMarks.join(&#x27;,&#x27;);
-                      
-                          //Build the columns replacement string
-                          if (escapeColumnNames === true) {
-                            //Wrap the property name to be safe (not supported by all databases)
-                            columns = keys.map(function (v) {
-                              return &#x27;&#x60;&#x27; + v + &#x27;&#x60;&#x27;;
-                            });
-                          } else {
-                            columns = keys.map(function (v) {
-                              return v;
-                            });
-                          }
-                      
-                          columnReplacementString = columns.join(&#x27;,&#x27;);
-                      
-                          insertSql = &#x27;INSERT INTO &#x27; + temporaryTableName + &#x27; (&#x27; + columnReplacementString + &#x27;) VALUES (&#x27; + valueReplacementString + &#x27;)&#x27;;
-                      
-                          return insertSql;
-                        };
-                      
-                        /**
-                         * Some streams require a more traditional blocking like operation (e.g.) Sort, Group By, etc. We
-                         * want to process the stream and return back a stream without breaking the stream pipe or giving
-                         * the appearance of a blocking action.  This method will take the first item of a stream and use it
-                         * to create a boilerplate bulk INSERT statement. Par this method with
-                         * createTemporaryTableForStream.
-                         *
-                         * @method getBoilerplateStreamBulkInsertStatement
-                         * @for Nextract.PluginBase
-                         *
-                         * @example
-                         *     See the sortBy method of the core Sort plugin
-                         *
-                         * @param {String} temporaryTableName The temporary table name created by a call to createTemporaryTableForStream
-                         * @param {Object} streamFunction The first object/element of a stream
-                         * @param {Integer} batchCount The number of items to prep for bulk insert (creates the proper number of &quot;?&quot; placeholders)
-                         * @param {Boolean} escapeColumnNames If true columns names are escaped (e.g.) &#x60;column_foo&#x60;
-                         *
-                         * @return {String} Returns the boilerplate INSERT statement with &quot;?&quot; value placeholders
-                         */
-                        this.getBoilerplateStreamBulkInsertStatement = function (temporaryTableName, firstElement, batchCount) {
-                          var escapeColumnNames = arguments.length &lt;= 3 || arguments[3] === undefined ? true : arguments[3];
-                      
-                          var keys, batchValues, valuesPlaceholder, valueReplacementString, columns, columnReplacementString, insertSql;
-                      
-                          keys = (0, _keys3.default)(firstElement);
-                      
-                          //Build the columns replacement string
-                          if (escapeColumnNames === true) {
-                            //Wrap the property name to be safe (not supported by all databases)
-                            columns = keys.map(function (v) {
-                              return &#x27;&#x60;&#x27; + v + &#x27;&#x60;&#x27;;
-                            });
-                          } else {
-                            columns = keys.map(function (v) {
-                              return v;
-                            });
-                          }
-                      
-                          columnReplacementString = columns.join(&#x27;,&#x27;);
-                      
-                          //Build the values replacement string
-                          valuesPlaceholder = &#x27;(&#x27; + (0, _repeat3.default)(&#x27;?&#x27;, columns.length).split(&#x27;&#x27;).join(&#x27;,&#x27;) + &#x27;)&#x27;;
-                          batchValues = [];
-                          for (var i = 0; i &lt; batchCount; i++) {
-                            batchValues[batchValues.length] = valuesPlaceholder;
-                          }
-                          valueReplacementString = batchValues.join(&#x27;, &#x27;);
-                      
-                          insertSql = &#x27;INSERT INTO &#x27; + temporaryTableName + &#x27; (&#x27; + columnReplacementString + &#x27;) VALUES &#x27; + valueReplacementString;
-                      
-                          return insertSql;
-                        };
-                      
                         this.getStreamPassthroughForPipe = function () {
-                          //Just get a handle on the stream so that we can do some internal piping
                           function processStreamInput(element) {
                             if (!(0, _isUndefined3.default)(element)) {
                               return element;

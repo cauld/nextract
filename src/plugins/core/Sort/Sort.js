@@ -4,24 +4,13 @@
  * @class Nextract.Plugins.Core.Sort
  */
 
+import async from 'async';
 import _ from 'lodash';
-import { isUndefined, isArray, values, keys, flatten } from 'lodash/fp';
+import { isNull, isUndefined, isArray, values, keys, flatten } from 'lodash/fp';
 import pluginBase from '../../pluginBase';
 
 //Instantiate the plugin
 var sortPlugin = new pluginBase('Sort', 'Core');
-
-//We can't guarantee the order of JavaScript properties and its possible each collection
-//item contains more properties than the ones being requested as part of the insert. So
-//we must handpick them out in the right order here.
-function getInOrderValues(streamElement, columnsToInsert) {
-  var inOrderValues = [];
-  columnsToInsert.forEach(function(col) {
-    inOrderValues[inOrderValues.length] = streamElement[col];
-  });
-
-  return inOrderValues;
-}
 
 /* Plugin external interface */
 module.exports = {
@@ -58,68 +47,89 @@ module.exports = {
     is one operation, but that operation ends up being the result of the final query which can
     have multiple rows.
     */
-    function processStreamInput(element, encoding, callback) {
-      var batchAmount = 100; //This number is still experimental... 100 seems to work best right now.
-      var that = this;
+    let dbInstance = sortPlugin.getInternalDbInstance();
+    let elementsToInsert = [];
+    let tableName = null;
+    let stream = null;
 
-      if (_.isUndefined(element)) {
-        //We have reach the end of the input stream and we most likely have some left over elements below the batch threshold.
-        //So insert the final batch now...
-        if (this.elementValuesToInsert.length > 0) {
-          //We can't use the original batch statement becauase the value count is different
-          var lastInsertSql = sortPlugin.getBoilerplateStreamBulkInsertStatement(this.dbInfo.tmpTableName, this.dbInfo.sampleElement, this.elementValuesToInsert.length);
+    //TODO: revisit with dynamic sizing, sqlite has a max sql vars/size limit that causes INSERTS
+    //to fail if we bump this too high.
+    let batchSize = 100;
 
-          sortPlugin.runInternalQuery(lastInsertSql, _.flatten(this.elementValuesToInsert), false, function() {
-            that.elementValuesToInsert = null; //done, clear it
-            return callback(null, that.dbInfo); //sortOut expects this 1 element
+    var q = async.queue(function(element, callback) {
+      if (_.isNull(tableName)) {
+        //Add to the batch
+        elementsToInsert[elementsToInsert.length] = element;
+
+        //This is the first element, we need a temp table before inserts can begin...
+        sortPlugin.createTemporaryTableForStream(element)
+          .then(function(temporaryTableName) {
+            tableName = temporaryTableName;
+            callback();
+          })
+          .catch(function(err) {
+            sortPlugin.ETL.logger.error('Invalid createTemporaryTableForStream request:', err);
           });
-        } else {
-          this.push(this.dbInfo); //sortOut expects this 1 element
-          return callback(null, null);
-        }
       } else {
-        //We need to setup the INSERT sql when encountering the first element in the stream
-        if (_.isUndefined(this.dbInfo)) {
-          this.elementValuesToInsert = [];
+        //Add to the batch
+        elementsToInsert[elementsToInsert.length] = element;
 
-          this.dbInfo = {
-            propertiesToSortBy: propertiesToSortBy,
-            ordersToSortBy: ordersToSortBy,
-            sortInputCount: 1,
-            columns: _.keys(element),
-            sampleElement: element
-          };
-
-          sortPlugin.createTemporaryTableForStream(element, function(temporaryTableName) {
-            that.dbInfo.tmpTableName = temporaryTableName;
-            that.dbInfo.insertSql = sortPlugin.getBoilerplateStreamBulkInsertStatement(temporaryTableName, element, batchAmount);
-
-            that.elementValuesToInsert[that.elementValuesToInsert.length] = getInOrderValues(element, that.dbInfo.columns);
-            return callback(null, null); //We have to push something to keep the stream moving...
-          });
-        } else {
-          this.dbInfo.sortInputCount++;
-
-          //Add this element to the batch
-          this.elementValuesToInsert[this.elementValuesToInsert.length] = getInOrderValues(element, this.dbInfo.columns);
-
-          //Do the batch INSERT if we have hit the batch limit
-          if (this.elementValuesToInsert.length === batchAmount) {
-            var sqlReplacements = _.flatten(this.elementValuesToInsert);
-            this.elementValuesToInsert = []; //reset for next batch
-
-            sortPlugin.runInternalQuery(this.dbInfo.insertSql, sqlReplacements, false, function() {
-              return callback(null, null);
+        //Insert the batch if we've reached the limit
+        if (elementsToInsert.length === batchSize) {
+          dbInstance.batchInsert(tableName, elementsToInsert, batchSize)
+            .then(function() {
+              elementsToInsert = []; //reset
+              //Calling callback in sync fashion gets lost in the shuffle when many many items are queued up.
+              //Calling through setImmediate solves this.
+              setImmediate(function() { callback() });
+            })
+            .catch(function(err) {
+              sortPlugin.ETL.logger.error('Invalid INSERT request:', err);
             });
-          } else {
-            //That one was added to the batch, lets move to the next.
-            return callback(null, null);
-          }
+        } else {
+          //Batch limit not reached, just continue...
+          setImmediate(function() { callback() });
         }
+      }
+    }, 1);
+
+    function processStreamInput(element, encoding, callback) {
+      stream = this;
+
+      if (!_.isUndefined(element)) {
+        q.push(element, function() {
+          callback(null, null);
+        });
+      } else {
+        callback(null, null);
       }
     }
 
-    return sortPlugin.buildStreamTransform(processStreamInput, null, 'standard');
+    //Takes the place of q.drain (more appropriate when using through2)
+    function flushInsert(callback) {
+      let sortInDbInfo = {
+        tableName,
+        propertiesToSortBy,
+        ordersToSortBy
+      };
+
+      if (elementsToInsert.length > 0) {
+        dbInstance.batchInsert(tableName, elementsToInsert, elementsToInsert.length)
+          .then(function() {
+            stream.push(sortInDbInfo);
+            callback();
+          })
+          .catch(function(err) {
+            sortPlugin.ETL.logger.error('Invalid INSERT request:', err);
+          });
+      } else {
+        //Nothing left, just continue...
+        stream.push(sortInDbInfo);
+        callback();
+      }
+    }
+
+    return sortPlugin.buildStreamTransform(processStreamInput, flushInsert, 'standard');
   },
 
   /**
@@ -139,40 +149,27 @@ module.exports = {
    *
    * @return {stream.Transform} Sorted read/write stream transform to use in conjuction with pipe()
    */
-  sortOut: function() {
-    function processStreamInput(element, encoding, callback) {
-      var sortInDbInfo = element;
+  sortOut: function(sortInDbInfo) {
+    let ordering,
+        sortedSelectSql;
 
-      var that = this,
-          selectSql,
-          ordering;
-
-      selectSql = 'SELECT * FROM ' + sortInDbInfo.tmpTableName + ' ORDER BY';
-      ordering = [];
-      for (let i=0; i<sortInDbInfo.propertiesToSortBy.length; i++) {
-        ordering[ordering.length] = ' ' + sortInDbInfo.propertiesToSortBy[i] + ' ' + sortInDbInfo.ordersToSortBy[i];
-      }
-
-      selectSql += ordering.join(',');
-
-      //Grab the sorted rows
-      sortPlugin.runInternalQuery(selectSql, [], true, function(err, sortedRows) {
-        //Sorting done, we have what we need... drop the temp table
-        sortPlugin.dropTemporaryTableForStream(sortInDbInfo.tmpTableName, function(err) {
-          if (err) sortPlugin.ETL.logger.error('Invalid DROP TABLE request:', err);
-
-          sortedRows.forEach(function(r) {
-            that.push(r);
-          });
-          that.push(null);
-          //that.end();
-
-          return callback(null, null);
-        });
-      });
+    sortedSelectSql = 'SELECT * FROM ' + sortInDbInfo.tableName + ' ORDER BY';
+    ordering = [];
+    for (let i=0; i<sortInDbInfo.propertiesToSortBy.length; i++) {
+      ordering[ordering.length] = ' ' + sortInDbInfo.propertiesToSortBy[i] + ' ' + sortInDbInfo.ordersToSortBy[i];
     }
 
-    return sortPlugin.buildStreamTransform(processStreamInput, null, 'standard');
+    sortedSelectSql += ordering.join(',');
+
+    var stream = sortPlugin.runInternalSelectQueryForStream(sortedSelectSql, []);
+    return stream.on('end', function() {
+      //Sorting done, we have what we need... drop the temp table
+      sortPlugin.dropTemporaryTableForStream(sortInDbInfo.tableName)
+        .then(function() {})
+        .catch(function(err) {
+          sortPlugin.ETL.logger.error('Invalid DROP TABLE request:', err);
+        });
+    });
   }
 
 };

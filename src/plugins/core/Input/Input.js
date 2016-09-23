@@ -71,7 +71,7 @@ module.exports = {
         jsonParser;
 
     jsonStream = fs.createReadStream(filePath, {encoding: 'utf8'});
-    jsonParser = JSONStream.parse('data.employees.*');
+    jsonParser = JSONStream.parse(pathToParse); //'data.employees.*'
 
     return jsonStream.pipe(jsonParser);
   },

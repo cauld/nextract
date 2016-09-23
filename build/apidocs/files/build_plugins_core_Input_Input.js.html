@@ -177,7 +177,7 @@
                           var jsonStream, jsonParser;
                       
                           jsonStream = _fs2.default.createReadStream(filePath, { encoding: &#x27;utf8&#x27; });
-                          jsonParser = _JSONStream2.default.parse(&#x27;data.employees.*&#x27;);
+                          jsonParser = _JSONStream2.default.parse(pathToParse); //&#x27;data.employees.*&#x27;
                       
                           return jsonStream.pipe(jsonParser);
                         },
