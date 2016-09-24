@@ -56,7 +56,7 @@ module.exports = {
     //to fail if we bump this too high.
     let batchSize = 100;
 
-    var q = async.queue(function(element, callback) {
+     var q = async.queue(function(element, callback) {
       if (_.isNull(tableName)) {
         //Add to the batch
         elementsToInsert[elementsToInsert.length] = element;
@@ -65,6 +65,13 @@ module.exports = {
         sortPlugin.createTemporaryTableForStream(element)
           .then(function(temporaryTableName) {
             tableName = temporaryTableName;
+
+            //Once the initial table is added we can bump the concurrency (https://github.com/caolan/async/issues/747),
+            //doing before would lead to multiple tables being created.
+            q.pause();
+            q.concurrency = 5;
+            q.resume();
+
             callback();
           })
           .catch(function(err) {

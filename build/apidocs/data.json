@@ -13,13 +13,6 @@
             "fors": {},
             "namespaces": {}
         },
-        "build/examples/benchmarkWithProfiling2.js": {
-            "name": "build/examples/benchmarkWithProfiling2.js",
-            "modules": {},
-            "classes": {},
-            "fors": {},
-            "namespaces": {}
-        },
         "build/examples/csvAndSort.js": {
             "name": "build/examples/csvAndSort.js",
             "modules": {},
@@ -323,12 +316,6 @@
     "classitems": [
         {
             "file": "build/examples/benchmarkWithProfiling.js",
-            "line": 3,
-            "description": "Example: Query and sort...",
-            "class": "Nextract.Plugins.Core.Calculator"
-        },
-        {
-            "file": "build/examples/benchmarkWithProfiling2.js",
             "line": 3,
             "description": "Example: Query and sort...",
             "class": "Nextract.Plugins.Core.Calculator"
@@ -1199,7 +1186,7 @@
         },
         {
             "file": "build/plugins/core/Sort/Sort.js",
-            "line": 152,
+            "line": 159,
             "description": "Outputs a stream of sorted objects. Must be used in first pipe()\nimmediately after the call to Plugins.Core.Sort.sortIn to pickup the sorted output.",
             "itemtype": "method",
             "name": "sortOut",
@@ -1621,10 +1608,6 @@
         {
             "message": "Missing item type\nExample: Query and sort...",
             "line": " build/examples/benchmarkWithProfiling.js:3"
-        },
-        {
-            "message": "Missing item type\nExample: Query and sort...",
-            "line": " build/examples/benchmarkWithProfiling2.js:3"
         },
         {
             "message": "Missing item type\nExample: CSV input and sort...",

@@ -83,6 +83,13 @@ module.exports = {
         //This is the first element, we need a temp table before inserts can begin...
         sortPlugin.createTemporaryTableForStream(element).then(function (temporaryTableName) {
           tableName = temporaryTableName;
+
+          //Once the initial table is added we can bump the concurrency (https://github.com/caolan/async/issues/747),
+          //doing before would lead to multiple tables being created.
+          q.pause();
+          q.concurrency = 5;
+          q.resume();
+
           callback();
         }).catch(function (err) {
           sortPlugin.ETL.logger.error('Invalid createTemporaryTableForStream request:', err);

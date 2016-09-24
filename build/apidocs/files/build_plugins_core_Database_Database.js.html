@@ -196,7 +196,7 @@
                         }
                       
                         //Enable db debugging?
-                        dbConfigObject.debug = (0, _has3.default)(dbpluginConfig, &#x27;debug&#x27;) === true ? true : false;
+                        dbConfigObject.debug = (0, _has3.default)(dbpluginConfig, &#x27;debug&#x27;) === true ? dbpluginConfig.debug : false;
                       
                         connectionInstances[dbName] = require(&#x27;knex&#x27;)(dbConfigObject);
                       }
@@ -415,7 +415,7 @@
                                 callback();
                               });
                             }
-                          }, 1);
+                          }, 5);
                       
                           function processStreamInput(element, encoding, callback) {
                             stream = this;

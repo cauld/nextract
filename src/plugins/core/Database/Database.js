@@ -64,7 +64,7 @@ function buildNewConnection(dbName) {
   }
 
   //Enable db debugging?
-  dbConfigObject.debug = (_.has(dbpluginConfig, 'debug') === true) ? true : false;
+  dbConfigObject.debug = (_.has(dbpluginConfig, 'debug') === true) ? dbpluginConfig.debug : false;
 
   connectionInstances[dbName] = require('knex')(dbConfigObject);
 }
@@ -275,7 +275,7 @@ module.exports = {
         //Batch limit not reached, just continue...
         setImmediate(function() { callback() });
       }
-    }, 1);
+    }, 5);
 
     function processStreamInput(element, encoding, callback) {
       stream = this;
