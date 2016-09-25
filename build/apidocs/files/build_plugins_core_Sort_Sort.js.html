@@ -17,7 +17,7 @@
             <h1>nextract</h1>
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Docs for: 0.0.1</em>
+            <em>API Docs for: 0.0.3</em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -91,6 +91,10 @@
                           <pre class="code prettyprint linenums">
                       &#x27;use strict&#x27;;
                       
+                      var _isEmpty2 = require(&#x27;lodash/isEmpty&#x27;);
+                      
+                      var _isEmpty3 = _interopRequireDefault(_isEmpty2);
+                      
                       var _isUndefined2 = require(&#x27;lodash/isUndefined&#x27;);
                       
                       var _isUndefined3 = _interopRequireDefault(_isUndefined2);
@@ -106,6 +110,14 @@
                       var _async = require(&#x27;async&#x27;);
                       
                       var _async2 = _interopRequireDefault(_async);
+                      
+                      var _throttle = require(&#x27;throttle&#x27;);
+                      
+                      var _throttle2 = _interopRequireDefault(_throttle);
+                      
+                      var _through = require(&#x27;through2&#x27;);
+                      
+                      var _through2 = _interopRequireDefault(_through);
                       
                       var _pluginBase = require(&#x27;../../pluginBase&#x27;);
                       
@@ -232,6 +244,7 @@
                       
                             if (elementsToInsert.length &gt; 0) {
                               dbInstance.batchInsert(tableName, elementsToInsert, elementsToInsert.length).then(function () {
+                                elementsToInsert = null; //Done, clear it
                                 stream.push(sortInDbInfo);
                                 callback();
                               }).catch(function (err) {
@@ -276,8 +289,49 @@
                       
                           sortedSelectSql += ordering.join(&#x27;,&#x27;);
                       
+                          /*
+                          Throttle expects a regular stream (not an object stream) that can only deal with Strings and Buffers.
+                          We need to create another object stream that appropriately transforms our data, for example, by emitting
+                          a JSON-stringified version of our object.
+                          Refs:
+                          1) https://nodesource.com/blog/understanding-object-streams/
+                          2) https://github.com/TooTallNate/node-throttle
+                          */
+                          var jsonStreamDelimiter = &#x27;_||_&#x27;; //string that won&#x27;t be present in the actual data
+                          var jsonStream = function jsonStream(element) {
+                            return JSON.stringify(element) + jsonStreamDelimiter;
+                          };
+                      
+                          var nextElementString = &#x27;&#x27;; //Placeholder for chunks as we process them back into objects
+                          var toObjectStream = function toObjectStream(chunk, encoding, callback) {
+                            var _this = this;
+                      
+                            if (!(0, _isUndefined3.default)(chunk) &amp;&amp; !(0, _isNull3.default)(chunk)) {
+                              (function () {
+                                var oStream = _this;
+                      
+                                nextElementString += chunk.toString(&#x27;utf8&#x27;);
+                                var splitChunkStrings = nextElementString.split(jsonStreamDelimiter); //each JSON object ends with }
+                                nextElementString = &#x27;&#x27;; //reset
+                      
+                                splitChunkStrings.map(function (cStr) {
+                                  if (!(0, _isEmpty3.default)(cStr) &amp;&amp; cStr.charAt(cStr.length - 1) === &#x27;}&#x27;) {
+                                    var nextElement = JSON.parse(cStr);
+                                    oStream.push(nextElement);
+                                  } else {
+                                    nextElementString += cStr;
+                                  }
+                                });
+                              })();
+                            }
+                      
+                            callback();
+                          };
+                      
+                          //Create a &quot;Throttle&quot; instance that reads at a set bps
+                          var throttle = new _throttle2.default({ bps: 750000 });
                           var stream = sortPlugin.runInternalSelectQueryForStream(sortedSelectSql, []);
-                          return stream.on(&#x27;end&#x27;, function () {
+                          return stream.pipe(sortPlugin.buildStreamTransform(jsonStream, null, &#x27;map&#x27;)).pipe(throttle).pipe(sortPlugin.buildStreamTransform(toObjectStream, null, &#x27;standard&#x27;)).on(&#x27;end&#x27;, function () {
                             //Sorting done, we have what we need... drop the temp table
                             sortPlugin.dropTemporaryTableForStream(sortInDbInfo.tableName).then(function () {}).catch(function (err) {
                               sortPlugin.ETL.logger.error(&#x27;Invalid DROP TABLE request:&#x27;, err);

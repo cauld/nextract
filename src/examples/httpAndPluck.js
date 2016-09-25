@@ -33,8 +33,10 @@ transform.loadPlugins('Core', ['Http', 'Utils', 'Logger'])
       .on('end', function() {
         transform.Plugins.Core.Logger.info('Transform finished!');
         transform.printStepProfilingReport();
+        process.exit();
       });
   })
   .catch(function(err) {
     transform.Plugins.Core.Logger.error('ETL process failed:', err);
+    process.exit();
   });

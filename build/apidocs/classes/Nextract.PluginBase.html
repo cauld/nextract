@@ -17,7 +17,7 @@
             <h1>nextract</h1>
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Docs for: 0.0.1</em>
+            <em>API Docs for: 0.0.3</em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -132,6 +132,10 @@
                       
                                                   </li>
                                                   <li class="index-item method">
+                                                      <a href="#method_getInternalDbInstance">getInternalDbInstance</a>
+                      
+                                                  </li>
+                                                  <li class="index-item method">
                                                       <a href="#method_getStreamPassthroughForPipe">getStreamPassthroughForPipe</a>
                       
                                                   </li>
@@ -213,7 +217,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_pluginBase.js.html#l425"><code>build&#x2F;plugins&#x2F;pluginBase.js:425</code></a>
+                              <a href="../files/build_plugins_pluginBase.js.html#l441"><code>build&#x2F;plugins&#x2F;pluginBase.js:441</code></a>
                               </p>
                       
                       
@@ -312,7 +316,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_pluginBase.js.html#l296"><code>build&#x2F;plugins&#x2F;pluginBase.js:296</code></a>
+                              <a href="../files/build_plugins_pluginBase.js.html#l312"><code>build&#x2F;plugins&#x2F;pluginBase.js:312</code></a>
                               </p>
                       
                       
@@ -389,7 +393,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_pluginBase.js.html#l352"><code>build&#x2F;plugins&#x2F;pluginBase.js:352</code></a>
+                              <a href="../files/build_plugins_pluginBase.js.html#l368"><code>build&#x2F;plugins&#x2F;pluginBase.js:368</code></a>
                               </p>
                       
                       
@@ -431,6 +435,59 @@
                       
                       
                       </div>
+                      <div id="method_getInternalDbInstance" class="method item">
+                          <h3 class="name"><code>getInternalDbInstance</code></h3>
+                      
+                              <span class="paren">()</span>
+                      
+                              <span class="returns-inline">
+                                  <span class="type">Object</span>
+                              </span>
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                          <div class="meta">
+                                      <p>
+                                      Defined in
+                              <a href="../files/build_plugins_pluginBase.js.html#l224"><code>build&#x2F;plugins&#x2F;pluginBase.js:224</code></a>
+                              </p>
+                      
+                      
+                      
+                          </div>
+                      
+                          <div class="description">
+                              <p>Provides a direct db connection to the internal sqlite3 database. Allows plugins to
+                      use knex (<a href="http://knexjs.org/">http://knexjs.org/</a>) directly against the internal database.</p>
+                      
+                          </div>
+                      
+                      
+                              <div class="returns">
+                                  <h4>Returns:</h4>
+                      
+                                  <div class="returns-description">
+                                              <span class="type">Object</span>:
+                                          <p>A knex connection object</p>
+                      
+                                  </div>
+                              </div>
+                      
+                      
+                              <div class="example">
+                                  <h4>Example:</h4>
+                      
+                                  <div class="example-content">
+                                      <pre class="code prettyprint"><code>let internalDbInstance = somePlugin.getInternalDbInstance();</code></pre>
+                      <pre class="code prettyprint"><code>internalDbInstance.select('title', 'author', 'year').from('books');</code></pre>
+                      
+                                  </div>
+                              </div>
+                      </div>
                       <div id="method_getStreamPassthroughForPipe" class="method item">
                           <h3 class="name"><code>getStreamPassthroughForPipe</code></h3>
                       
@@ -449,7 +506,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_pluginBase.js.html#l471"><code>build&#x2F;plugins&#x2F;pluginBase.js:471</code></a>
+                              <a href="../files/build_plugins_pluginBase.js.html#l487"><code>build&#x2F;plugins&#x2F;pluginBase.js:487</code></a>
                               </p>
                       
                       
@@ -514,7 +571,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_pluginBase.js.html#l225"><code>build&#x2F;plugins&#x2F;pluginBase.js:225</code></a>
+                              <a href="../files/build_plugins_pluginBase.js.html#l241"><code>build&#x2F;plugins&#x2F;pluginBase.js:241</code></a>
                               </p>
                       
                       
@@ -619,7 +676,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_pluginBase.js.html#l269"><code>build&#x2F;plugins&#x2F;pluginBase.js:269</code></a>
+                              <a href="../files/build_plugins_pluginBase.js.html#l285"><code>build&#x2F;plugins&#x2F;pluginBase.js:285</code></a>
                               </p>
                       
                       
@@ -710,7 +767,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_pluginBase.js.html#l377"><code>build&#x2F;plugins&#x2F;pluginBase.js:377</code></a>
+                              <a href="../files/build_plugins_pluginBase.js.html#l393"><code>build&#x2F;plugins&#x2F;pluginBase.js:393</code></a>
                               </p>
                       
                       
@@ -780,7 +837,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_pluginBase.js.html#l211"><code>build&#x2F;plugins&#x2F;pluginBase.js:211</code></a>
+                              <a href="../files/build_plugins_pluginBase.js.html#l214"><code>build&#x2F;plugins&#x2F;pluginBase.js:214</code></a>
                               </p>
                       
                       
@@ -805,7 +862,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_pluginBase.js.html#l194"><code>build&#x2F;plugins&#x2F;pluginBase.js:194</code></a>
+                              <a href="../files/build_plugins_pluginBase.js.html#l197"><code>build&#x2F;plugins&#x2F;pluginBase.js:197</code></a>
                               </p>
                       
                       
@@ -830,7 +887,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_pluginBase.js.html#l202"><code>build&#x2F;plugins&#x2F;pluginBase.js:202</code></a>
+                              <a href="../files/build_plugins_pluginBase.js.html#l205"><code>build&#x2F;plugins&#x2F;pluginBase.js:205</code></a>
                               </p>
                       
                       
@@ -855,7 +912,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_pluginBase.js.html#l176"><code>build&#x2F;plugins&#x2F;pluginBase.js:176</code></a>
+                              <a href="../files/build_plugins_pluginBase.js.html#l179"><code>build&#x2F;plugins&#x2F;pluginBase.js:179</code></a>
                               </p>
                       
                       
@@ -880,7 +937,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_pluginBase.js.html#l185"><code>build&#x2F;plugins&#x2F;pluginBase.js:185</code></a>
+                              <a href="../files/build_plugins_pluginBase.js.html#l188"><code>build&#x2F;plugins&#x2F;pluginBase.js:188</code></a>
                               </p>
                       
                       

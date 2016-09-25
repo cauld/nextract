@@ -29,7 +29,9 @@ transform.loadPlugins('Core', ['Input', 'Output', 'Sort', 'Logger']).then(functi
   }).on('end', function () {
     transform.Plugins.Core.Logger.info('Transform ended!');
     transform.Plugins.Core.Logger.info('NOTE: Example still a WIP! ...');
+    process.exit();
   });
 }).catch(function (err) {
   transform.Plugins.Core.Logger.error('Transform failed: ', err);
+  process.exit();
 });

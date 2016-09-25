@@ -17,7 +17,7 @@
             <h1>nextract</h1>
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Docs for: 0.0.1</em>
+            <em>API Docs for: 0.0.3</em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -91,21 +91,21 @@
                           <pre class="code prettyprint linenums">
                       &#x27;use strict&#x27;;
                       
-                      var _merge2 = require(&#x27;lodash/merge&#x27;);
-                      
-                      var _merge3 = _interopRequireDefault(_merge2);
-                      
                       var _isUndefined2 = require(&#x27;lodash/isUndefined&#x27;);
                       
                       var _isUndefined3 = _interopRequireDefault(_isUndefined2);
                       
-                      var _isEmpty2 = require(&#x27;lodash/isEmpty&#x27;);
-                      
-                      var _isEmpty3 = _interopRequireDefault(_isEmpty2);
-                      
                       var _isArray2 = require(&#x27;lodash/isArray&#x27;);
                       
                       var _isArray3 = _interopRequireDefault(_isArray2);
+                      
+                      var _merge2 = require(&#x27;lodash/merge&#x27;);
+                      
+                      var _merge3 = _interopRequireDefault(_merge2);
+                      
+                      var _isEmpty2 = require(&#x27;lodash/isEmpty&#x27;);
+                      
+                      var _isEmpty3 = _interopRequireDefault(_isEmpty2);
                       
                       var _has2 = require(&#x27;lodash/has&#x27;);
                       
@@ -119,35 +119,16 @@
                       
                       var _pluginBase2 = _interopRequireDefault(_pluginBase);
                       
-                      var _eachOfSeries = require(&#x27;async/eachOfSeries&#x27;);
-                      
-                      var _eachOfSeries2 = _interopRequireDefault(_eachOfSeries);
-                      
-                      var _eachSeries = require(&#x27;async/eachSeries&#x27;);
-                      
-                      var _eachSeries2 = _interopRequireDefault(_eachSeries);
-                      
-                      var _eachOfLimit = require(&#x27;async/eachOfLimit&#x27;);
-                      
-                      var _eachOfLimit2 = _interopRequireDefault(_eachOfLimit);
-                      
                       var _knex = require(&#x27;knex&#x27;);
                       
                       var _knex2 = _interopRequireDefault(_knex);
                       
-                      var _sequelize = require(&#x27;sequelize&#x27;);
-                      
-                      var _sequelize2 = _interopRequireDefault(_sequelize);
-                      
                       function _interopRequireDefault(obj) { return obj &amp;&amp; obj.__esModule ? obj : { default: obj }; }
                       
-                      var databasePlugin,
+                      var databasePlugin = void 0,
                           connectionInstances = {};
                       
                       //Instantiate the plugin
-                      
-                      
-                      //TODO: Remove...
                       /**
                        * Mixes in methods used to work with a database
                        *
@@ -156,7 +137,8 @@
                       
                       /*
                       TODO:
-                      1) Transactions (http://docs.sequelizejs.com/en/v3/docs/transactions/)
+                      1) Transactions (http://knexjs.org/#Transactions)
+                      2) Better error checking/handling of input values
                       */
                       
                       databasePlugin = new _pluginBase2.default(&#x27;Database&#x27;, &#x27;Core&#x27;);
@@ -211,32 +193,23 @@
                         return connectionInstances[dbName];
                       }
                       
-                      //Creates an object with the necessary extra sql and sql replacement params for an incoming
-                      //stream element for set of filter criteria. Expects matchCriteria in the following format:
+                      //Creates an object with the necessary WHERE clause sql and sql replacement params for an incoming
+                      //stream element for a given set of filter criteria. Expects matchCriteria in the following format:
                       //(e.g.) var matchCriteria = [{ tableColumn: &#x27;&#x27;, comparator: &#x27;&#x27;, collectionField: &#x27;&#x27; }];
-                      function buildSqlObjectsForCollectionWithMatchCriteria(element, matchCriteria) {
-                        var columnsToUpdate = arguments.length &lt;= 2 || arguments[2] === undefined ? null : arguments[2];
-                      
+                      function buildSqlForMatchCriteria(element, matchCriteria) {
                         var sqlObject = {
-                          extraSql: &#x27;&#x27;,
-                          sqlParams: {}
+                          sql: &#x27;&#x27;,
+                          sqlParams: []
                         };
                       
                         matchCriteria.forEach(function (mc, index) {
                           if (index &gt; 0) {
-                            sqlObject.extraSql += &#x27; AND &#x27;;
+                            sqlObject.sql += &#x27; AND &#x27;;
                           }
                       
-                          sqlObject.extraSql += mc.tableColumn + mc.comparator + &#x27;:&#x27; + mc.collectionField;
-                          sqlObject.sqlParams[mc.collectionField] = element[mc.collectionField];
+                          sqlObject.sql += mc.tableColumn + &#x27; &#x27; + mc.comparator + &#x27; ?&#x27;;
+                          sqlObject.sqlParams[sqlObject.sqlParams.length] = element[mc.collectionField];
                         });
-                      
-                        //If this is an INSERT or UPDATE then we need to inject replacements for each updateable column as well
-                        if ((0, _isArray3.default)(columnsToUpdate) &amp;&amp; !(0, _isEmpty3.default)(columnsToUpdate)) {
-                          columnsToUpdate.forEach(function (column) {
-                            sqlObject.sqlParams[column] = element[column];
-                          });
-                        }
                       
                         return sqlObject;
                       }
@@ -272,106 +245,93 @@
                         },
                       
                         /**
-                         * Allows you to run an DELETE query against a database using data obtained from previous steps. Runs
-                         * a query for each element in the stream.
+                         * Allows you to run a select query against a database using data obtained from previous steps. Runs
+                         * a query for each row in the stream. Each stream element will be returned with the properties of the
+                         * original item data + the properties of the joined data.  Optionally returns all or just matched rows.
                          *
-                         * @method deleteQuery
+                         * @method joinQuery
                          * @for Nextract.Plugins.Core.Database
                          * @example
-                         *     var matchCriteria = [
-                         *      { tableColumn: &#x27;first_name&#x27;, comparator: &#x27;=&#x27;, collectionField: &#x27;first_name&#x27; },
-                         *      { tableColumn: &#x27;last_name&#x27;, comparator: &#x27;=&#x27;, collectionField: &#x27;last_name&#x27; }
-                         *     ];
+                         *     var joinSQL = &#x27;select first_name, last_name from users where id = ?&#x27;;
                          * @example
-                         *     return ETL.Plugins.Core.Database.deleteQuery(&#x27;nextract_sample&#x27;, &#x27;users&#x27;, matchCriteria);
+                         *     var joinFilterColumns = [ &#x27;id&#x27; ];
+                         * @example
+                         *     var joinColumnsToReturn = [&#x27;first_name&#x27;, &#x27;last_name&#x27;];
+                         * @example
+                         *     ETL.Plugins.Core.Database.joinQuery(streamElement, &#x27;nextract_sample&#x27;, joinSQL, joinFilterColumns, joinColumnsToReturn, true);
                          *
                          * @param {String} dbName A database name that matches a object key defined in your Nextract config file
-                         * @param {String} tableName Table name
-                         * @param {Array} matchCriteria Array of objects with key/value params to be subbed out in a
-                         * parameterized query. The expected format is  [{ tableColumn: &#x27;&#x27;, comparator: &#x27;&#x27;, collectionField: &#x27;&#x27; }].
+                         * @param {String} sqlStatment The sql to run for each row in the collection. The WHERE clause should contain
+                         * some ? placeholder references to match on against the current row. The query must return only 1 matching row.
+                         * @param {Array} joinFilterColumns An array of properties to use as replacements for the ? placeholders. Pulls
+                         * the values from the incoming element.
+                         * @param {Array} joinColumnsToReturn A list of the properties to return in the unmatched case. Should
+                         * normally match the columns defined in the SELECT clause. Only required if returnedUnmatched is set to true.
+                         * @param {Boolean} returnedUnmatched (optional: defaults to true) Returns all original collection items
+                         * will null as the value for properties missed in the join.  If true, then joinColumnsToReturn must be given.
+                         *
+                         * @return {Stream} Returns stream element with added properties from the join query
                          */
-                        deleteQuery: function deleteQuery(dbName, tableName) {
-                          var matchCriteria = arguments.length &lt;= 2 || arguments[2] === undefined ? [] : arguments[2];
+                        joinQuery: function joinQuery(dbName, sqlStatement, joinFilterColumns) {
+                          var joinColumnsToReturn = arguments.length &lt;= 3 || arguments[3] === undefined ? [] : arguments[3];
+                          var returnedUnmatched = arguments.length &lt;= 4 || arguments[4] === undefined ? true : arguments[4];
                       
                           var dbInstance = getInstance(dbName);
-                          var baseQuery = &#x27;DELETE FROM &#x27; + tableName + &#x27; WHERE &#x27;;
                       
-                          function processStreamDelete(element, encoding, callback) {
-                            if (!(0, _isUndefined3.default)(element)) {
-                              var sqlObject = buildSqlObjectsForCollectionWithMatchCriteria(element, matchCriteria, null);
+                          var streamFunction = function streamFunction(element, encoding, callback) {
+                            var stream = this;
                       
-                              dbInstance.query(baseQuery + sqlObject.extraSql, {
-                                replacements: sqlObject.sqlParams,
-                                type: dbInstance.QueryTypes.DELETE
-                              }).then(function () {
-                                //Nothing to return as this was a delete
-                                callback(null, null);
-                              }).catch(function (err) {
-                                databasePlugin.logger.error(err);
-                                throw new Error(err);
-                              });
+                            if ((0, _isEmpty3.default)(element)) {
+                              this.push(element);
+                              return callback();
                             } else {
-                              callback(null, {});
+                              (function () {
+                                var joinValues = [];
+                                joinFilterColumns.forEach(function (prop) {
+                                  joinValues[joinValues.length] = element[prop];
+                                });
+                      
+                                dbInstance.raw(sqlStatement, joinValues).then(function (joinData) {
+                                  //Join the data sets if possible
+                                  //NOTE: The result (joinData) will always contain a multidimensional array. If there is no match
+                                  //the first array element will be an empty array, otherwise it will contain the actual
+                                  //join results.  The join results will be an array of objects (rows).  There should be only one.
+                                  if (joinData[0].length === 1) {
+                                    //Add the join data to the original element
+                                    element = (0, _merge3.default)(element, joinData[0][0]);
+                                  } else if (joinData.length === 0 &amp;&amp; returnedUnmatched === true) {
+                                    //They want the original element back even though there is no matching join. Add the missing
+                                    //properties and set each to null (like an outer join).
+                                    if ((0, _isArray3.default)(joinColumnsToReturn) &amp;&amp; joinColumnsToReturn.length &gt; 0) {
+                                      joinColumnsToReturn.map(function (c) {
+                                        return element[c] = null;
+                                      });
+                                    } else {
+                                      throw new Error(&quot;To returned unmatched elements joinColumnsToReturn must be an array of property names!&quot;);
+                                    }
+                                  } else if (joinData.length === 0 &amp;&amp; returnedUnmatched === false) {
+                                    //We want to drop this element from the collection for lack of a join.
+                                    element = null;
+                                  } else if (joinData.length &gt; 1) {
+                                    //A throw here will trigger the reject in our catch
+                                    throw new Error(&quot;Too many rows returned from join operation!&quot;);
+                                  } else {
+                                    //Should never get here
+                                    throw new Error(&quot;Unhandled join exception!&quot;);
+                                  }
+                      
+                                  stream.push(element);
+                                  return callback();
+                                }).catch(function (err) {
+                                  databasePlugin.ETL.logger.error(&#x27;Invalid join/lookup request:&#x27;, err);
+                                });
+                              })();
                             }
-                          }
+                          };
                       
-                          return databasePlugin.buildStreamTransform(processStreamDelete, null, &#x27;standard&#x27;);
-                        },
-                      
-                        /**
-                         * Allows you to run an UPDATE query against a database using data obtained from previous steps. Runs
-                         * a query for each element in the stream.
-                         *
-                         * @method updateQuery
-                         * @for Nextract.Plugins.Core.Database
-                         *
-                         * @example
-                         *     var matchCriteria = [{ tableColumn: &#x27;id&#x27;, comparator: &#x27;=&#x27;, collectionField: &#x27;id&#x27; }];
-                         * @example
-                         *     return ETL.Plugins.Core.Database.updateQuery(&#x27;nextract_sample&#x27;, &#x27;users&#x27;, [&#x27;first_name&#x27;], matchCriteria);
-                         *
-                         * @param {String} dbName A database name that matches a object key defined in your Nextract config file
-                         * @param {String} tableName Table name
-                         * @param {Array} columnsToUpdate Array of property (column) names to use in the UPDATE
-                         * @param {Array} matchCriteria Array of objects with key/value params to be subbed out in a
-                         * parameterized query. The expected format is  [{ tableColumn: &#x27;&#x27;, comparator: &#x27;&#x27;, collectionField: &#x27;&#x27; }].
-                         *
-                         * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
-                         */
-                        updateQuery: function updateQuery(dbName, tableName, columnsToUpdate) {
-                          var matchCriteria = arguments.length &lt;= 3 || arguments[3] === undefined ? [] : arguments[3];
-                      
-                          var baseQuery,
-                              dbInstance = getInstance(dbName);
-                      
-                          baseQuery = &#x27;UPDATE &#x27; + tableName + &#x27; SET &#x27;;
-                          columnsToUpdate.forEach(function (column, index) {
-                            if (index &gt; 0) {
-                              baseQuery += &#x27;, &#x27;;
-                            }
-                            baseQuery += column + &#x27; = :&#x27; + column;
-                          });
-                          baseQuery += &#x27; WHERE &#x27;;
-                      
-                          function processStreamUpdate(element, encoding, callback) {
-                            if (!(0, _isUndefined3.default)(element)) {
-                              var sqlObject = buildSqlObjectsForCollectionWithMatchCriteria(element, matchCriteria, columnsToUpdate);
-                      
-                              dbInstance.query(baseQuery + sqlObject.extraSql, {
-                                replacements: sqlObject.sqlParams,
-                                type: dbInstance.QueryTypes.DELETE
-                              }).then(function () {
-                                return callback(null, element);
-                              }).catch(function (err) {
-                                databasePlugin.logger.error(err);
-                                throw new Error(err);
-                              });
-                            } else {
-                              return callback(null, null);
-                            }
-                          }
-                      
-                          return databasePlugin.buildStreamTransform(processStreamUpdate, null, &#x27;standard&#x27;);
+                          //This is kind of like a map, except through2-map doesn&#x27;t allow us to remmove
+                          //elements from the stream (i.e.) that.push(null);
+                          return databasePlugin.buildStreamTransform(streamFunction, null, &#x27;standard&#x27;);
                         },
                       
                         /**
@@ -385,9 +345,11 @@
                          * @param {String} dbName A database name that matches a object key defined in your Nextract config file
                          * @param {String} tableName Table name
                          * @param {Integer} batchAmount (optional) Number of rows to batch insert (defaults to 1000)
+                         * @param {Integer} queueSize (optional) Number of async queues used to manage batch inserts (defaults to 10)
                          */
                         insertQuery: function insertQuery(dbName, tableName) {
                           var batchSize = arguments.length &lt;= 2 || arguments[2] === undefined ? 1000 : arguments[2];
+                          var queueSize = arguments.length &lt;= 3 || arguments[3] === undefined ? 10 : arguments[3];
                       
                           var dbInstance = getInstance(dbName);
                           var elementsToInsert = [];
@@ -415,7 +377,7 @@
                                 callback();
                               });
                             }
-                          }, 5);
+                          }, queueSize);
                       
                           function processStreamInput(element, encoding, callback) {
                             stream = this;
@@ -449,82 +411,99 @@
                         },
                       
                         /**
-                         * Allows you to run a select query against a database using data obtained from previous steps. Runs
-                         * a query for each row in the collection. The collection will be returned with the properties of the
-                         * original item data + the properties of the joined data.  Optionally returns all or just matched rows.
+                         * Allows you to run an UPDATE query against a database using data obtained from previous steps. Runs
+                         * a query for each element in the stream.
                          *
-                         * @method joinQuery
+                         * @method updateQuery
                          * @for Nextract.Plugins.Core.Database
+                         *
                          * @example
-                         *     var joinSQL = &#x27;select first_name, last_name from users where id = :id&#x27;;
+                         *     var matchCriteria = [{ tableColumn: &#x27;id&#x27;, comparator: &#x27;=&#x27;, collectionField: &#x27;id&#x27; }];
                          * @example
-                         *     var joinColumnsToReturn = [&#x27;first_name&#x27;, &#x27;last_name&#x27;];
-                         * @example
-                         *     ETL.Plugins.Core.Database.joinQuery(streamElement, &#x27;nextract_sample&#x27;, joinSQL, queryResults, true, joinColumnsToReturn);
+                         *     return ETL.Plugins.Core.Database.updateQuery(&#x27;nextract_sample&#x27;, &#x27;users&#x27;, [&#x27;first_name&#x27;], matchCriteria);
                          *
                          * @param {String} dbName A database name that matches a object key defined in your Nextract config file
-                         * @param {String} sqlStatment The sql to run for each row in the collection. The WHERE clause should contain
-                         * some :propertyName reference to match on against the current row. The query must return only 1 matching row.
-                         * @param {Boolean} returnedUnmatched (optional: defaults to true) Returns all original collection items
-                         * will null as the value for properties missed in the join.  If true, then joinColumnsToReturn must be given.
-                         * @param {Array} joinColumnsToReturn A list of the properties to return in the unmatched case. Should
-                         * normally match the columns defined in the SELECT clause. Only required if returnedUnmatched is set to true.
+                         * @param {String} tableName Table name
+                         * @param {Array} columnsToUpdate Array of property (column) names to use in the UPDATE
+                         * @param {Array} matchCriteria Array of objects with key/value params to be subbed out in a
+                         * parameterized query. The expected format is  [{ tableColumn: &#x27;&#x27;, comparator: &#x27;&#x27;, collectionField: &#x27;&#x27; }].
+                         * If multiple objects are passed WHERE clauses uses AND for multiple condition filtering.
                          *
-                         * @return {Promise} Promise resolved once all queries have completed
+                         * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
                          */
-                        joinQuery: function joinQuery(dbName, sqlStatement) {
-                          var returnedUnmatched = arguments.length &lt;= 2 || arguments[2] === undefined ? true : arguments[2];
-                          var joinColumnsToReturn = arguments.length &lt;= 3 || arguments[3] === undefined ? [] : arguments[3];
+                        updateQuery: function updateQuery(dbName, tableName, columnsToUpdate) {
+                          var matchCriteria = arguments.length &lt;= 3 || arguments[3] === undefined ? [] : arguments[3];
                       
                           var dbInstance = getInstance(dbName);
                       
-                          var streamFunction = function streamFunction(element, encoding, callback) {
-                            var that = this;
+                          function processStreamUpdate(element, encoding, callback) {
+                            if (!(0, _isUndefined3.default)(element)) {
+                              (function () {
+                                var whereObj = buildSqlForMatchCriteria(element, matchCriteria);
                       
-                            if ((0, _isEmpty3.default)(element)) {
-                              this.push(element);
-                              return callback();
-                            } else {
-                              dbInstance.query(sqlStatement, {
-                                replacements: element,
-                                type: dbInstance.QueryTypes.SELECT
-                              }).then(function (joinData) {
-                                //Join the data sets if possible
-                                if (joinData.length === 1) {
-                                  //Add the join data to the original element
-                                  element = (0, _merge3.default)(element, joinData[0]);
-                                } else if (joinData.length === 0 &amp;&amp; returnedUnmatched === true) {
-                                  //They want the original element back even though there is no matching join. Add the missing
-                                  //properties and set each to null (like an outer join).
-                                  if ((0, _isArray3.default)(joinColumnsToReturn) &amp;&amp; joinColumnsToReturn.length &gt; 0) {
-                                    joinColumnsToReturn.map(function (c) {
-                                      return element[c] = null;
-                                    });
-                                  } else {
-                                    throw new Error(&quot;To returned unmatched elements joinColumnsToReturn must be an array of property names!&quot;);
-                                  }
-                                } else if (joinData.length === 0 &amp;&amp; returnedUnmatched === false) {
-                                  //We want to drop this element from the collection for lack of a join.
-                                  element = null;
-                                } else if (joinData.length &gt; 1) {
-                                  //A throw here will trigger the reject in our catch
-                                  throw new Error(&quot;Too many rows returned from join operation!&quot;);
-                                } else {
-                                  //Should never get here
-                                  throw new Error(&quot;Unhandled join exception!&quot;);
+                                var updateObj = {};
+                                if ((0, _isArray3.default)(columnsToUpdate) &amp;&amp; !(0, _isEmpty3.default)(columnsToUpdate)) {
+                                  columnsToUpdate.forEach(function (column) {
+                                    updateObj[column] = element[column];
+                                  });
                                 }
                       
-                                that.push(element);
-                                return callback();
-                              }).catch(function (err) {
-                                databasePlugin.ETL.logger.error(&#x27;Invalid join/lookup request:&#x27;, err);
-                              });
+                                dbInstance(tableName).whereRaw(whereObj.sql, whereObj.sqlParams).update(updateObj).then(function () {
+                                  return callback(null, element);
+                                }).catch(function (err) {
+                                  databasePlugin.logger.error(err);
+                                  throw new Error(err);
+                                });
+                              })();
+                            } else {
+                              return callback(null, null);
                             }
-                          };
+                          }
                       
-                          //This is kind of like a map, except through2-map doesn&#x27;t allow us to remmove
-                          //elements from the stream (i.e.) that.push(null);
-                          return databasePlugin.buildStreamTransform(streamFunction, null, &#x27;standard&#x27;);
+                          return databasePlugin.buildStreamTransform(processStreamUpdate, null, &#x27;standard&#x27;);
+                        },
+                      
+                        /**
+                         * Allows you to run a DELETE query against a database using data obtained from previous steps. Runs
+                         * a query for each element in the stream.
+                         *
+                         * @method deleteQuery
+                         * @for Nextract.Plugins.Core.Database
+                         * @example
+                         *     var matchCriteria = [
+                         *      { tableColumn: &#x27;first_name&#x27;, comparator: &#x27;=&#x27;, collectionField: &#x27;first_name&#x27; },
+                         *      { tableColumn: &#x27;last_name&#x27;, comparator: &#x27;=&#x27;, collectionField: &#x27;last_name&#x27; }
+                         *     ];
+                         * @example
+                         *     return ETL.Plugins.Core.Database.deleteQuery(&#x27;nextract_sample&#x27;, &#x27;users&#x27;, matchCriteria);
+                         *
+                         * @param {String} dbName A database name that matches a object key defined in your Nextract config file
+                         * @param {String} tableName Table name
+                         * @param {Array} matchCriteria Array of objects with key/value params to be subbed out in a
+                         * parameterized query. The expected format is  [{ tableColumn: &#x27;&#x27;, comparator: &#x27;&#x27;, collectionField: &#x27;&#x27; }].
+                         */
+                        deleteQuery: function deleteQuery(dbName, tableName) {
+                          var matchCriteria = arguments.length &lt;= 2 || arguments[2] === undefined ? [] : arguments[2];
+                      
+                          var dbInstance = getInstance(dbName);
+                      
+                          function processStreamDelete(element, encoding, callback) {
+                            if (!(0, _isUndefined3.default)(element)) {
+                              var whereObj = buildSqlForMatchCriteria(element, matchCriteria);
+                      
+                              dbInstance(tableName).whereRaw(whereObj.sql, whereObj.sqlParams).del().then(function () {
+                                //Nothing to return as this was a delete
+                                return callback(null, null);
+                              }).catch(function (err) {
+                                databasePlugin.logger.error(err);
+                                throw new Error(err);
+                              });
+                            } else {
+                              callback(null, {});
+                            }
+                          }
+                      
+                          return databasePlugin.buildStreamTransform(processStreamDelete, null, &#x27;standard&#x27;);
                         }
                       
                       };

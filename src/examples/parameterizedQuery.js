@@ -25,8 +25,10 @@ transform.loadPlugins('Core', ['Database', 'Logger'])
       })
       .on('end', function() {
         transform.Plugins.Core.Logger.info('Transform finished!');
+        process.exit();
       });
   })
   .catch(function(err) {
     transform.Plugins.Core.Logger.error('Transform failed:', err);
+    process.exit();
   });

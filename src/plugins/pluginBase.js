@@ -38,6 +38,9 @@ function getInternalDbInstance() {
       debug: false
     });
 
+    //Sqlite most likely will default to UTF-8, but lets force it to be sure
+    internalDbInstance.schema.raw('PRAGMA encoding = "UTF-8"');
+
     //We want to be able to run many inserts without hitting the busy error.  References:
     //https://github.com/mapbox/node-sqlite3/issues/9
     //http://www.sqlite.org/pragma.html#pragma_journal_mode
@@ -146,6 +149,19 @@ var PluginBase = function(pluginName = null, pluginType = null) {
     logger: logger
   };
 
+ /**
+  * Provides a direct db connection to the internal sqlite3 database. Allows plugins to
+  * use knex (http://knexjs.org/) directly against the internal database.
+  *
+  * @method getInternalDbInstance
+  * @for Nextract.PluginBase
+  * @example
+  *     let internalDbInstance = somePlugin.getInternalDbInstance();
+  * @example
+  *     internalDbInstance.select('title', 'author', 'year').from('books');
+  *
+  * @return {Object} A knex connection object
+  */
   this.getInternalDbInstance = function() {
     return getInternalDbInstance();
   };

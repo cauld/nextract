@@ -2,17 +2,10 @@
     "project": {
         "name": "nextract",
         "description": "",
-        "version": "0.0.1",
+        "version": "0.0.3",
         "url": ""
     },
     "files": {
-        "build/examples/benchmarkWithProfiling.js": {
-            "name": "build/examples/benchmarkWithProfiling.js",
-            "modules": {},
-            "classes": {},
-            "fors": {},
-            "namespaces": {}
-        },
         "build/examples/csvAndSort.js": {
             "name": "build/examples/csvAndSort.js",
             "modules": {},
@@ -69,8 +62,8 @@
             "fors": {},
             "namespaces": {}
         },
-        "build/examples/queryAndSort.js": {
-            "name": "build/examples/queryAndSort.js",
+        "build/examples/queryAndSortBenchmark.js": {
+            "name": "build/examples/queryAndSortBenchmark.js",
             "modules": {},
             "classes": {},
             "fors": {},
@@ -221,7 +214,7 @@
             "plugin_for": [],
             "extension_for": [],
             "file": "build/plugins/core/Database/Database.js",
-            "line": 60,
+            "line": 41,
             "description": "Mixes in methods used to work with a database"
         },
         "Nextract.Plugins.Core.Filter": {
@@ -278,7 +271,7 @@
             "plugin_for": [],
             "extension_for": [],
             "file": "build/plugins/core/Sort/Sort.js",
-            "line": 26,
+            "line": 38,
             "description": "Mixes in methods used to sort data"
         },
         "Nextract.Plugins.Core.Utils": {
@@ -314,12 +307,6 @@
     },
     "elements": {},
     "classitems": [
-        {
-            "file": "build/examples/benchmarkWithProfiling.js",
-            "line": 3,
-            "description": "Example: Query and sort...",
-            "class": "Nextract.Plugins.Core.Calculator"
-        },
         {
             "file": "build/examples/csvAndSort.js",
             "line": 3,
@@ -369,7 +356,7 @@
             "class": "Nextract.Plugins.Core.Calculator"
         },
         {
-            "file": "build/examples/queryAndSort.js",
+            "file": "build/examples/queryAndSortBenchmark.js",
             "line": 3,
             "description": "Example: Query and sort...",
             "class": "Nextract.Plugins.Core.Calculator"
@@ -547,7 +534,7 @@
         },
         {
             "file": "build/plugins/core/Database/Database.js",
-            "line": 155,
+            "line": 128,
             "description": "Query interface for select statements",
             "itemtype": "method",
             "name": "selectQuery",
@@ -581,13 +568,57 @@
         },
         {
             "file": "build/plugins/core/Database/Database.js",
-            "line": 183,
-            "description": "Allows you to run an DELETE query against a database using data obtained from previous steps. Runs\na query for each element in the stream.",
+            "line": 156,
+            "description": "Allows you to run a select query against a database using data obtained from previous steps. Runs\na query for each row in the stream. Each stream element will be returned with the properties of the\noriginal item data + the properties of the joined data.  Optionally returns all or just matched rows.",
             "itemtype": "method",
-            "name": "deleteQuery",
+            "name": "joinQuery",
             "example": [
-                "\n    var matchCriteria = [\n     { tableColumn: 'first_name', comparator: '=', collectionField: 'first_name' },\n     { tableColumn: 'last_name', comparator: '=', collectionField: 'last_name' }\n    ];",
-                "\n    return ETL.Plugins.Core.Database.deleteQuery('nextract_sample', 'users', matchCriteria);"
+                "\n    var joinSQL = 'select first_name, last_name from users where id = ?';",
+                "\n    var joinFilterColumns = [ 'id' ];",
+                "\n    var joinColumnsToReturn = ['first_name', 'last_name'];",
+                "\n    ETL.Plugins.Core.Database.joinQuery(streamElement, 'nextract_sample', joinSQL, joinFilterColumns, joinColumnsToReturn, true);"
+            ],
+            "params": [
+                {
+                    "name": "dbName",
+                    "description": "A database name that matches a object key defined in your Nextract config file",
+                    "type": "String"
+                },
+                {
+                    "name": "sqlStatment",
+                    "description": "The sql to run for each row in the collection. The WHERE clause should contain\nsome ? placeholder references to match on against the current row. The query must return only 1 matching row.",
+                    "type": "String"
+                },
+                {
+                    "name": "joinFilterColumns",
+                    "description": "An array of properties to use as replacements for the ? placeholders. Pulls\nthe values from the incoming element.",
+                    "type": "Array"
+                },
+                {
+                    "name": "joinColumnsToReturn",
+                    "description": "A list of the properties to return in the unmatched case. Should\nnormally match the columns defined in the SELECT clause. Only required if returnedUnmatched is set to true.",
+                    "type": "Array"
+                },
+                {
+                    "name": "returnedUnmatched",
+                    "description": "(optional: defaults to true) Returns all original collection items\nwill null as the value for properties missed in the join.  If true, then joinColumnsToReturn must be given.",
+                    "type": "Boolean"
+                }
+            ],
+            "return": {
+                "description": "Returns stream element with added properties from the join query",
+                "type": "Stream"
+            },
+            "class": "Nextract.Plugins.Core.Database"
+        },
+        {
+            "file": "build/plugins/core/Database/Database.js",
+            "line": 246,
+            "description": "Will insert each stream item into a database table. Uses batched inserts for performance gains.",
+            "itemtype": "method",
+            "name": "insertQuery",
+            "example": [
+                "\n    transform.Plugins.Core.Database.insertQuery('nextract_sample', 'page')"
             ],
             "params": [
                 {
@@ -601,16 +632,21 @@
                     "type": "String"
                 },
                 {
-                    "name": "matchCriteria",
-                    "description": "Array of objects with key/value params to be subbed out in a\nparameterized query. The expected format is  [{ tableColumn: '', comparator: '', collectionField: '' }].",
-                    "type": "Array"
+                    "name": "batchAmount",
+                    "description": "(optional) Number of rows to batch insert (defaults to 1000)",
+                    "type": "Integer"
+                },
+                {
+                    "name": "queueSize",
+                    "description": "(optional) Number of async queues used to manage batch inserts (defaults to 10)",
+                    "type": "Integer"
                 }
             ],
             "class": "Nextract.Plugins.Core.Database"
         },
         {
             "file": "build/plugins/core/Database/Database.js",
-            "line": 230,
+            "line": 322,
             "description": "Allows you to run an UPDATE query against a database using data obtained from previous steps. Runs\na query for each element in the stream.",
             "itemtype": "method",
             "name": "updateQuery",
@@ -636,7 +672,7 @@
                 },
                 {
                     "name": "matchCriteria",
-                    "description": "Array of objects with key/value params to be subbed out in a\nparameterized query. The expected format is  [{ tableColumn: '', comparator: '', collectionField: '' }].",
+                    "description": "Array of objects with key/value params to be subbed out in a\nparameterized query. The expected format is  [{ tableColumn: '', comparator: '', collectionField: '' }].\nIf multiple objects are passed WHERE clauses uses AND for multiple condition filtering.",
                     "type": "Array"
                 }
             ],
@@ -648,12 +684,13 @@
         },
         {
             "file": "build/plugins/core/Database/Database.js",
-            "line": 286,
-            "description": "Will insert each stream item into a database table. Uses batched inserts for performance gains.",
+            "line": 375,
+            "description": "Allows you to run a DELETE query against a database using data obtained from previous steps. Runs\na query for each element in the stream.",
             "itemtype": "method",
-            "name": "insertQuery",
+            "name": "deleteQuery",
             "example": [
-                "\n    transform.Plugins.Core.Database.insertQuery('nextract_sample', 'page')"
+                "\n    var matchCriteria = [\n     { tableColumn: 'first_name', comparator: '=', collectionField: 'first_name' },\n     { tableColumn: 'last_name', comparator: '=', collectionField: 'last_name' }\n    ];",
+                "\n    return ETL.Plugins.Core.Database.deleteQuery('nextract_sample', 'users', matchCriteria);"
             ],
             "params": [
                 {
@@ -667,50 +704,11 @@
                     "type": "String"
                 },
                 {
-                    "name": "batchAmount",
-                    "description": "(optional) Number of rows to batch insert (defaults to 1000)",
-                    "type": "Integer"
-                }
-            ],
-            "class": "Nextract.Plugins.Core.Database"
-        },
-        {
-            "file": "build/plugins/core/Database/Database.js",
-            "line": 360,
-            "description": "Allows you to run a select query against a database using data obtained from previous steps. Runs\na query for each row in the collection. The collection will be returned with the properties of the\noriginal item data + the properties of the joined data.  Optionally returns all or just matched rows.",
-            "itemtype": "method",
-            "name": "joinQuery",
-            "example": [
-                "\n    var joinSQL = 'select first_name, last_name from users where id = :id';",
-                "\n    var joinColumnsToReturn = ['first_name', 'last_name'];",
-                "\n    ETL.Plugins.Core.Database.joinQuery(streamElement, 'nextract_sample', joinSQL, queryResults, true, joinColumnsToReturn);"
-            ],
-            "params": [
-                {
-                    "name": "dbName",
-                    "description": "A database name that matches a object key defined in your Nextract config file",
-                    "type": "String"
-                },
-                {
-                    "name": "sqlStatment",
-                    "description": "The sql to run for each row in the collection. The WHERE clause should contain\nsome :propertyName reference to match on against the current row. The query must return only 1 matching row.",
-                    "type": "String"
-                },
-                {
-                    "name": "returnedUnmatched",
-                    "description": "(optional: defaults to true) Returns all original collection items\nwill null as the value for properties missed in the join.  If true, then joinColumnsToReturn must be given.",
-                    "type": "Boolean"
-                },
-                {
-                    "name": "joinColumnsToReturn",
-                    "description": "A list of the properties to return in the unmatched case. Should\nnormally match the columns defined in the SELECT clause. Only required if returnedUnmatched is set to true.",
+                    "name": "matchCriteria",
+                    "description": "Array of objects with key/value params to be subbed out in a\nparameterized query. The expected format is  [{ tableColumn: '', comparator: '', collectionField: '' }].",
                     "type": "Array"
                 }
             ],
-            "return": {
-                "description": "Promise resolved once all queries have completed",
-                "type": "Promise"
-            },
             "class": "Nextract.Plugins.Core.Database"
         },
         {
@@ -1159,7 +1157,7 @@
         },
         {
             "file": "build/plugins/core/Sort/Sort.js",
-            "line": 37,
+            "line": 49,
             "description": "Sorts a stream of objects. Be sure to call Plugins.Core.Sort.sortOut in the pipe()\nimmediately after the call to sortIn.",
             "itemtype": "method",
             "name": "sortIn",
@@ -1186,7 +1184,7 @@
         },
         {
             "file": "build/plugins/core/Sort/Sort.js",
-            "line": 159,
+            "line": 172,
             "description": "Outputs a stream of sorted objects. Must be used in first pipe()\nimmediately after the call to Plugins.Core.Sort.sortIn to pickup the sorted output.",
             "itemtype": "method",
             "name": "sortOut",
@@ -1301,7 +1299,7 @@
         },
         {
             "file": "build/plugins/pluginBase.js",
-            "line": 176,
+            "line": 179,
             "description": "Plugin name",
             "itemtype": "property",
             "name": "pluginName",
@@ -1310,7 +1308,7 @@
         },
         {
             "file": "build/plugins/pluginBase.js",
-            "line": 185,
+            "line": 188,
             "description": "Plugin type (Core or Vendor)",
             "itemtype": "property",
             "name": "pluginType",
@@ -1319,7 +1317,7 @@
         },
         {
             "file": "build/plugins/pluginBase.js",
-            "line": 194,
+            "line": 197,
             "description": "Core system functionality is namespaced under this ETL object",
             "itemtype": "property",
             "name": "ETL",
@@ -1328,7 +1326,7 @@
         },
         {
             "file": "build/plugins/pluginBase.js",
-            "line": 202,
+            "line": 205,
             "description": "Provides convient access to the core system config variables",
             "itemtype": "property",
             "name": "ETL.config",
@@ -1337,7 +1335,7 @@
         },
         {
             "file": "build/plugins/pluginBase.js",
-            "line": 211,
+            "line": 214,
             "description": "Provides convient access to core logging functionality",
             "itemtype": "property",
             "name": "ELT.logger",
@@ -1346,7 +1344,23 @@
         },
         {
             "file": "build/plugins/pluginBase.js",
-            "line": 225,
+            "line": 224,
+            "description": "Provides a direct db connection to the internal sqlite3 database. Allows plugins to\nuse knex (http://knexjs.org/) directly against the internal database.",
+            "itemtype": "method",
+            "name": "getInternalDbInstance",
+            "example": [
+                "\n    let internalDbInstance = somePlugin.getInternalDbInstance();",
+                "\n    internalDbInstance.select('title', 'author', 'year').from('books');"
+            ],
+            "return": {
+                "description": "A knex connection object",
+                "type": "Object"
+            },
+            "class": "Nextract.PluginBase"
+        },
+        {
+            "file": "build/plugins/pluginBase.js",
+            "line": 241,
             "description": "Provides access to internal sqlite3 database. Allows plugins to run raw db queries as needed.",
             "itemtype": "method",
             "name": "runInternalQuery",
@@ -1380,7 +1394,7 @@
         },
         {
             "file": "build/plugins/pluginBase.js",
-            "line": 269,
+            "line": 285,
             "description": "Provides access to run a select query against the internal sqlite3 database with\na streamed response.",
             "itemtype": "method",
             "name": "runInternalSelectQueryForStream",
@@ -1409,7 +1423,7 @@
         },
         {
             "file": "build/plugins/pluginBase.js",
-            "line": 296,
+            "line": 312,
             "description": "Some streams require a more traditional blocking like operation (e.g.) Sort, Group By, etc. We\nwant to process the stream and return back a stream without breaking the stream pipe or giving\nthe appearance of a blocking action.  This method will take the first item of a stream and use it\nto create a temporary table in our internal database by inspecting its keys and values.",
             "itemtype": "method",
             "name": "createTemporaryTableForStream",
@@ -1431,7 +1445,7 @@
         },
         {
             "file": "build/plugins/pluginBase.js",
-            "line": 352,
+            "line": 368,
             "description": "Removes temporary internal database tables creates from usage of createTemporaryTableForStream.",
             "itemtype": "method",
             "name": "dropTemporaryTableForStream",
@@ -1450,7 +1464,7 @@
         },
         {
             "file": "build/plugins/pluginBase.js",
-            "line": 377,
+            "line": 393,
             "description": "Convinence method used by plugins to run code in a background web worker thread. A worker\nscript must exist in the same directory as the plugin itself with a name of Worker.js. The\nformat of the worker script must match the one defined by the npm workerjs module -\nhttps://www.npmjs.com/package/workerjs#node-mode---allowing-require",
             "itemtype": "method",
             "name": "runInWorker",
@@ -1473,7 +1487,7 @@
         },
         {
             "file": "build/plugins/pluginBase.js",
-            "line": 425,
+            "line": 441,
             "description": "Accepts a stream transform function that conforms to the through2.obj stream wrapper\nAPI. Caller can choose to use through2 or one of the through2 helper modules (map, filter, spy).\nFor more information see - https://github.com/rvagg/through2.",
             "itemtype": "method",
             "name": "buildStreamTransform",
@@ -1506,7 +1520,7 @@
         },
         {
             "file": "build/plugins/pluginBase.js",
-            "line": 471,
+            "line": 487,
             "description": "When a plugin needs to get a handle on an incoming stream without using something like through2\ndirectly this method can be useful.  It gets a handle in the incoming stream and acts as a passthrough\nthat can be immediately used with another pipe() call.",
             "itemtype": "method",
             "name": "getStreamPassthroughForPipe",
@@ -1606,10 +1620,6 @@
     ],
     "warnings": [
         {
-            "message": "Missing item type\nExample: Query and sort...",
-            "line": " build/examples/benchmarkWithProfiling.js:3"
-        },
-        {
             "message": "Missing item type\nExample: CSV input and sort...",
             "line": " build/examples/csvAndSort.js:3"
         },
@@ -1643,7 +1653,7 @@
         },
         {
             "message": "Missing item type\nExample: Query and sort...",
-            "line": " build/examples/queryAndSort.js:3"
+            "line": " build/examples/queryAndSortBenchmark.js:3"
         },
         {
             "message": "Missing item type\nExample: Query and sort...",

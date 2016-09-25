@@ -35,8 +35,10 @@ transform.loadPlugins('Core', ['Database', 'Filter', 'Calculator', 'Utils', 'Log
     .on('end', function() {
       transform.Plugins.Core.Logger.info('Transform finished!');
       transform.printStepProfilingReport();
+      process.exit();
     });
   })
   .catch(function(err) {
     transform.Plugins.Core.Logger.error('Transform failed: ', err);
+    process.exit();
   });

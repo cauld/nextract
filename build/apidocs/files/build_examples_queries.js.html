@@ -17,7 +17,7 @@
             <h1>nextract</h1>
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Docs for: 0.0.1</em>
+            <em>API Docs for: 0.0.3</em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -121,36 +121,32 @@
                         return objectStream.fromArray(collectionsToInsert);
                       }).then(function (dummyDataStream) {
                         return new Promise(function (resolve) {
-                          //Step 1: A collection can have many properties and we might not always which to insert them all. So we are required to pass an array of properties
-                          //that we want to insert.  Since we do want them all in this case we could just grab the keys from the collection item.
-                          var step1ColumnsToInsert = [&#x27;first_name&#x27;, &#x27;last_name&#x27;, &#x27;age&#x27;, &#x27;salary&#x27;];
-                      
-                          dummyDataStream.pipe(transform.Plugins.Core.Database.insertQuery(&#x27;nextract_sample&#x27;, &#x27;employees&#x27;, step1ColumnsToInsert));
+                          //Step 1: Insert are generated records
+                          dummyDataStream.pipe(transform.Plugins.Core.Database.insertQuery(&#x27;nextract_sample&#x27;, &#x27;employees&#x27;));
                       
                           //Pause for a moment to let the streaming insert of dummy data to finish
                           setTimeout(function () {
                             resolve();
                           }, 3000);
                         });
-                      }).then(function () {
-                        //Step 2: Now that we&#x27;ve loaded some new employees into the employees table, lets find them all and give them all a raise.
-                        //Get a readStream to start the job with
-                        return transform.Plugins.Core.Database.selectQuery(&#x27;nextract_sample&#x27;, &#x27;select id, first_name, last_name, salary from employees&#x27;, {});
                       }).then(function (dbDataStream) {
-                        var step4JoinSql = &#x27;select age from employees where id = :id&#x27;;
+                        var step4JoinSql = &#x27;select age from employees where id = ?&#x27;;
+                        var step4JoinFilterColumns = [&#x27;id&#x27;];
                       
                         //Define the step 6 &amp; 8 match matchCriteria which in this case is a simple primary key match on id. Can
                         //be made up of the several fields if needed.
                         var step6And8MatchCriteria = [{ tableColumn: &#x27;id&#x27;, comparator: &#x27;=&#x27;, collectionField: &#x27;id&#x27; }];
                       
-                        dbDataStream
+                        //Step 2: Now that we&#x27;ve loaded some new employees into the employees table, lets find them all and give them all a raise.
+                        //Get a readStream to start the job with
+                        transform.Plugins.Core.Database.selectQuery(&#x27;nextract_sample&#x27;, &#x27;select id, first_name, last_name, salary from employees&#x27;)
                         //Step 3: Transform operations are most often performed on the entire collection. Here we are taking the salary of each collection item
                         //and raising it by 1000.  We could choose to store this new value in new collection properity or simply overwrite the existing one.
                         //Here we&#x27;ll just overwrite the existing one.
                         .pipe(transform.Plugins.Core.Calculator.add(&#x27;salary&#x27;, 1000, &#x27;salary&#x27;))
                         //Step 4: Elements flowing through the stream now have the updated salary. I left age out of selectQuery
                         //call so that I could demonstrate a collection join.  Lets find the age of all these employees.
-                        .pipe(transform.Plugins.Core.Database.joinQuery(&#x27;nextract_sample&#x27;, step4JoinSql, false))
+                        .pipe(transform.Plugins.Core.Database.joinQuery(&#x27;nextract_sample&#x27;, step4JoinSql, step4JoinFilterColumns, [&#x27;age&#x27;], false))
                         //Step 5: Elements flowing through the stream now also contains the age for each matching row. Lets give them
                         //all back 10 years of their life.
                         .pipe(transform.Plugins.Core.Calculator.subtract(&#x27;age&#x27;, 10, &#x27;age&#x27;))
@@ -172,9 +168,11 @@
                           transform.Plugins.Core.Logger.info(&#x27;Transform finished!&#x27;, new Date());
                         }).on(&#x27;end&#x27;, function () {
                           transform.Plugins.Core.Logger.info(&#x27;Transform ended!&#x27;);
+                          process.exit();
                         });
                       }).catch(function (err) {
                         transform.Plugins.Core.Logger.error(&#x27;Transform failed: &#x27;, err);
+                        process.exit();
                       });
                       
                           </pre>

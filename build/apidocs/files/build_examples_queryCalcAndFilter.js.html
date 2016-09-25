@@ -17,7 +17,7 @@
             <h1>nextract</h1>
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Docs for: 0.0.1</em>
+            <em>API Docs for: 0.0.3</em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -112,9 +112,11 @@
                         }).on(&#x27;end&#x27;, function () {
                           transform.Plugins.Core.Logger.info(&#x27;Transform finished!&#x27;);
                           transform.printStepProfilingReport();
+                          process.exit();
                         });
                       }).catch(function (err) {
                         transform.Plugins.Core.Logger.error(&#x27;Transform failed: &#x27;, err);
+                        process.exit();
                       });
                       
                           </pre>

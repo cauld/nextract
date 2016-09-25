@@ -29,7 +29,9 @@ transform.loadPlugins('Core', ['Http', 'Utils', 'Logger']).then(function () {
   }).on('end', function () {
     transform.Plugins.Core.Logger.info('Transform finished!');
     transform.printStepProfilingReport();
+    process.exit();
   });
 }).catch(function (err) {
   transform.Plugins.Core.Logger.error('ETL process failed:', err);
+  process.exit();
 });

@@ -17,7 +17,7 @@
             <h1>nextract</h1>
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Docs for: 0.0.1</em>
+            <em>API Docs for: 0.0.3</em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -90,7 +90,7 @@
                       
                       
                               <div class="foundat">
-                                  Defined in: <a href="../files/build_plugins_core_Database_Database.js.html#l60"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:60</code></a>
+                                  Defined in: <a href="../files/build_plugins_core_Database_Database.js.html#l41"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:41</code></a>
                               </div>
                       
                       
@@ -175,7 +175,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_core_Database_Database.js.html#l183"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:183</code></a>
+                              <a href="../files/build_plugins_core_Database_Database.js.html#l375"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:375</code></a>
                               </p>
                       
                       
@@ -183,7 +183,7 @@
                           </div>
                       
                           <div class="description">
-                              <p>Allows you to run an DELETE query against a database using data obtained from previous steps. Runs
+                              <p>Allows you to run a DELETE query against a database using data obtained from previous steps. Runs
                       a query for each element in the stream.</p>
                       
                           </div>
@@ -258,6 +258,9 @@
                                       <li class="arg">
                                               <code>batchAmount</code>
                                       </li>
+                                      <li class="arg">
+                                              <code>queueSize</code>
+                                      </li>
                                   </ul><span class="paren">)</span>
                               </div>
                       
@@ -271,7 +274,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_core_Database_Database.js.html#l286"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:286</code></a>
+                              <a href="../files/build_plugins_core_Database_Database.js.html#l246"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:246</code></a>
                               </p>
                       
                       
@@ -320,6 +323,17 @@
                                           </div>
                       
                                       </li>
+                                      <li class="param">
+                                              <code class="param-name">queueSize</code>
+                                              <span class="type">Integer</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>(optional) Number of async queues used to manage batch inserts (defaults to 10)</p>
+                      
+                                          </div>
+                      
+                                      </li>
                                   </ul>
                               </div>
                       
@@ -346,16 +360,19 @@
                                               <code>sqlStatment</code>
                                       </li>
                                       <li class="arg">
-                                              <code>returnedUnmatched</code>
+                                              <code>joinFilterColumns</code>
                                       </li>
                                       <li class="arg">
                                               <code>joinColumnsToReturn</code>
+                                      </li>
+                                      <li class="arg">
+                                              <code>returnedUnmatched</code>
                                       </li>
                                   </ul><span class="paren">)</span>
                               </div>
                       
                               <span class="returns-inline">
-                                  <span class="type">Promise</span>
+                                  <span class="type">Stream</span>
                               </span>
                       
                       
@@ -367,7 +384,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_core_Database_Database.js.html#l360"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:360</code></a>
+                              <a href="../files/build_plugins_core_Database_Database.js.html#l156"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:156</code></a>
                               </p>
                       
                       
@@ -376,7 +393,7 @@
                       
                           <div class="description">
                               <p>Allows you to run a select query against a database using data obtained from previous steps. Runs
-                      a query for each row in the collection. The collection will be returned with the properties of the
+                      a query for each row in the stream. Each stream element will be returned with the properties of the
                       original item data + the properties of the joined data.  Optionally returns all or just matched rows.</p>
                       
                           </div>
@@ -403,19 +420,19 @@
                       
                                           <div class="param-description">
                                               <p>The sql to run for each row in the collection. The WHERE clause should contain
-                      some :propertyName reference to match on against the current row. The query must return only 1 matching row.</p>
+                      some ? placeholder references to match on against the current row. The query must return only 1 matching row.</p>
                       
                                           </div>
                       
                                       </li>
                                       <li class="param">
-                                              <code class="param-name">returnedUnmatched</code>
-                                              <span class="type">Boolean</span>
+                                              <code class="param-name">joinFilterColumns</code>
+                                              <span class="type">Array</span>
                       
                       
                                           <div class="param-description">
-                                              <p>(optional: defaults to true) Returns all original collection items
-                      will null as the value for properties missed in the join.  If true, then joinColumnsToReturn must be given.</p>
+                                              <p>An array of properties to use as replacements for the ? placeholders. Pulls
+                      the values from the incoming element.</p>
                       
                                           </div>
                       
@@ -432,6 +449,18 @@
                                           </div>
                       
                                       </li>
+                                      <li class="param">
+                                              <code class="param-name">returnedUnmatched</code>
+                                              <span class="type">Boolean</span>
+                      
+                      
+                                          <div class="param-description">
+                                              <p>(optional: defaults to true) Returns all original collection items
+                      will null as the value for properties missed in the join.  If true, then joinColumnsToReturn must be given.</p>
+                      
+                                          </div>
+                      
+                                      </li>
                                   </ul>
                               </div>
                       
@@ -439,8 +468,8 @@
                                   <h4>Returns:</h4>
                       
                                   <div class="returns-description">
-                                              <span class="type">Promise</span>:
-                                          <p>Promise resolved once all queries have completed</p>
+                                              <span class="type">Stream</span>:
+                                          <p>Returns stream element with added properties from the join query</p>
                       
                                   </div>
                               </div>
@@ -450,9 +479,10 @@
                                   <h4>Example:</h4>
                       
                                   <div class="example-content">
-                                      <pre class="code prettyprint"><code>var joinSQL = 'select first_name, last_name from users where id = :id';</code></pre>
+                                      <pre class="code prettyprint"><code>var joinSQL = 'select first_name, last_name from users where id = ?';</code></pre>
+                      <pre class="code prettyprint"><code>var joinFilterColumns = [ 'id' ];</code></pre>
                       <pre class="code prettyprint"><code>var joinColumnsToReturn = ['first_name', 'last_name'];</code></pre>
-                      <pre class="code prettyprint"><code>ETL.Plugins.Core.Database.joinQuery(streamElement, 'nextract_sample', joinSQL, queryResults, true, joinColumnsToReturn);</code></pre>
+                      <pre class="code prettyprint"><code>ETL.Plugins.Core.Database.joinQuery(streamElement, 'nextract_sample', joinSQL, joinFilterColumns, joinColumnsToReturn, true);</code></pre>
                       
                                   </div>
                               </div>
@@ -487,7 +517,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_core_Database_Database.js.html#l155"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:155</code></a>
+                              <a href="../files/build_plugins_core_Database_Database.js.html#l128"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:128</code></a>
                               </p>
                       
                       
@@ -596,7 +626,7 @@
                           <div class="meta">
                                       <p>
                                       Defined in
-                              <a href="../files/build_plugins_core_Database_Database.js.html#l230"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:230</code></a>
+                              <a href="../files/build_plugins_core_Database_Database.js.html#l322"><code>build&#x2F;plugins&#x2F;core&#x2F;Database&#x2F;Database.js:322</code></a>
                               </p>
                       
                       
@@ -653,7 +683,8 @@
                       
                                           <div class="param-description">
                                               <p>Array of objects with key/value params to be subbed out in a
-                      parameterized query. The expected format is  [{ tableColumn: '', comparator: '', collectionField: '' }].</p>
+                      parameterized query. The expected format is  [{ tableColumn: '', comparator: '', collectionField: '' }].
+                      If multiple objects are passed WHERE clauses uses AND for multiple condition filtering.</p>
                       
                                           </div>
                       

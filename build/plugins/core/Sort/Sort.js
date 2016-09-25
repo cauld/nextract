@@ -1,5 +1,9 @@
 'use strict';
 
+var _isEmpty2 = require('lodash/isEmpty');
+
+var _isEmpty3 = _interopRequireDefault(_isEmpty2);
+
 var _isUndefined2 = require('lodash/isUndefined');
 
 var _isUndefined3 = _interopRequireDefault(_isUndefined2);
@@ -15,6 +19,14 @@ var _isArray3 = _interopRequireDefault(_isArray2);
 var _async = require('async');
 
 var _async2 = _interopRequireDefault(_async);
+
+var _throttle = require('throttle');
+
+var _throttle2 = _interopRequireDefault(_throttle);
+
+var _through = require('through2');
+
+var _through2 = _interopRequireDefault(_through);
 
 var _pluginBase = require('../../pluginBase');
 
@@ -141,6 +153,7 @@ module.exports = {
 
       if (elementsToInsert.length > 0) {
         dbInstance.batchInsert(tableName, elementsToInsert, elementsToInsert.length).then(function () {
+          elementsToInsert = null; //Done, clear it
           stream.push(sortInDbInfo);
           callback();
         }).catch(function (err) {
@@ -185,8 +198,49 @@ module.exports = {
 
     sortedSelectSql += ordering.join(',');
 
+    /*
+    Throttle expects a regular stream (not an object stream) that can only deal with Strings and Buffers.
+    We need to create another object stream that appropriately transforms our data, for example, by emitting
+    a JSON-stringified version of our object.
+    Refs:
+    1) https://nodesource.com/blog/understanding-object-streams/
+    2) https://github.com/TooTallNate/node-throttle
+    */
+    var jsonStreamDelimiter = '_||_'; //string that won't be present in the actual data
+    var jsonStream = function jsonStream(element) {
+      return JSON.stringify(element) + jsonStreamDelimiter;
+    };
+
+    var nextElementString = ''; //Placeholder for chunks as we process them back into objects
+    var toObjectStream = function toObjectStream(chunk, encoding, callback) {
+      var _this = this;
+
+      if (!(0, _isUndefined3.default)(chunk) && !(0, _isNull3.default)(chunk)) {
+        (function () {
+          var oStream = _this;
+
+          nextElementString += chunk.toString('utf8');
+          var splitChunkStrings = nextElementString.split(jsonStreamDelimiter); //each JSON object ends with }
+          nextElementString = ''; //reset
+
+          splitChunkStrings.map(function (cStr) {
+            if (!(0, _isEmpty3.default)(cStr) && cStr.charAt(cStr.length - 1) === '}') {
+              var nextElement = JSON.parse(cStr);
+              oStream.push(nextElement);
+            } else {
+              nextElementString += cStr;
+            }
+          });
+        })();
+      }
+
+      callback();
+    };
+
+    //Create a "Throttle" instance that reads at a set bps
+    var throttle = new _throttle2.default({ bps: 750000 });
     var stream = sortPlugin.runInternalSelectQueryForStream(sortedSelectSql, []);
-    return stream.on('end', function () {
+    return stream.pipe(sortPlugin.buildStreamTransform(jsonStream, null, 'map')).pipe(throttle).pipe(sortPlugin.buildStreamTransform(toObjectStream, null, 'standard')).on('end', function () {
       //Sorting done, we have what we need... drop the temp table
       sortPlugin.dropTemporaryTableForStream(sortInDbInfo.tableName).then(function () {}).catch(function (err) {
         sortPlugin.ETL.logger.error('Invalid DROP TABLE request:', err);

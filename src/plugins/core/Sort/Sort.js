@@ -5,6 +5,9 @@
  */
 
 import async from 'async';
+import Throttle from 'throttle';
+import through2 from 'through2';
+
 import _ from 'lodash';
 import { isNull, isUndefined, isArray, values, keys, flatten } from 'lodash/fp';
 import pluginBase from '../../pluginBase';
@@ -88,14 +91,14 @@ module.exports = {
               elementsToInsert = []; //reset
               //Calling callback in sync fashion gets lost in the shuffle when many many items are queued up.
               //Calling through setImmediate solves this.
-              setImmediate(function() { callback() });
+              setImmediate(function() { callback(); });
             })
             .catch(function(err) {
               sortPlugin.ETL.logger.error('Invalid INSERT request:', err);
             });
         } else {
           //Batch limit not reached, just continue...
-          setImmediate(function() { callback() });
+          setImmediate(function() { callback(); });
         }
       }
     }, 1);
@@ -123,6 +126,7 @@ module.exports = {
       if (elementsToInsert.length > 0) {
         dbInstance.batchInsert(tableName, elementsToInsert, elementsToInsert.length)
           .then(function() {
+            elementsToInsert = null; //Done, clear it
             stream.push(sortInDbInfo);
             callback();
           })
@@ -168,15 +172,56 @@ module.exports = {
 
     sortedSelectSql += ordering.join(',');
 
-    var stream = sortPlugin.runInternalSelectQueryForStream(sortedSelectSql, []);
-    return stream.on('end', function() {
-      //Sorting done, we have what we need... drop the temp table
-      sortPlugin.dropTemporaryTableForStream(sortInDbInfo.tableName)
-        .then(function() {})
-        .catch(function(err) {
-          sortPlugin.ETL.logger.error('Invalid DROP TABLE request:', err);
+    /*
+    Throttle expects a regular stream (not an object stream) that can only deal with Strings and Buffers.
+    We need to create another object stream that appropriately transforms our data, for example, by emitting
+    a JSON-stringified version of our object.
+    Refs:
+    1) https://nodesource.com/blog/understanding-object-streams/
+    2) https://github.com/TooTallNate/node-throttle
+    */
+    let jsonStreamDelimiter = '_||_'; //string that won't be present in the actual data
+    let jsonStream = function(element) {
+      return JSON.stringify(element) + jsonStreamDelimiter;
+    };
+
+    let nextElementString = ''; //Placeholder for chunks as we process them back into objects
+    let toObjectStream = function(chunk, encoding, callback) {
+      if (!_.isUndefined(chunk) && !_.isNull(chunk)) {
+        let oStream = this;
+
+        nextElementString += chunk.toString('utf8');
+        let splitChunkStrings = nextElementString.split(jsonStreamDelimiter); //each JSON object ends with }
+        nextElementString = ''; //reset
+
+        splitChunkStrings.map(function(cStr) {
+          if (!_.isEmpty(cStr) && cStr.charAt(cStr.length - 1) === '}') {
+            let nextElement = JSON.parse(cStr);
+            oStream.push(nextElement);
+          } else {
+            nextElementString += cStr;
+          }
         });
-    });
+      }
+
+      callback();
+    };
+
+    //Create a "Throttle" instance that reads at a set bps
+    let throttle = new Throttle({ bps: 750000 });
+    let stream = sortPlugin.runInternalSelectQueryForStream(sortedSelectSql, []);
+    return stream
+            .pipe(sortPlugin.buildStreamTransform(jsonStream, null, 'map'))
+            .pipe(throttle)
+            .pipe(sortPlugin.buildStreamTransform(toObjectStream, null, 'standard'))
+            .on('end', function() {
+              //Sorting done, we have what we need... drop the temp table
+              sortPlugin.dropTemporaryTableForStream(sortInDbInfo.tableName)
+                .then(function() {})
+                .catch(function(err) {
+                  sortPlugin.ETL.logger.error('Invalid DROP TABLE request:', err);
+                });
+            });
   }
 
 };
