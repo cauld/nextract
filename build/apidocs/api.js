@@ -6,6 +6,7 @@ YUI.add("yuidoc-meta", function(Y) {
         "Nextract.Plugins.Core.Calculator",
         "Nextract.Plugins.Core.Database",
         "Nextract.Plugins.Core.Filter",
+        "Nextract.Plugins.Core.GroupBy",
         "Nextract.Plugins.Core.Http",
         "Nextract.Plugins.Core.Input",
         "Nextract.Plugins.Core.Output",

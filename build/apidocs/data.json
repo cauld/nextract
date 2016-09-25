@@ -109,7 +109,9 @@
             "name": "build/plugins/core/GroupBy/GroupBy.js",
             "modules": {},
             "classes": {},
-            "fors": {},
+            "fors": {
+                "Nextract.Plugins.Core.GroupBy": 1
+            },
             "namespaces": {}
         },
         "build/plugins/core/Http/Http.js": {
@@ -220,6 +222,15 @@
         "Nextract.Plugins.Core.Filter": {
             "name": "Nextract.Plugins.Core.Filter",
             "shortname": "Nextract.Plugins.Core.Filter",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": []
+        },
+        "Nextract.Plugins.Core.GroupBy": {
+            "name": "Nextract.Plugins.Core.GroupBy",
+            "shortname": "Nextract.Plugins.Core.GroupBy",
             "classitems": [],
             "plugins": [],
             "extensions": [],
@@ -885,111 +896,25 @@
         },
         {
             "file": "build/plugins/core/GroupBy/GroupBy.js",
-            "line": 17,
-            "description": "Computes the maximum value of array. It accepts iteratee which is invoked for each element in\narray to generate the criterion by which the value is ranked. The iteratee is invoked with\none argument: (value).\n\nFor usage reference - https://lodash.com/docs#maxBy",
-            "itemtype": "method",
-            "name": "maxBy",
-            "example": [
-                "\n    ETL.Plugins.Core.GroupBy.maxBy(objects, 'n');"
-            ],
-            "params": [
-                {
-                    "name": "collection",
-                    "description": "The collection to iterate over",
-                    "type": "Object"
-                },
-                {
-                    "name": "prop",
-                    "description": "The property to use in this operation",
-                    "type": "String"
-                }
-            ],
-            "return": {
-                "description": "Promise resolved with the maximum value",
-                "type": "Promise"
-            },
-            "class": "Nextract.Plugins.Core.Http"
-        },
-        {
-            "file": "build/plugins/core/GroupBy/GroupBy.js",
             "line": 35,
-            "description": "Computes the minimum value of array. It accepts iteratee which is invoked for each element in\narray to generate the criterion by which the value is ranked. The iteratee is invoked with\none argument: (value).\n\nFor usage reference - https://lodash.com/docs#minBy",
-            "itemtype": "method",
-            "name": "minBy",
-            "example": [
-                "\n    ETL.Plugins.Core.GroupBy.minBy(objects, 'n');"
-            ],
-            "params": [
-                {
-                    "name": "collection",
-                    "description": "The collection to iterate over",
-                    "type": "Object"
-                },
-                {
-                    "name": "prop",
-                    "description": "The property to use in this operation",
-                    "type": "String"
-                }
-            ],
-            "return": {
-                "description": "Promise resolved with the maximum value",
-                "type": "Promise"
-            },
-            "class": "Nextract.Plugins.Core.Http"
-        },
-        {
-            "file": "build/plugins/core/GroupBy/GroupBy.js",
-            "line": 53,
-            "description": "Computes the mean of the values in array. It accepts iteratee which is invoked for each element in\narray to generate the criterion by which the value is ranked. The iteratee is invoked with\none argument: (value).\n\nFor usage reference - https://lodash.com/docs#maxBy",
-            "itemtype": "method",
-            "name": "meanBy",
-            "example": [
-                "\n    ETL.Plugins.Core.GroupBy.meanBy(objects, 'n');"
-            ],
-            "params": [
-                {
-                    "name": "collection",
-                    "description": "The collection to iterate over",
-                    "type": "Object"
-                },
-                {
-                    "name": "prop",
-                    "description": "The property to use in this operation",
-                    "type": "String"
-                }
-            ],
-            "return": {
-                "description": "Promise resolved with the maximum value",
-                "type": "Promise"
-            },
-            "class": "Nextract.Plugins.Core.Http"
-        },
-        {
-            "file": "build/plugins/core/GroupBy/GroupBy.js",
-            "line": 71,
-            "description": "Computes the sum of the values in array. It accepts iteratee which is invoked for each element\nin array to generate the value to be summed. The iteratee is invoked with one argument: (value).\n\nFor usage reference - https://lodash.com/docs#maxBy",
+            "description": "Computes the sum of a single properties for all elements in a stream",
             "itemtype": "method",
             "name": "sumBy",
             "example": [
-                "\n    ETL.Plugins.Core.GroupBy.sumBy(objects, 'n');"
+                "\n    someTransform.Plugins.Core.GroupBy.sumBy('salary');"
             ],
             "params": [
                 {
-                    "name": "collection",
-                    "description": "The collection to iterate over",
-                    "type": "Object"
-                },
-                {
                     "name": "prop",
-                    "description": "The property to use in this operation",
+                    "description": "The property to sum",
                     "type": "String"
                 }
             ],
             "return": {
-                "description": "Promise resolved with the sum",
-                "type": "Promise"
+                "description": "The resulting stream is a single value",
+                "type": "Stream"
             },
-            "class": "Nextract.Plugins.Core.Http"
+            "class": "Nextract.Plugins.Core.GroupBy"
         },
         {
             "file": "build/plugins/core/Http/Http.js",
