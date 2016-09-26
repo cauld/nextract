@@ -349,7 +349,7 @@ var PluginBase = function(pluginName = null, pluginType = null) {
   this.runInWorker = function(workerMsg) {
     return new Promise(function (resolve, reject) {
       //Verify a web worker script for this plugin exists
-      var workerScript = path.resolve(__dirname, './' + self.pluginType.toLowerCase() + '/' + self.pluginName + '/Worker.js');
+      let workerScript = path.resolve(__dirname, './' + self.pluginType.toLowerCase() + '/' + self.pluginName + '/Worker.js');
       fs.stat(workerScript, function(err, stat) {
         if (err) {
           reject('Plugin worker file not found for', self.pluginName);
@@ -395,7 +395,7 @@ var PluginBase = function(pluginName = null, pluginType = null) {
    * @return {Function} Returns stream transform wrapped using through2
    */
   this.buildStreamTransform = function(streamFunction, streamFlushFunction = null, streamFunctionType = 'standard') {
-    var streamWrappedFunction;
+    let streamWrappedFunction;
 
     switch(streamFunctionType) {
       case 'filter':

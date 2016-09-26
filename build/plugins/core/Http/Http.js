@@ -52,7 +52,8 @@ module.exports = {
   makeRequest: function makeRequest(requestConfig) {
     var responseFormat = arguments.length <= 1 || arguments[1] === undefined ? 'buffer' : arguments[1];
 
-    var streamFunction, readStream;
+    var streamFunction = void 0,
+        readStream = void 0;
 
     //The request module is stream ready (https://github.com/request/request#streaming).
     //We'll add support for returning in other common formats.
@@ -60,7 +61,7 @@ module.exports = {
       if (responseFormat === 'string') {
         return element.toString();
       } else if (responseFormat === 'json') {
-        var jsonData;
+        var jsonData = void 0;
         try {
           jsonData = JSON.parse(element.toString());
         } catch (err) {

@@ -9,7 +9,7 @@ import { isUndefined, has } from 'lodash/fp';
 import pluginBase from '../../pluginBase';
 
 //Instantiate the plugin
-var filterPlugin = new pluginBase('Filter', 'Core');
+let filterPlugin = new pluginBase('Filter', 'Core');
 
 module.exports = {
 
@@ -29,7 +29,7 @@ module.exports = {
    * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
    */
   equals: function(propertyToTest, valueToTest, useStrictEquality = false) {
-    var streamFunction = function(element, index) {
+    let streamFunction = function(element, index) {
       if (!_.isUndefined(element) && _.has(element, propertyToTest)) {
         if (useStrictEquality === true) {
           return element[propertyToTest] === valueToTest;
@@ -60,7 +60,7 @@ module.exports = {
    * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
    */
   notEquals: function(propertyToTest, valueToTest, useStrictEquality = false) {
-    var streamFunction = function(element, index) {
+    let streamFunction = function(element, index) {
       if (!_.isUndefined(element) && _.has(element, propertyToTest)) {
         if (useStrictEquality === true) {
           return element[propertyToTest] !== valueToTest;
@@ -90,7 +90,7 @@ module.exports = {
    * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
    */
   greaterThan: function(propertyToTest, valueToTest) {
-    var streamFunction = function(element) {
+    let streamFunction = function(element) {
       if (!_.isUndefined(element) && _.has(element, propertyToTest)) {
         return element[propertyToTest] > valueToTest;
       } else {
@@ -116,7 +116,7 @@ module.exports = {
    * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
    */
   greaterThanOrEqualTo: function(propertyToTest, valueToTest) {
-    var streamFunction = function(element, index) {
+    let streamFunction = function(element, index) {
       if (!_.isUndefined(element) && _.has(element, propertyToTest)) {
         return element[propertyToTest] >= valueToTest;
       } else {
@@ -142,7 +142,7 @@ module.exports = {
    * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
    */
   lessThan: function(propertyToTest, valueToTest) {
-    var streamFunction = function(element, index) {
+    let streamFunction = function(element, index) {
       if (!_.isUndefined(element) && _.has(element, propertyToTest)) {
         return element[propertyToTest] < valueToTest;
       } else {
@@ -168,7 +168,7 @@ module.exports = {
    * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
    */
   lessThanOrEqualTo: function(propertyToTest, valueToTest) {
-    var streamFunction = function(element, index) {
+    let streamFunction = function(element, index) {
       if (!_.isUndefined(element) && _.has(element, propertyToTest)) {
         return element[propertyToTest] <= valueToTest;
       } else {

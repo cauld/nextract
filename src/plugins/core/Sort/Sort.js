@@ -13,7 +13,7 @@ import { isNull, isUndefined, isArray, values, keys, flatten } from 'lodash/fp';
 import pluginBase from '../../pluginBase';
 
 //Instantiate the plugin
-var sortPlugin = new pluginBase('Sort', 'Core');
+let sortPlugin = new pluginBase('Sort', 'Core');
 
 /* Plugin external interface */
 module.exports = {
@@ -59,7 +59,7 @@ module.exports = {
     //to fail if we bump this too high.
     let batchSize = 100;
 
-     var q = async.queue(function(element, callback) {
+     let q = async.queue(function(element, callback) {
       if (_.isNull(tableName)) {
         //Add to the batch
         elementsToInsert[elementsToInsert.length] = element;

@@ -26,13 +26,13 @@ transform.loadPlugins('Core', ['Database', 'Filter', 'Calculator', 'Utils', 'Log
       };
     }
 
+    //Create a stream from our dummy data array
     return objectStream.fromArray(collectionsToInsert);
   })
   .then(function(dummyDataStream) {
     return new Promise(function(resolve) {
       //Step 1: Insert are generated records
-      dummyDataStream
-        .pipe(transform.Plugins.Core.Database.insertQuery('nextract_sample', 'employees'));
+      dummyDataStream.pipe(transform.Plugins.Core.Database.insertQuery('nextract_sample', 'employees'));
 
       //Pause for a moment to let the streaming insert of dummy data to finish
       setTimeout(function() {

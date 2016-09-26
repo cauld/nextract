@@ -4,26 +4,24 @@
  * @class Nextract.Plugins.Core.Calculator
  */
 
+//Would be nice to do import as show above but babel-plugin-lodash has issues with the format _[lodashMethod]
+var _ = require('lodash');
 //import _ from 'lodash';
 //import { add, subtract, ceil, divide, floor, multiply, round, isUndefined, isInteger } from 'lodash/fp';
 
 import pluginBase from '../../pluginBase';
 
-//Would be nice to do import as show above but babel-plugin-lodash has issues with the format _[lodashMethod]
-var _ = require('lodash');
-
 //Instantiate the plugin
-var calculatorPlugin = new pluginBase('Calculator', 'Core');
+let calculatorPlugin = new pluginBase('Calculator', 'Core');
 
 
 //Many of the common calc operations can flow through lodash so this is a shared wrapper
 function doLodashPassthrough(lodashMethod, firstPropOrVal, secondPropOrVal, propertyToUpdateOrAdd = '') {
-  var streamFunction = function(element, index) {
+  let streamFunction = function(element, index) {
     if (_.isUndefined(element)) return;
 
-    var v1 = _.isString(firstPropOrVal) && _.has(element, firstPropOrVal) ? element[firstPropOrVal] : Number(firstPropOrVal);
-    var v2 = _.isString(secondPropOrVal) && _.has(element, secondPropOrVal) ? element[secondPropOrVal] : Number(secondPropOrVal);
-
+    let v1 = _.isString(firstPropOrVal) && _.has(element, firstPropOrVal) ? element[firstPropOrVal] : Number(firstPropOrVal);
+    let v2 = _.isString(secondPropOrVal) && _.has(element, secondPropOrVal) ? element[secondPropOrVal] : Number(secondPropOrVal);
 
     if (_.isUndefined(v1) || _.isUndefined(v2)) {
       throw new Error('Invalid calculator ' + lodashMethod + ' request, please check your input params!');
@@ -126,7 +124,7 @@ module.exports = {
    * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
    */
   concat: function(propsOrValsToConcat, delimiter = '', propertyToUpdateOrAdd) {
-    var streamFunction = function(element, index) {
+    let streamFunction = function(element, index) {
       //First assume each string is a key in the object, if not treat as a normal string
       let valuesToConcat = [];
       propsOrValsToConcat.forEach(function(p) {

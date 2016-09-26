@@ -6,19 +6,18 @@ var _pluginBase2 = _interopRequireDefault(_pluginBase);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-//Would be nice to do import as show above but babel-plugin-lodash has issues with the format _[lodashMethod]
-var _ = require('lodash');
-
-//Instantiate the plugin
 /**
  * Mixes in a series of common mathematical calculations
  *
  * @class Nextract.Plugins.Core.Calculator
  */
 
+//Would be nice to do import as show above but babel-plugin-lodash has issues with the format _[lodashMethod]
+var _ = require('lodash');
 //import _ from 'lodash';
 //import { add, subtract, ceil, divide, floor, multiply, round, isUndefined, isInteger } from 'lodash/fp';
 
+//Instantiate the plugin
 var calculatorPlugin = new _pluginBase2.default('Calculator', 'Core');
 
 //Many of the common calc operations can flow through lodash so this is a shared wrapper

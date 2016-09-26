@@ -9,7 +9,7 @@ import { keys, includes } from 'lodash/fp';
 import pluginBase from '../../pluginBase';
 
 //Instantiate the plugin
-var utilsPlugin = new pluginBase('Utils', 'Core');
+let utilsPlugin = new pluginBase('Utils', 'Core');
 
 module.exports = {
 
@@ -44,8 +44,8 @@ module.exports = {
    * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
    */
   pluckProperties: function(propertiesToTake) {
-    var streamFunction = function(element) {
-      var elementKeys = _.keys(element);
+    let streamFunction = function(element) {
+      let elementKeys = _.keys(element);
 
       elementKeys.forEach(function(key) {
         if (_.includes(propertiesToTake, key) === false) {
@@ -73,7 +73,7 @@ module.exports = {
    * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
    */
   streamConvertBufferToString: function() {
-    var streamFunction = function(element) {
+    let streamFunction = function(element) {
       return element.toString();
     };
 
@@ -94,7 +94,7 @@ module.exports = {
    * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
    */
   streamConsoleLogStreamItem: function(openingLogMsg = 'Stream debug: ') {
-    var streamFunction = function(element) {
+    let streamFunction = function(element) {
       utilsPlugin.ETL.logger.debug(openingLogMsg, element);
       return element;
     };

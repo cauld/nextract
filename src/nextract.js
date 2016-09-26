@@ -13,8 +13,8 @@ import EventEmitter from 'events';
 import util from 'util';
 import spy from 'through2-spy';
 
-var Nextract = function(transformName) {
-  var self = this;
+let Nextract = function(transformName) {
+  let self = this;
 
   this.transformName = transformName;
 
@@ -125,7 +125,7 @@ var Nextract = function(transformName) {
 };
 
 Nextract.prototype.mixin = function(pluginType, pluginNames) {
-  var that = this;
+  let that = this;
 
   return new Promise(function (resolve, reject) {
     pluginNames = _.isArray(pluginNames) ? pluginNames : [pluginNames];

@@ -27,6 +27,7 @@ transform.loadPlugins('Core', ['Database', 'Filter', 'Calculator', 'Utils', 'Log
     };
   }
 
+  //Create a stream from our dummy data array
   return objectStream.fromArray(collectionsToInsert);
 }).then(function (dummyDataStream) {
   return new Promise(function (resolve) {

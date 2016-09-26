@@ -461,7 +461,7 @@ var PluginBase = function PluginBase() {
     var streamFlushFunction = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
     var streamFunctionType = arguments.length <= 2 || arguments[2] === undefined ? 'standard' : arguments[2];
 
-    var streamWrappedFunction;
+    var streamWrappedFunction = void 0;
 
     switch (streamFunctionType) {
       case 'filter':

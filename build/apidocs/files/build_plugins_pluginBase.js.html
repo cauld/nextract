@@ -553,7 +553,7 @@
                           var streamFlushFunction = arguments.length &lt;= 1 || arguments[1] === undefined ? null : arguments[1];
                           var streamFunctionType = arguments.length &lt;= 2 || arguments[2] === undefined ? &#x27;standard&#x27; : arguments[2];
                       
-                          var streamWrappedFunction;
+                          var streamWrappedFunction = void 0;
                       
                           switch (streamFunctionType) {
                             case &#x27;filter&#x27;:

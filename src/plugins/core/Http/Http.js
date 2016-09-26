@@ -13,7 +13,7 @@ import request from 'request';
 import pluginBase from '../../pluginBase';
 
 //Instantiate the plugin
-var httpPlugin = new pluginBase('Http', 'Core');
+let httpPlugin = new pluginBase('Http', 'Core');
 
 module.exports = {
 
@@ -41,7 +41,7 @@ module.exports = {
    * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
    */
   makeRequest: function(requestConfig, responseFormat = 'buffer') {
-    var streamFunction,
+    let streamFunction,
         readStream;
 
     //The request module is stream ready (https://github.com/request/request#streaming).
@@ -50,7 +50,7 @@ module.exports = {
       if (responseFormat === 'string') {
         return element.toString();
       } else if (responseFormat === 'json') {
-        var jsonData;
+        let jsonData;
         try {
           jsonData = JSON.parse(element.toString());
         } catch(err) {

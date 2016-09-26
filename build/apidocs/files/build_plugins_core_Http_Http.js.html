@@ -144,7 +144,8 @@
                         makeRequest: function makeRequest(requestConfig) {
                           var responseFormat = arguments.length &lt;= 1 || arguments[1] === undefined ? &#x27;buffer&#x27; : arguments[1];
                       
-                          var streamFunction, readStream;
+                          var streamFunction = void 0,
+                              readStream = void 0;
                       
                           //The request module is stream ready (https://github.com/request/request#streaming).
                           //We&#x27;ll add support for returning in other common formats.
@@ -152,7 +153,7 @@
                             if (responseFormat === &#x27;string&#x27;) {
                               return element.toString();
                             } else if (responseFormat === &#x27;json&#x27;) {
-                              var jsonData;
+                              var jsonData = void 0;
                               try {
                                 jsonData = JSON.parse(element.toString());
                               } catch (err) {

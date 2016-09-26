@@ -8,14 +8,11 @@ var path       = require('path'),
 var transform = new Nextract();
 
 transform.loadPlugins('Core', ['Database', 'Logger'])
-  .then(function() {
-    var sql = 'select first_name, last_name from employees where age >= :age';
-    var sqlReplacements = { 'age': 30 };
-
-    return transform.Plugins.Core.Database.selectQuery('nextract_sample', sql, sqlReplacements);
-  })
   .then(function(dbDataStream) {
-    dbDataStream
+    var sql = 'select first_name, last_name from employees where age >= ?';
+    var sqlReplacements = [ 30 ];
+
+    transform.Plugins.Core.Database.selectQuery('nextract_sample', sql, sqlReplacements)
       .on('data', function(resultingData) {
         //We aren't doing any additional transforms so no pipes are needed.
         //We'll just dump out the data when it arrives.

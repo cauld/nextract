@@ -9,7 +9,7 @@ import { isUndefined, isNumber } from 'lodash/fp';
 import pluginBase from '../../pluginBase';
 
 //Instantiate the plugin
-var groupByPlugin = new pluginBase('GroupBy', 'Core');
+let groupByPlugin = new pluginBase('GroupBy', 'Core');
 
 module.exports = {
 

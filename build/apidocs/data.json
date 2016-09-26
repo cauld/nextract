@@ -41,13 +41,6 @@
             "fors": {},
             "namespaces": {}
         },
-        "build/examples/parallelTasks.js": {
-            "name": "build/examples/parallelTasks.js",
-            "modules": {},
-            "classes": {},
-            "fors": {},
-            "namespaces": {}
-        },
         "build/examples/parameterizedQuery.js": {
             "name": "build/examples/parameterizedQuery.js",
             "modules": {},
@@ -204,7 +197,7 @@
             "plugin_for": [],
             "extension_for": [],
             "file": "build/plugins/core/Calculator/Calculator.js",
-            "line": 13,
+            "line": 9,
             "description": "Mixes in a series of common mathematical calculations"
         },
         "Nextract.Plugins.Core.Database": {
@@ -349,12 +342,6 @@
             "class": "Nextract.Plugins.Core.Calculator"
         },
         {
-            "file": "build/examples/parallelTasks.js",
-            "line": 3,
-            "description": "Example: Running some etlJob tasks in parallel",
-            "class": "Nextract.Plugins.Core.Calculator"
-        },
-        {
             "file": "build/examples/parameterizedQuery.js",
             "line": 3,
             "description": "Example: Parameterized query",
@@ -380,7 +367,7 @@
         },
         {
             "file": "build/plugins/core/Calculator/Calculator.js",
-            "line": 48,
+            "line": 47,
             "description": "Operates on a stream adding two numbers and/or object properties",
             "itemtype": "method",
             "name": "add",
@@ -412,7 +399,7 @@
         },
         {
             "file": "build/plugins/core/Calculator/Calculator.js",
-            "line": 66,
+            "line": 65,
             "description": "Operates on a stream subtracting two numbers and/or object properties",
             "itemtype": "method",
             "name": "subtract",
@@ -449,7 +436,7 @@
         },
         {
             "file": "build/plugins/core/Calculator/Calculator.js",
-            "line": 85,
+            "line": 84,
             "description": "Operates on a stream multiplying two numbers and/or object properties",
             "itemtype": "method",
             "name": "multiply",
@@ -481,7 +468,7 @@
         },
         {
             "file": "build/plugins/core/Calculator/Calculator.js",
-            "line": 103,
+            "line": 102,
             "description": "Operates on a stream dividing two numbers and/or object properties",
             "itemtype": "method",
             "name": "divide",
@@ -513,7 +500,7 @@
         },
         {
             "file": "build/plugins/core/Calculator/Calculator.js",
-            "line": 121,
+            "line": 120,
             "description": "Operates on a stream concatenating strings and/or object properties",
             "itemtype": "method",
             "name": "concat",
@@ -1563,10 +1550,6 @@
         {
             "message": "Missing item type\nExample: JSON input and sort...",
             "line": " build/examples/jsonAndSort.js:3"
-        },
-        {
-            "message": "Missing item type\nExample: Running some etlJob tasks in parallel",
-            "line": " build/examples/parallelTasks.js:3"
         },
         {
             "message": "Missing item type\nExample: Parameterized query",
