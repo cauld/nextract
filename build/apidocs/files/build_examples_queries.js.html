@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>build/examples/queries.js - nextract</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="icon" href="../assets/favicon.ico">
+    <script src="http://yui.yahooapis.com/combo?3.9.1/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+            <h1>nextract</h1>
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: 0.0.3</em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+                    <h2 class="off-left">APIs</h2>
+                    <div id="api-tabview" class="tabview">
+                        <ul class="tabs">
+                            <li><a href="#api-classes">Classes</a></li>
+                            <li><a href="#api-modules">Modules</a></li>
+                        </ul>
+                
+                        <div id="api-tabview-filter">
+                            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+                        </div>
+                
+                        <div id="api-tabview-panel">
+                            <ul id="api-classes" class="apis classes">
+                                <li><a href="../classes/Nextract.html">Nextract</a></li>
+                                <li><a href="../classes/Nextract.PluginBase.html">Nextract.PluginBase</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Calculator.html">Nextract.Plugins.Core.Calculator</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Database.html">Nextract.Plugins.Core.Database</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Filter.html">Nextract.Plugins.Core.Filter</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.GroupBy.html">Nextract.Plugins.Core.GroupBy</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Http.html">Nextract.Plugins.Core.Http</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Input.html">Nextract.Plugins.Core.Input</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Output.html">Nextract.Plugins.Core.Output</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Sort.html">Nextract.Plugins.Core.Sort</a></li>
+                                <li><a href="../classes/Nextract.Plugins.Core.Utils.html">Nextract.Plugins.Core.Utils</a></li>
+                            </ul>
+                
+                
+                            <ul id="api-modules" class="apis modules">
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+                    Show:
+                    <label for="api-show-inherited">
+                        <input type="checkbox" id="api-show-inherited" checked>
+                        Inherited
+                    </label>
+            
+                    <label for="api-show-protected">
+                        <input type="checkbox" id="api-show-protected">
+                        Protected
+                    </label>
+            
+                    <label for="api-show-private">
+                        <input type="checkbox" id="api-show-private">
+                        Private
+                    </label>
+                    <label for="api-show-deprecated">
+                        <input type="checkbox" id="api-show-deprecated">
+                        Deprecated
+                    </label>
+            
+                </div>
+            
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+                      <h1 class="file-heading">File: build/examples/queries.js</h1>
+                      
+                      <div class="file">
+                          <pre class="code prettyprint linenums">
+                      &#x27;use strict&#x27;;
+                      
+                      /**
+                       * Example: Query and sort...
+                       */
+                      
+                      var path = require(&#x27;path&#x27;),
+                          objectStream = require(&#x27;object-stream&#x27;),
+                          Nextract = require(path.resolve(__dirname, &#x27;../nextract&#x27;)),
+                          exampleUtils = require(path.resolve(__dirname, &#x27;./exampleUtils&#x27;));
+                      
+                      /* MAIN */
+                      
+                      var transform = new Nextract(&quot;queries&quot;);
+                      
+                      console.log(&quot;Starting transform... &quot;, new Date());
+                      
+                      transform.loadPlugins(&#x27;Core&#x27;, [&#x27;Database&#x27;, &#x27;Filter&#x27;, &#x27;Calculator&#x27;, &#x27;Utils&#x27;, &#x27;Logger&#x27;]).then(function () {
+                        //Lets generate a bunch of new employees and create a collection (i.e.) an array of objects
+                        var collectionsToInsert = [];
+                        for (var i = 0; i &lt; 50; i++) {
+                          collectionsToInsert[collectionsToInsert.length] = {
+                            &#x27;first_name&#x27;: exampleUtils.getRandomString(),
+                            &#x27;last_name&#x27;: exampleUtils.getRandomString(),
+                            &#x27;age&#x27;: exampleUtils.getRandomInt(18, 65),
+                            &#x27;salary&#x27;: exampleUtils.getRandomInt(20000, 80000)
+                          };
+                        }
+                      
+                        return objectStream.fromArray(collectionsToInsert);
+                      }).then(function (dummyDataStream) {
+                        return new Promise(function (resolve) {
+                          //Step 1: Insert are generated records
+                          dummyDataStream.pipe(transform.Plugins.Core.Database.insertQuery(&#x27;nextract_sample&#x27;, &#x27;employees&#x27;));
+                      
+                          //Pause for a moment to let the streaming insert of dummy data to finish
+                          setTimeout(function () {
+                            resolve();
+                          }, 3000);
+                        });
+                      }).then(function () {
+                        var step4JoinSql = &#x27;select age from employees where id = ?&#x27;;
+                        var step4JoinFilterColumns = [&#x27;id&#x27;];
+                      
+                        //Define the step 6 &amp; 8 match matchCriteria which in this case is a simple primary key match on id. Can
+                        //be made up of the several fields if needed.
+                        var step6And8MatchCriteria = [{ tableColumn: &#x27;id&#x27;, comparator: &#x27;=&#x27;, collectionField: &#x27;id&#x27; }];
+                      
+                        //Step 2: Now that we&#x27;ve loaded some new employees into the employees table, lets find them all and give them all a raise.
+                        //Get a readStream to start the job with
+                        transform.Plugins.Core.Database.selectQuery(&#x27;nextract_sample&#x27;, &#x27;select id, first_name, last_name, salary from employees&#x27;)
+                        //Step 3: Transform operations are most often performed on the entire collection. Here we are taking the salary of each collection item
+                        //and raising it by 1000.  We could choose to store this new value in new collection properity or simply overwrite the existing one.
+                        //Here we&#x27;ll just overwrite the existing one.
+                        .pipe(transform.Plugins.Core.Calculator.add(&#x27;salary&#x27;, 1000, &#x27;salary&#x27;))
+                        //Step 4: Elements flowing through the stream now have the updated salary. I left age out of selectQuery
+                        //call so that I could demonstrate a collection join.  Lets find the age of all these employees.
+                        .pipe(transform.Plugins.Core.Database.joinQuery(&#x27;nextract_sample&#x27;, step4JoinSql, step4JoinFilterColumns, [&#x27;age&#x27;], false))
+                        //Step 5: Elements flowing through the stream now also contains the age for each matching row. Lets give them
+                        //all back 10 years of their life.
+                        .pipe(transform.Plugins.Core.Calculator.subtract(&#x27;age&#x27;, 10, &#x27;age&#x27;))
+                        //Step 6: Lets updated the database now with these new salary &amp; age properties
+                        .pipe(transform.Plugins.Core.Database.updateQuery(&#x27;nextract_sample&#x27;, &#x27;employees&#x27;, [&#x27;salary&#x27;, &#x27;age&#x27;], step6And8MatchCriteria))
+                        //Uncomment this next pipe() to output each stream element so that you can visually see the updated object
+                        //.pipe(transform.Plugins.Core.Utils.streamConsoleLogStreamItem())
+                        //Step 7: The company has decided to reduce overhead. We need to find all employees making over 60k.
+                        //For this we filter the collection down and call deleteQuery for each remaining row.
+                        .pipe(transform.Plugins.Core.Filter.greaterThan(&#x27;salary&#x27;, 59999))
+                        //Step 8: We need to remove all employees making over 60k.
+                        .pipe(transform.Plugins.Core.Database.deleteQuery(&#x27;nextract_sample&#x27;, &#x27;employees&#x27;, step6And8MatchCriteria)).on(&#x27;data&#x27;, function (resultingData) {
+                          //NOTE: This listener must exist, even if it does nothing. Otherwise, the end event is not fired.
+                      
+                          //Uncomment to dump the resulting data for debugging
+                          //console.log(&quot;resultingData&quot;, resultingData.length);
+                          //console.log(&quot;resultingData&quot;, resultingData);
+                        }).on(&#x27;finish&#x27;, function () {
+                          transform.Plugins.Core.Logger.info(&#x27;Transform finished!&#x27;, new Date());
+                        }).on(&#x27;end&#x27;, function () {
+                          transform.Plugins.Core.Logger.info(&#x27;Transform ended!&#x27;);
+                          process.exit();
+                        });
+                      }).catch(function (err) {
+                        transform.Plugins.Core.Logger.error(&#x27;Transform failed: &#x27;, err);
+                        process.exit();
+                      });
+                      
+                          </pre>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
+</body>
+</html>
