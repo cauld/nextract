@@ -40,9 +40,9 @@ transform.loadPlugins('Core', ['Database', 'Filter', 'Calculator', 'Utils', 'Log
       }, 3000);
     });
   })
-  .then(function(dbDataStream) {
+  .then(function() {
     var step4JoinSql = 'select age from employees where id = ?';
-    var step4JoinFilterColumns = [ 'id' ];
+    var step4JoinFilterColumns = [ 'id'];
 
     //Define the step 6 & 8 match matchCriteria which in this case is a simple primary key match on id. Can
     //be made up of the several fields if needed.

@@ -39,4 +39,4 @@ etlJob.loadPlugins('Core', ['Database', 'Utils', 'Logger'])
     });
 */
 
-console.log('Must rethink/reimplement with strean support now');
+console.log('Must rethink/reimplement now that everything is stream based');

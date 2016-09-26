@@ -88,7 +88,8 @@ module.exports = {
   },
 
   /**
-   * Writes stream to a file (usually preceeded by a call to toCsv, toExcel, toJSON, etc).
+   * Writes stream to a file (usually preceeded by a call to toCsv, toExcel, toJSON, etc). Use the
+   * stream finish event to know when the write is done. An end event is not not emitted.
    *
    * @method toFile
    * @for Nextract.Plugins.Core.Output
@@ -103,6 +104,17 @@ module.exports = {
    */
   toFile: function toFile(filePath) {
     var writeStream = _fs2.default.createWriteStream(filePath);
+
+    //An end event is not triggered on fs.createWriteStream, but a finish event is. We want to force an
+    //end event so that all transforms are consistent and have a chance to to cleanup with finish and end
+    //events.
+    writeStream.on('finish', function () {
+      //Give the finish event a moment to be handled before firing end. Otherwise the transforms end event
+      //will actually be called before the finish event.
+      setTimeout(function () {
+        writeStream.emit('end');
+      }, 10);
+    });
 
     return outputPlugin.getStreamPassthroughForPipe().pipe(writeStream);
   }

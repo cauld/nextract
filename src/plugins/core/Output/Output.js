@@ -17,7 +17,7 @@ import csv from 'csv';
 import pluginBase from '../../pluginBase';
 
 //Instantiate the plugin
-var outputPlugin = new pluginBase('Input', 'Core');
+let outputPlugin = new pluginBase('Input', 'Core');
 
 module.exports = {
 
@@ -38,7 +38,7 @@ module.exports = {
    * @return {String} Returns a string formatted as a CSV
    */
   toCsvString: function(formattingConfig = {}) {
-    var stringifier = csv.stringify(formattingConfig);
+    let stringifier = csv.stringify(formattingConfig);
 
     return outputPlugin.getStreamPassthroughForPipe().pipe(stringifier);
   },
@@ -68,7 +68,8 @@ module.exports = {
   },
 
   /**
-   * Writes stream to a file (usually preceeded by a call to toCsv, toExcel, toJSON, etc).
+   * Writes stream to a file (usually preceeded by a call to toCsv, toExcel, toJSON, etc). Use the
+   * stream finish event to know when the write is done. An end event is not not emitted.
    *
    * @method toFile
    * @for Nextract.Plugins.Core.Output
@@ -82,7 +83,18 @@ module.exports = {
    * All options allowed by cvs-stringify (http://csv.adaltas.com/stringify/) are supported.
    */
   toFile: function(filePath) {
-    var writeStream = fs.createWriteStream(filePath);
+    const writeStream = fs.createWriteStream(filePath);
+
+    //An end event is not triggered on fs.createWriteStream, but a finish event is. We want to force an
+    //end event so that all transforms are consistent and have a chance to to cleanup with finish and end
+    //events.
+    writeStream.on('finish', function() {
+      //Give the finish event a moment to be handled before firing end. Otherwise the transforms end event
+      //will actually be called before the finish event.
+      setTimeout(function() {
+        writeStream.emit('end');
+      }, 10);
+    });
 
     return outputPlugin.getStreamPassthroughForPipe().pipe(writeStream);
   }

@@ -15,7 +15,7 @@ import JSONStream from 'JSONStream';
 import pluginBase from '../../pluginBase';
 
 //Instantiate the plugin
-var inputPlugin = new pluginBase('Input', 'Core');
+let inputPlugin = new pluginBase('Input', 'Core');
 
 module.exports = {
 
@@ -34,7 +34,7 @@ module.exports = {
    * object allow all paser options supported by cvs-parse (http://csv.adaltas.com/parse/).
    */
   readCsvFile: function(filePath, parserConfig = { delimiter: ',', columns: true }) {
-    var parser,
+    let parser,
         input;
 
     parser = csv.parse(parserConfig);
@@ -44,15 +44,7 @@ module.exports = {
       callback(null, element);
     }
 
-    function inputFlush(callback) {
-      //Trying to force an end of data notification... doesn't work!
-      this.push(null);
-      parser.end();
-
-      callback();
-    }
-
-    return input.pipe(parser).pipe(inputPlugin.buildStreamTransform(processStreamInput, inputFlush, 'standard'));
+    return input.pipe(parser).pipe(inputPlugin.buildStreamTransform(processStreamInput, null, 'standard'));
   },
 
   /**
@@ -67,7 +59,7 @@ module.exports = {
    * this param place see the following doc - https://www.npmjs.com/package/JSONStream#jsonstreamparsepath.
    */
   readJsonFile: function(filePath, pathToParse) {
-    var jsonStream,
+    let jsonStream,
         jsonParser;
 
     jsonStream = fs.createReadStream(filePath, {encoding: 'utf8'});

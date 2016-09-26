@@ -51,7 +51,8 @@ module.exports = {
   readCsvFile: function readCsvFile(filePath) {
     var parserConfig = arguments.length <= 1 || arguments[1] === undefined ? { delimiter: ',', columns: true } : arguments[1];
 
-    var parser, input;
+    var parser = void 0,
+        input = void 0;
 
     parser = _csv2.default.parse(parserConfig);
     input = _fs2.default.createReadStream(filePath);
@@ -60,15 +61,7 @@ module.exports = {
       callback(null, element);
     }
 
-    function inputFlush(callback) {
-      //Trying to force an end of data notification... doesn't work!
-      this.push(null);
-      parser.end();
-
-      callback();
-    }
-
-    return input.pipe(parser).pipe(inputPlugin.buildStreamTransform(processStreamInput, inputFlush, 'standard'));
+    return input.pipe(parser).pipe(inputPlugin.buildStreamTransform(processStreamInput, null, 'standard'));
   },
 
   /**
@@ -83,7 +76,8 @@ module.exports = {
    * this param place see the following doc - https://www.npmjs.com/package/JSONStream#jsonstreamparsepath.
    */
   readJsonFile: function readJsonFile(filePath, pathToParse) {
-    var jsonStream, jsonParser;
+    var jsonStream = void 0,
+        jsonParser = void 0;
 
     jsonStream = _fs2.default.createReadStream(filePath, { encoding: 'utf8' });
     jsonParser = _JSONStream2.default.parse(pathToParse); //'data.employees.*'

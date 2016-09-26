@@ -38,7 +38,7 @@ transform.loadPlugins('Core', ['Database', 'Filter', 'Calculator', 'Utils', 'Log
       resolve();
     }, 3000);
   });
-}).then(function (dbDataStream) {
+}).then(function () {
   var step4JoinSql = 'select age from employees where id = ?';
   var step4JoinFilterColumns = ['id'];
 

@@ -974,7 +974,7 @@
         },
         {
             "file": "build/plugins/core/Input/Input.js",
-            "line": 74,
+            "line": 67,
             "description": "Streams in a JSON file",
             "itemtype": "method",
             "name": "readJsonFile",
@@ -1064,7 +1064,7 @@
         {
             "file": "build/plugins/core/Output/Output.js",
             "line": 90,
-            "description": "Writes stream to a file (usually preceeded by a call to toCsv, toExcel, toJSON, etc).",
+            "description": "Writes stream to a file (usually preceeded by a call to toCsv, toExcel, toJSON, etc). Use the\nstream finish event to know when the write is done. An end event is not not emitted.",
             "itemtype": "method",
             "name": "toFile",
             "example": [

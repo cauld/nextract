@@ -53,4 +53,5 @@ transform.loadPlugins('Core', ['Database', 'Filter', 'Calculator', 'Sort', 'Util
   })
   .catch(function(err) {
     transform.Plugins.Core.Logger.error('Transform failed: ', err);
+    process.exit();
   });
