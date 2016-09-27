@@ -883,7 +883,51 @@
         },
         {
             "file": "build/plugins/core/GroupBy/GroupBy.js",
-            "line": 35,
+            "line": 46,
+            "description": "Finds the max value of a single properties for all elements in a stream",
+            "itemtype": "method",
+            "name": "maxBy",
+            "example": [
+                "\n    someTransform.Plugins.Core.GroupBy.maxBy('salary');"
+            ],
+            "params": [
+                {
+                    "name": "propertyToCompare",
+                    "description": "The property to get max of",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "The resulting stream is a single value with the max value",
+                "type": "Stream"
+            },
+            "class": "Nextract.Plugins.Core.GroupBy"
+        },
+        {
+            "file": "build/plugins/core/GroupBy/GroupBy.js",
+            "line": 78,
+            "description": "Finds the min value of a single properties for all elements in a stream",
+            "itemtype": "method",
+            "name": "minBy",
+            "example": [
+                "\n    someTransform.Plugins.Core.GroupBy.minBy('salary');"
+            ],
+            "params": [
+                {
+                    "name": "propertyToCompare",
+                    "description": "The property to get min of",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "The resulting stream is a single value with the min value",
+                "type": "Stream"
+            },
+            "class": "Nextract.Plugins.Core.GroupBy"
+        },
+        {
+            "file": "build/plugins/core/GroupBy/GroupBy.js",
+            "line": 110,
             "description": "Computes the sum of a single properties for all elements in a stream",
             "itemtype": "method",
             "name": "sumBy",
@@ -892,13 +936,62 @@
             ],
             "params": [
                 {
-                    "name": "prop",
+                    "name": "propertyToProcess",
                     "description": "The property to sum",
                     "type": "String"
                 }
             ],
             "return": {
                 "description": "The resulting stream is a single value",
+                "type": "Stream"
+            },
+            "class": "Nextract.Plugins.Core.GroupBy"
+        },
+        {
+            "file": "build/plugins/core/GroupBy/GroupBy.js",
+            "line": 167,
+            "description": "Computes the mean of a single properties for all elements in a stream",
+            "itemtype": "method",
+            "name": "meanBy",
+            "example": [
+                "\n    someTransform.Plugins.Core.GroupBy.meanBy('salary');"
+            ],
+            "params": [
+                {
+                    "name": "propertyToProcess",
+                    "description": "The property to calc mean for",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "The resulting stream is a single value",
+                "type": "Stream"
+            },
+            "class": "Nextract.Plugins.Core.GroupBy"
+        },
+        {
+            "file": "build/plugins/core/GroupBy/GroupBy.js",
+            "line": 200,
+            "description": "Find the unique values of a single properties for all elements in a stream",
+            "itemtype": "method",
+            "name": "uniqBy",
+            "example": [
+                "\n    someTransform.Plugins.Core.GroupBy.uniqBy('salary');"
+            ],
+            "params": [
+                {
+                    "name": "propertyToProcess",
+                    "description": "The property get uniques for",
+                    "type": "String"
+                },
+                {
+                    "name": "returnElement",
+                    "description": "By default just the unique value itself is returned.\nIf this is set to true then each element with a unique value is returned instead.",
+                    "type": "Boolean"
+                }
+            ],
+            "return": {
+                "description": "The output is a new stream of just the unique values or elements.",
                 "type": "Stream"
             },
             "class": "Nextract.Plugins.Core.GroupBy"

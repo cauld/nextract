@@ -14,7 +14,7 @@ transform.loadPlugins('Core', ['Database', 'Filter', 'GroupBy', 'Logger'])
       //STEP 2: Find everone older than 30
       .pipe(transform.Plugins.Core.Filter.greaterThan('age', 30))
       //STEP 3: Add up all their salaries
-      .pipe(transform.Plugins.Core.GroupBy.sumBy('salary'))
+      .pipe(transform.Plugins.Core.GroupBy.sumBy('salary', false))
       .on('data', function(resultingData) {
         //Output the combined salary total
         transform.Plugins.Core.Logger.info('Together they make:', resultingData);
