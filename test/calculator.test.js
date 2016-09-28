@@ -4,32 +4,6 @@ var mocha    = require('mocha'),
     stubData = require(path.resolve(__dirname, './stubData')),
     Nextract = require(path.resolve(__dirname, '../build/nextract'));
 
-
-
-/*
-transform.loadPlugins('Core', ['Calculator'])
-  .then(function() {
-
-
-    stubData.getSampleEmployeeDataStream(1)
-      //.pipe(transform.Plugins.Core.Filter.greaterThan('age', 30))
-      .pipe(transform.Plugins.Core.Calculator.add('age', 10, 'age'))
-      .pipe(transform.Plugins.Core.Calculator.concat(['first_name', 'last_name'], ' ', 'full_name'))
-      .on('data', function(resultingData) {
-        //NOTE: This listener must exist, even if it does nothing. Otherwise, the end event is not fired.
-
-        //Uncomment to dump the resulting data for debugging
-        console.log(resultingData);
-      })
-      .on('end', function() {
-        process.exit();
-      });
-  })
-  .catch(function(err) {
-    process.exit();
-  });
-*/
-
 var transform = new Nextract("calculatorTest");
 var readStream = null;
 
