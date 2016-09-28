@@ -21,3 +21,10 @@ Nextract is a [Extract Transform Load (ETL)](https://en.wikipedia.org/wiki/Extra
 
  - Oracle is supported, but not enabled by default as it requires some additional system setup. Follow the directions outlined [here](https://www.npmjs.com/package/oracle) to install and configure the oracle npm package.
 
+## What's missing
+
+ - All CRUD database operations should be wrapped in transactions
+ - Some more core plugins (e.g.) Mail
+ - Performance enhancements for larger datasets
+ - Tests
+
