@@ -218,8 +218,6 @@ module.exports = {
     var valuesToUnique = [];
 
     function addToList(element, encoding, callback) {
-      checkInput(element, propertyToProcess);
-
       if (returnElement === true) {
         valuesToUnique[valuesToUnique.length] = element;
       } else {

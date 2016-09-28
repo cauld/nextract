@@ -227,6 +227,8 @@
                           var propertyToUpdateOrAdd = arguments[2];
                       
                           var streamFunction = function streamFunction(element, index) {
+                            if (_.isUndefined(element)) return;
+                      
                             //First assume each string is a key in the object, if not treat as a normal string
                             var valuesToConcat = [];
                             propsOrValsToConcat.forEach(function (p) {

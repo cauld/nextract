@@ -31,4 +31,3 @@ transform.loadPlugins('Core', ['Database', 'Filter', 'GroupBy', 'Logger'])
     transform.Plugins.Core.Logger.error('Transform failed: ', err);
     process.exit();
   });
-

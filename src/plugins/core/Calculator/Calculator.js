@@ -125,6 +125,8 @@ module.exports = {
    */
   concat: function(propsOrValsToConcat, delimiter = '', propertyToUpdateOrAdd) {
     let streamFunction = function(element, index) {
+      if (_.isUndefined(element)) return;
+
       //First assume each string is a key in the object, if not treat as a normal string
       let valuesToConcat = [];
       propsOrValsToConcat.forEach(function(p) {
