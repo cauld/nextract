@@ -13,7 +13,7 @@ Nextract is a [Extract Transform Load (ETL)](https://en.wikipedia.org/wiki/Extra
 
 ####OS X & Linux
 
- 1. Install Node (preferrably 4.x)
+ 1. Install Node (preferably 8.1+)
  2. Open a terminal and run **./setup.sh**.  This will install all the necessary npm packages and generate a default configuration file.
  3. Open the default configuration file and customize to your needs by adding your database connection params, setting a log file path, overriding system default, etc.
 
@@ -27,4 +27,3 @@ Nextract is a [Extract Transform Load (ETL)](https://en.wikipedia.org/wiki/Extra
  - Some more core plugins (e.g.) Mail
  - Performance enhancements for larger datasets
  - Tests
-
