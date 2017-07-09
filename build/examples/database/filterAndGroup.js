@@ -5,9 +5,9 @@
  */
 
 var path = require('path'),
-    Nextract = require(path.resolve(__dirname, '../nextract'));
+    Nextract = require(path.resolve(__dirname, '../../nextract'));
 
-var transform = new Nextract("jsonAndSort");
+var transform = new Nextract('jsonAndSort');
 
 transform.loadPlugins('Core', ['Database', 'Filter', 'GroupBy', 'Logger']).then(function () {
   //STEP 1: Start by selecting out some employee data

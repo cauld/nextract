@@ -10,7 +10,7 @@ var path = require('path'),
 var sampleEmployeesInputFilePath = path.resolve(process.cwd(), 'data/employees.csv'),
     sampleEmployeesOutputFilePath = path.resolve(process.cwd(), 'data/employees_output.csv');
 
-var transform = new Nextract("csvAndSort");
+var transform = new Nextract('csvAndSort');
 
 transform.loadPlugins('Core', ['Input', 'Output', 'Sort', 'Logger']).then(function () {
   return new Promise(function (resolve) {

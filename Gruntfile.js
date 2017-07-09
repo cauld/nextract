@@ -36,7 +36,6 @@ module.exports = function(grunt) {
     //See: https://babeljs.io/
     babel: {
       options: {
-        //sourceMap: true,
         plugins: ['lodash'],
         presets: ['es2015']
       },
@@ -94,5 +93,4 @@ module.exports = function(grunt) {
   //Dev task that monitors for changes and kicks off autobuilds
   //Will ultimately run all tasks define in the "default" task
   grunt.registerTask('dev', ['watch']);
-
 };

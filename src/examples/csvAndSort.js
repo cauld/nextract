@@ -2,32 +2,32 @@
  * Example: CSV input and sort...
  */
 
-var path     = require('path'),
-    Nextract = require(path.resolve(__dirname, '../nextract'));
+const path     = require('path'),
+      Nextract = require(path.resolve(__dirname, '../nextract'));
 
-var sampleEmployeesInputFilePath = path.resolve(process.cwd(), 'data/employees.csv'),
-    sampleEmployeesOutputFilePath = path.resolve(process.cwd(), 'data/employees_output.csv');
+const sampleEmployeesInputFilePath = path.resolve(process.cwd(), 'data/employees.csv'),
+      sampleEmployeesOutputFilePath = path.resolve(process.cwd(), 'data/employees_output.csv');
 
-var transform = new Nextract("csvAndSort");
+const transform = new Nextract('csvAndSort');
 
 transform.loadPlugins('Core', ['Input', 'Output', 'Sort', 'Logger'])
-  .then(function() {
-    return new Promise(function(resolve) {
+  .then(() => {
+    return new Promise((resolve) => {
       //STEP 1: Read data in from a CSV file
       transform.Plugins.Core.Input.readCsvFile(sampleEmployeesInputFilePath)
         //STEP 2: Pass data in to be sorted (1 element is pushed back and it is the expected input
         //for a new stream read call to sortOut)
         .pipe(transform.Plugins.Core.Sort.sortIn(['last_name'], ['asc']))
-        .on('data', function(sortInDbInfo) {
+        .on('data', (sortInDbInfo) => {
           if (sortInDbInfo !== undefined) {
             resolve(sortInDbInfo);
           }
         });
     });
   })
-  .then(function(sortInDbInfo) {
+  .then((sortInDbInfo) => {
     //We want the call to toCsvString to take the keys from the first record and use them to make a csv header
-    var outputCsvConfig = {
+    const outputCsvConfig = {
       header: true,
       columns: {
         first_name: 'first_name',
@@ -43,15 +43,15 @@ transform.loadPlugins('Core', ['Input', 'Output', 'Sort', 'Logger'])
       .pipe(transform.Plugins.Core.Output.toCsvString(outputCsvConfig, sampleEmployeesOutputFilePath))
       //STEP 4: Write out the new file
       .pipe(transform.Plugins.Core.Output.toFile(sampleEmployeesOutputFilePath))
-      .on('finish', function(){
+      .on('finish', () => {
         transform.Plugins.Core.Logger.info('Transform finished!');
         transform.Plugins.Core.Logger.info(sampleEmployeesOutputFilePath, 'has been written');
       })
-      .on('end', function() {
+      .on('end', () => {
         transform.Plugins.Core.Logger.info('Transform ended!');
         process.exit();
       });
   })
-  .catch(function(err) {
+  .catch((err) => {
     transform.Plugins.Core.Logger.error('Transform failed: ', err);
   });

@@ -143,7 +143,7 @@
                          * @return {String} Returns a string formatted as a CSV
                          */
                         toCsvString: function toCsvString() {
-                          var formattingConfig = arguments.length &lt;= 0 || arguments[0] === undefined ? {} : arguments[0];
+                          var formattingConfig = arguments.length &gt; 0 &amp;&amp; arguments[0] !== undefined ? arguments[0] : {};
                       
                           var stringifier = _csv2.default.stringify(formattingConfig);
                       
@@ -167,10 +167,10 @@
                          * @return {String} Returns a string formatted as JSON
                          */
                         toJsonString: function toJsonString() {
-                          var wrapJsonArray = arguments.length &lt;= 0 || arguments[0] === undefined ? true : arguments[0];
-                          var open = arguments.length &lt;= 1 || arguments[1] === undefined ? &#x27;{\n\t&quot;data&quot;: [\n\t&#x27; : arguments[1];
-                          var close = arguments.length &lt;= 2 || arguments[2] === undefined ? &#x27;,\n\t&#x27; : arguments[2];
-                          var seperator = arguments.length &lt;= 3 || arguments[3] === undefined ? &#x27;\n\t]\n}\n&#x27; : arguments[3];
+                          var wrapJsonArray = arguments.length &gt; 0 &amp;&amp; arguments[0] !== undefined ? arguments[0] : true;
+                          var open = arguments.length &gt; 1 &amp;&amp; arguments[1] !== undefined ? arguments[1] : &#x27;{\n\t&quot;data&quot;: [\n\t&#x27;;
+                          var close = arguments.length &gt; 2 &amp;&amp; arguments[2] !== undefined ? arguments[2] : &#x27;,\n\t&#x27;;
+                          var seperator = arguments.length &gt; 3 &amp;&amp; arguments[3] !== undefined ? arguments[3] : &#x27;\n\t]\n}\n&#x27;;
                       
                           if (wrapJsonArray === true) {
                             return outputPlugin.getStreamPassthroughForPipe().pipe(_JSONStream2.default.stringify(open, close, seperator));

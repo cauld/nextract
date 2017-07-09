@@ -49,7 +49,7 @@ module.exports = {
    * object allow all paser options supported by cvs-parse (http://csv.adaltas.com/parse/).
    */
   readCsvFile: function readCsvFile(filePath) {
-    var parserConfig = arguments.length <= 1 || arguments[1] === undefined ? { delimiter: ',', columns: true } : arguments[1];
+    var parserConfig = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : { delimiter: ',', columns: true };
 
     var parser = void 0,
         input = void 0;

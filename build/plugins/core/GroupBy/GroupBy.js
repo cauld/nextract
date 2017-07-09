@@ -37,7 +37,7 @@ var groupByPlugin = new _pluginBase2.default('GroupBy', 'Core'); /**
 
 function checkInput(element, propertyToProcess) {
   if ((0, _isUndefined3.default)(element[propertyToProcess]) || !(0, _isNumber3.default)(element[propertyToProcess])) {
-    throw new Error("GroupBy error, non-numeric value in element:", element);
+    throw new Error('GroupBy error, non-numeric value in element:', element);
   }
 }
 
@@ -213,7 +213,7 @@ module.exports = {
    * @return {Stream} The output is a new stream of just the unique values or elements.
    */
   uniqBy: function uniqBy(propertyToProcess) {
-    var returnElement = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+    var returnElement = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
     var valuesToUnique = [];
 

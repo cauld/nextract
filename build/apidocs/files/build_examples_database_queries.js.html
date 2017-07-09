@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>build/examples/queries.js - nextract</title>
+    <title>build/examples/database/queries.js - nextract</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -86,26 +86,27 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                      <h1 class="file-heading">File: build/examples/queries.js</h1>
+                      <h1 class="file-heading">File: build/examples/database/queries.js</h1>
                       
                       <div class="file">
                           <pre class="code prettyprint linenums">
                       &#x27;use strict&#x27;;
                       
                       /**
-                       * Example: Query and sort...
+                       * Example: Demonstrates multiple query types plus calculator and filter features. Review
+                       * the employees table before and after running these to see the results. 
                        */
                       
                       var path = require(&#x27;path&#x27;),
                           objectStream = require(&#x27;object-stream&#x27;),
-                          Nextract = require(path.resolve(__dirname, &#x27;../nextract&#x27;)),
-                          exampleUtils = require(path.resolve(__dirname, &#x27;./exampleUtils&#x27;));
+                          Nextract = require(path.resolve(__dirname, &#x27;../../nextract&#x27;)),
+                          exampleUtils = require(path.resolve(__dirname, &#x27;../helpers/exampleUtils&#x27;));
                       
                       /* MAIN */
                       
-                      var transform = new Nextract(&quot;queries&quot;);
+                      var transform = new Nextract(&#x27;queries&#x27;);
                       
-                      console.log(&quot;Starting transform... &quot;, new Date());
+                      console.log(&#x27;Starting transform... &#x27;, new Date());
                       
                       transform.loadPlugins(&#x27;Core&#x27;, [&#x27;Database&#x27;, &#x27;Filter&#x27;, &#x27;Calculator&#x27;, &#x27;Utils&#x27;, &#x27;Logger&#x27;]).then(function () {
                         //Lets generate a bunch of new employees and create a collection (i.e.) an array of objects
@@ -162,10 +163,6 @@
                         //Step 8: We need to remove all employees making over 60k.
                         .pipe(transform.Plugins.Core.Database.deleteQuery(&#x27;nextract_sample&#x27;, &#x27;employees&#x27;, step6And8MatchCriteria)).on(&#x27;data&#x27;, function (resultingData) {
                           //NOTE: This listener must exist, even if it does nothing. Otherwise, the end event is not fired.
-                      
-                          //Uncomment to dump the resulting data for debugging
-                          //console.log(&quot;resultingData&quot;, resultingData.length);
-                          //console.log(&quot;resultingData&quot;, resultingData);
                         }).on(&#x27;finish&#x27;, function () {
                           transform.Plugins.Core.Logger.info(&#x27;Transform finished!&#x27;, new Date());
                         }).on(&#x27;end&#x27;, function () {

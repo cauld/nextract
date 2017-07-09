@@ -22,7 +22,7 @@ var calculatorPlugin = new _pluginBase2.default('Calculator', 'Core');
 
 //Many of the common calc operations can flow through lodash so this is a shared wrapper
 function doLodashPassthrough(lodashMethod, firstPropOrVal, secondPropOrVal) {
-  var propertyToUpdateOrAdd = arguments.length <= 3 || arguments[3] === undefined ? '' : arguments[3];
+  var propertyToUpdateOrAdd = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : '';
 
   var streamFunction = function streamFunction(element, index) {
     if (_.isUndefined(element)) return;
@@ -131,7 +131,7 @@ module.exports = {
    * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
    */
   concat: function concat(propsOrValsToConcat) {
-    var delimiter = arguments.length <= 1 || arguments[1] === undefined ? '' : arguments[1];
+    var delimiter = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
     var propertyToUpdateOrAdd = arguments[2];
 
     var streamFunction = function streamFunction(element, index) {

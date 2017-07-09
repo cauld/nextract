@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>build/examples/queryCalcAndFilter.js - nextract</title>
+    <title>build/examples/database/queryCalcAndFilter.js - nextract</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -86,20 +86,21 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                      <h1 class="file-heading">File: build/examples/queryCalcAndFilter.js</h1>
+                      <h1 class="file-heading">File: build/examples/database/queryCalcAndFilter.js</h1>
                       
                       <div class="file">
                           <pre class="code prettyprint linenums">
                       &#x27;use strict&#x27;;
                       
                       /**
-                       * Example: Query and sort...
+                       * Example: Demonstrates querying, filtering, calcs, and profiling 
+                       * NOTE: requires setting up the sample MySQL database
                        */
                       
                       var path = require(&#x27;path&#x27;),
-                          Nextract = require(path.resolve(__dirname, &#x27;../nextract&#x27;));
+                          Nextract = require(path.resolve(__dirname, &#x27;../../nextract&#x27;));
                       
-                      var transform = new Nextract(&quot;queryAndSort&quot;);
+                      var transform = new Nextract(&#x27;queryAndSort&#x27;);
                       
                       transform.loadPlugins(&#x27;Core&#x27;, [&#x27;Database&#x27;, &#x27;Filter&#x27;, &#x27;Calculator&#x27;, &#x27;Utils&#x27;, &#x27;Logger&#x27;]).then(function () {
                         transform.Plugins.Core.Database.selectQuery(&#x27;nextract_sample&#x27;, &#x27;select first_name, last_name, age from employees&#x27;, []).pipe(transform.countStream(&#x27;Step1&#x27;, &#x27;in&#x27;)).pipe(transform.Plugins.Core.Filter.greaterThan(&#x27;age&#x27;, 30)).pipe(transform.countStream(&#x27;Step1&#x27;, &#x27;out&#x27;)).pipe(transform.countStream(&#x27;Step2&#x27;, &#x27;in&#x27;)).pipe(transform.Plugins.Core.Calculator.add(&#x27;age&#x27;, 10, &#x27;age&#x27;)).pipe(transform.countStream(&#x27;Step2&#x27;, &#x27;out&#x27;)).pipe(transform.countStream(&#x27;Step3&#x27;, &#x27;in&#x27;)).pipe(transform.Plugins.Core.Calculator.concat([&#x27;first_name&#x27;, &#x27;last_name&#x27;], &#x27; &#x27;, &#x27;full_name&#x27;)).pipe(transform.countStream(&#x27;Step3&#x27;, &#x27;out&#x27;)).pipe(transform.countStream(&#x27;Step4&#x27;, &#x27;in&#x27;)).pipe(transform.Plugins.Core.Utils.pluckProperties([&#x27;full_name&#x27;, &#x27;age&#x27;])).pipe(transform.countStream(&#x27;Step4&#x27;, &#x27;out&#x27;)).on(&#x27;data&#x27;, function (resultingData) {

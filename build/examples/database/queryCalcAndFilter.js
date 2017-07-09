@@ -1,13 +1,14 @@
 'use strict';
 
 /**
- * Example: Query and sort...
+ * Example: Demonstrates querying, filtering, calcs, and profiling 
+ * NOTE: requires setting up the sample MySQL database
  */
 
 var path = require('path'),
-    Nextract = require(path.resolve(__dirname, '../nextract'));
+    Nextract = require(path.resolve(__dirname, '../../nextract'));
 
-var transform = new Nextract("queryAndSort");
+var transform = new Nextract('queryAndSort');
 
 transform.loadPlugins('Core', ['Database', 'Filter', 'Calculator', 'Utils', 'Logger']).then(function () {
   transform.Plugins.Core.Database.selectQuery('nextract_sample', 'select first_name, last_name, age from employees', []).pipe(transform.countStream('Step1', 'in')).pipe(transform.Plugins.Core.Filter.greaterThan('age', 30)).pipe(transform.countStream('Step1', 'out')).pipe(transform.countStream('Step2', 'in')).pipe(transform.Plugins.Core.Calculator.add('age', 10, 'age')).pipe(transform.countStream('Step2', 'out')).pipe(transform.countStream('Step3', 'in')).pipe(transform.Plugins.Core.Calculator.concat(['first_name', 'last_name'], ' ', 'full_name')).pipe(transform.countStream('Step3', 'out')).pipe(transform.countStream('Step4', 'in')).pipe(transform.Plugins.Core.Utils.pluckProperties(['full_name', 'age'])).pipe(transform.countStream('Step4', 'out')).on('data', function (resultingData) {

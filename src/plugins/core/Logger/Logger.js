@@ -6,7 +6,7 @@
  * - http://stackoverflow.com/a/25233851
  */
 
-import config from '../../config/default';
+import config from '../../../../config/default';
 import * as logger from 'winston';
 
 logger.setLevels({ debug: 0, info: 1, silly: 2, warn: 3, error: 4 });

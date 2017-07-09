@@ -39,7 +39,7 @@ module.exports = {
    * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
    */
   equals: function equals(propertyToTest, valueToTest) {
-    var useStrictEquality = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+    var useStrictEquality = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
     var streamFunction = function streamFunction(element, index) {
       if (!(0, _isUndefined3.default)(element) && (0, _has3.default)(element, propertyToTest)) {
@@ -72,7 +72,7 @@ module.exports = {
    * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
    */
   notEquals: function notEquals(propertyToTest, valueToTest) {
-    var useStrictEquality = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+    var useStrictEquality = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
     var streamFunction = function streamFunction(element, index) {
       if (!(0, _isUndefined3.default)(element) && (0, _has3.default)(element, propertyToTest)) {

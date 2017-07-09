@@ -1,19 +1,20 @@
 'use strict';
 
 /**
- * Example: Query and sort...
+ * Example: Demonstrates multiple query types plus calculator and filter features. Review
+ * the employees table before and after running these to see the results. 
  */
 
 var path = require('path'),
     objectStream = require('object-stream'),
-    Nextract = require(path.resolve(__dirname, '../nextract')),
-    exampleUtils = require(path.resolve(__dirname, './exampleUtils'));
+    Nextract = require(path.resolve(__dirname, '../../nextract')),
+    exampleUtils = require(path.resolve(__dirname, '../helpers/exampleUtils'));
 
 /* MAIN */
 
-var transform = new Nextract("queries");
+var transform = new Nextract('queries');
 
-console.log("Starting transform... ", new Date());
+console.log('Starting transform... ', new Date());
 
 transform.loadPlugins('Core', ['Database', 'Filter', 'Calculator', 'Utils', 'Logger']).then(function () {
   //Lets generate a bunch of new employees and create a collection (i.e.) an array of objects
@@ -70,10 +71,6 @@ transform.loadPlugins('Core', ['Database', 'Filter', 'Calculator', 'Utils', 'Log
   //Step 8: We need to remove all employees making over 60k.
   .pipe(transform.Plugins.Core.Database.deleteQuery('nextract_sample', 'employees', step6And8MatchCriteria)).on('data', function (resultingData) {
     //NOTE: This listener must exist, even if it does nothing. Otherwise, the end event is not fired.
-
-    //Uncomment to dump the resulting data for debugging
-    //console.log("resultingData", resultingData.length);
-    //console.log("resultingData", resultingData);
   }).on('finish', function () {
     transform.Plugins.Core.Logger.info('Transform finished!', new Date());
   }).on('end', function () {

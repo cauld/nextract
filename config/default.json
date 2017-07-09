@@ -1,16 +1,7 @@
-var fs = require('fs'),
-    jsonfile = require('jsonfile');
-
-var defaultConfig,
-    baseConfigFileLocation
-
-baseConfigFileLocation = 'config/default.json';
-
-defaultConfig = {
+{
   "logging": {
     "logFilePath": "/var/log/nextract.log"
   },
-
   "databases": {
     "nextract_sample": {
       "client": "mysql",
@@ -31,10 +22,4 @@ defaultConfig = {
       "debug": false
     }
   }
-};
-
-jsonfile.writeFile(baseConfigFileLocation, defaultConfig, {spaces:2}, function (err) {
-  if (err) {
-    console.error('Unable to write default config file!');
-  }
-});
+}

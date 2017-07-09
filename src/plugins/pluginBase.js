@@ -4,7 +4,7 @@
  * @class Nextract.PluginBase
  */
 
-import config from './config/default';
+import config from '../../config/default';
 import * as logger from './core/Logger/Logger';
 import fs from 'fs';
 import path from 'path';
@@ -97,11 +97,11 @@ var PluginBase = function(pluginName = null, pluginType = null) {
   let self = this;
 
   if (pluginName === null) {
-    throw("A plugin name must be provided to initPlugin!");
+    throw('A plugin name must be provided to initPlugin!');
   }
 
   if (pluginType === null) {
-    throw("A plugin type (Core or Vendor) must be provided to initPlugin!");
+    throw('A plugin type (Core or Vendor) must be provided to initPlugin!');
   }
 
   /**

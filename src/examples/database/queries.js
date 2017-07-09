@@ -1,23 +1,24 @@
 /**
- * Example: Query and sort...
+ * Example: Demonstrates multiple query types plus calculator and filter features. Review
+ * the employees table before and after running these to see the results. 
  */
 
-var path         = require('path'),
-    objectStream = require('object-stream'),
-    Nextract     = require(path.resolve(__dirname, '../nextract')),
-    exampleUtils = require(path.resolve(__dirname, './exampleUtils'));
+const path         = require('path'),
+      objectStream = require('object-stream'),
+      Nextract     = require(path.resolve(__dirname, '../../nextract')),
+      exampleUtils = require(path.resolve(__dirname, '../helpers/exampleUtils'));
 
 /* MAIN */
 
-var transform = new Nextract("queries");
+const transform = new Nextract('queries');
 
-console.log("Starting transform... ", new Date());
+console.log('Starting transform... ', new Date());
 
 transform.loadPlugins('Core', ['Database', 'Filter', 'Calculator', 'Utils', 'Logger'])
-  .then(function() {
+  .then(() => {
     //Lets generate a bunch of new employees and create a collection (i.e.) an array of objects
-    var collectionsToInsert = [];
-    for(var i=0; i<50; i++) {
+    const collectionsToInsert = [];
+    for(let i=0; i<50; i++) {
       collectionsToInsert[collectionsToInsert.length] = {
         'first_name': exampleUtils.getRandomString(),
         'last_name': exampleUtils.getRandomString(),
@@ -29,24 +30,24 @@ transform.loadPlugins('Core', ['Database', 'Filter', 'Calculator', 'Utils', 'Log
     //Create a stream from our dummy data array
     return objectStream.fromArray(collectionsToInsert);
   })
-  .then(function(dummyDataStream) {
-    return new Promise(function(resolve) {
+  .then((dummyDataStream) => {
+    return new Promise((resolve) => {
       //Step 1: Insert are generated records
       dummyDataStream.pipe(transform.Plugins.Core.Database.insertQuery('nextract_sample', 'employees'));
 
       //Pause for a moment to let the streaming insert of dummy data to finish
-      setTimeout(function() {
+      setTimeout(() => {
         resolve();
       }, 3000);
     });
   })
-  .then(function() {
-    var step4JoinSql = 'select age from employees where id = ?';
-    var step4JoinFilterColumns = [ 'id'];
+  .then(() => {
+    const step4JoinSql = 'select age from employees where id = ?';
+    const step4JoinFilterColumns = [ 'id'];
 
     //Define the step 6 & 8 match matchCriteria which in this case is a simple primary key match on id. Can
     //be made up of the several fields if needed.
-    var step6And8MatchCriteria = [{ tableColumn: 'id', comparator: '=', collectionField: 'id' }];
+    const step6And8MatchCriteria = [{ tableColumn: 'id', comparator: '=', collectionField: 'id' }];
 
     //Step 2: Now that we've loaded some new employees into the employees table, lets find them all and give them all a raise.
     //Get a readStream to start the job with
@@ -70,22 +71,18 @@ transform.loadPlugins('Core', ['Database', 'Filter', 'Calculator', 'Utils', 'Log
       .pipe(transform.Plugins.Core.Filter.greaterThan('salary', 59999))
       //Step 8: We need to remove all employees making over 60k.
       .pipe(transform.Plugins.Core.Database.deleteQuery('nextract_sample', 'employees', step6And8MatchCriteria))
-    .on('data', function(resultingData) {
+    .on('data', (resultingData) => {
       //NOTE: This listener must exist, even if it does nothing. Otherwise, the end event is not fired.
-
-      //Uncomment to dump the resulting data for debugging
-      //console.log("resultingData", resultingData.length);
-      //console.log("resultingData", resultingData);
     })
-    .on('finish', function(){
+    .on('finish', () => {
       transform.Plugins.Core.Logger.info('Transform finished!', new Date());
     })
-    .on('end', function() {
+    .on('end', () => {
       transform.Plugins.Core.Logger.info('Transform ended!');
       process.exit();
     });
   })
-  .catch(function(err) {
+  .catch((err) => {
     transform.Plugins.Core.Logger.error('Transform failed: ', err);
     process.exit();
   });

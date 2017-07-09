@@ -141,7 +141,7 @@
                          * object allow all paser options supported by cvs-parse (http://csv.adaltas.com/parse/).
                          */
                         readCsvFile: function readCsvFile(filePath) {
-                          var parserConfig = arguments.length &lt;= 1 || arguments[1] === undefined ? { delimiter: &#x27;,&#x27;, columns: true } : arguments[1];
+                          var parserConfig = arguments.length &gt; 1 &amp;&amp; arguments[1] !== undefined ? arguments[1] : { delimiter: &#x27;,&#x27;, columns: true };
                       
                           var parser = void 0,
                               input = void 0;

@@ -4,12 +4,10 @@ var mocha    = require('mocha'),
     stubData = require(path.resolve(__dirname, './stubData')),
     Nextract = require(path.resolve(__dirname, '../build/nextract'));
 
-var transform = new Nextract("calculatorTest");
+var transform = new Nextract('calculatorTest');
 var readStream = null;
 
 describe('Calculator', function() {
-  //this.timeout(5000);
-
   beforeEach(function(done) {
     transform.loadPlugins('Core', ['Calculator'])
       .then(function() {
@@ -139,5 +137,4 @@ describe('Calculator', function() {
         });
     });
   });
-
 });

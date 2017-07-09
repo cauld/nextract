@@ -50,7 +50,7 @@ module.exports = {
    * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
    */
   makeRequest: function makeRequest(requestConfig) {
-    var responseFormat = arguments.length <= 1 || arguments[1] === undefined ? 'buffer' : arguments[1];
+    var responseFormat = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'buffer';
 
     var streamFunction = void 0,
         readStream = void 0;

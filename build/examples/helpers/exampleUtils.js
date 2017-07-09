@@ -1,15 +1,15 @@
-"use strict";
+'use strict';
 
 /**
- * A handful of heler functions that are used throughout the examples
+ * A handful of helper functions that are used throughout the examples
  */
 
 module.exports = {
 
   //Generate a random string used for dummy data
   getRandomString: function getRandomString(requiredStringLength) {
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    var text = '';
+    var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
     for (var i = 0; i < 5; i++) {
       text += possible.charAt(Math.floor(Math.random() * possible.length));

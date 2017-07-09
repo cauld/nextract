@@ -7,7 +7,6 @@
 import async from 'async';
 import Throttle from 'throttle';
 import through2 from 'through2';
-
 import _ from 'lodash';
 import { isNull, isUndefined, isArray, values, keys, flatten } from 'lodash/fp';
 import pluginBase from '../../pluginBase';
@@ -208,11 +207,11 @@ module.exports = {
     };
 
     //Create a "Throttle" instance that reads at a set bps
-    let throttle = new Throttle({ bps: 750000 });
+    //let throttle = new Throttle({ bps: 750000 });
     let stream = sortPlugin.runInternalSelectQueryForStream(sortedSelectSql, []);
     return stream
             .pipe(sortPlugin.buildStreamTransform(jsonStream, null, 'map'))
-            .pipe(throttle)
+            //.pipe(throttle)
             .pipe(sortPlugin.buildStreamTransform(toObjectStream, null, 'standard'))
             .on('end', function() {
               //Sorting done, we have what we need... drop the temp table

@@ -104,7 +104,7 @@ module.exports = {
    * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
    */
   streamConsoleLogStreamItem: function streamConsoleLogStreamItem() {
-    var openingLogMsg = arguments.length <= 0 || arguments[0] === undefined ? 'Stream debug: ' : arguments[0];
+    var openingLogMsg = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'Stream debug: ';
 
     var streamFunction = function streamFunction(element) {
       utilsPlugin.ETL.logger.debug(openingLogMsg, element);

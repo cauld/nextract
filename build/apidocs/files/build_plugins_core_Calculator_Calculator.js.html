@@ -114,7 +114,7 @@
                       
                       //Many of the common calc operations can flow through lodash so this is a shared wrapper
                       function doLodashPassthrough(lodashMethod, firstPropOrVal, secondPropOrVal) {
-                        var propertyToUpdateOrAdd = arguments.length &lt;= 3 || arguments[3] === undefined ? &#x27;&#x27; : arguments[3];
+                        var propertyToUpdateOrAdd = arguments.length &gt; 3 &amp;&amp; arguments[3] !== undefined ? arguments[3] : &#x27;&#x27;;
                       
                         var streamFunction = function streamFunction(element, index) {
                           if (_.isUndefined(element)) return;
@@ -223,7 +223,7 @@
                          * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
                          */
                         concat: function concat(propsOrValsToConcat) {
-                          var delimiter = arguments.length &lt;= 1 || arguments[1] === undefined ? &#x27;&#x27; : arguments[1];
+                          var delimiter = arguments.length &gt; 1 &amp;&amp; arguments[1] !== undefined ? arguments[1] : &#x27;&#x27;;
                           var propertyToUpdateOrAdd = arguments[2];
                       
                           var streamFunction = function streamFunction(element, index) {

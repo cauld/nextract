@@ -213,34 +213,32 @@ module.exports = {
 
     var nextElementString = ''; //Placeholder for chunks as we process them back into objects
     var toObjectStream = function toObjectStream(chunk, encoding, callback) {
-      var _this = this;
-
       if (!(0, _isUndefined3.default)(chunk) && !(0, _isNull3.default)(chunk)) {
-        (function () {
-          var oStream = _this;
+        var oStream = this;
 
-          nextElementString += chunk.toString('utf8');
-          var splitChunkStrings = nextElementString.split(jsonStreamDelimiter); //each JSON object ends with }
-          nextElementString = ''; //reset
+        nextElementString += chunk.toString('utf8');
+        var splitChunkStrings = nextElementString.split(jsonStreamDelimiter); //each JSON object ends with }
+        nextElementString = ''; //reset
 
-          splitChunkStrings.map(function (cStr) {
-            if (!(0, _isEmpty3.default)(cStr) && cStr.charAt(cStr.length - 1) === '}') {
-              var nextElement = JSON.parse(cStr);
-              oStream.push(nextElement);
-            } else {
-              nextElementString += cStr;
-            }
-          });
-        })();
+        splitChunkStrings.map(function (cStr) {
+          if (!(0, _isEmpty3.default)(cStr) && cStr.charAt(cStr.length - 1) === '}') {
+            var nextElement = JSON.parse(cStr);
+            oStream.push(nextElement);
+          } else {
+            nextElementString += cStr;
+          }
+        });
       }
 
       callback();
     };
 
     //Create a "Throttle" instance that reads at a set bps
-    var throttle = new _throttle2.default({ bps: 750000 });
+    //let throttle = new Throttle({ bps: 750000 });
     var stream = sortPlugin.runInternalSelectQueryForStream(sortedSelectSql, []);
-    return stream.pipe(sortPlugin.buildStreamTransform(jsonStream, null, 'map')).pipe(throttle).pipe(sortPlugin.buildStreamTransform(toObjectStream, null, 'standard')).on('end', function () {
+    return stream.pipe(sortPlugin.buildStreamTransform(jsonStream, null, 'map'))
+    //.pipe(throttle)
+    .pipe(sortPlugin.buildStreamTransform(toObjectStream, null, 'standard')).on('end', function () {
       //Sorting done, we have what we need... drop the temp table
       sortPlugin.dropTemporaryTableForStream(sortInDbInfo.tableName).then(function () {}).catch(function (err) {
         sortPlugin.ETL.logger.error('Invalid DROP TABLE request:', err);

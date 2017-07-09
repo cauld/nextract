@@ -1,6 +1,6 @@
 'use strict';
 
-var _default = require('../../config/default');
+var _default = require('../../../../config/default');
 
 var _default2 = _interopRequireDefault(_default);
 

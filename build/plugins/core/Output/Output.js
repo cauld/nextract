@@ -51,7 +51,7 @@ module.exports = {
    * @return {String} Returns a string formatted as a CSV
    */
   toCsvString: function toCsvString() {
-    var formattingConfig = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+    var formattingConfig = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
     var stringifier = _csv2.default.stringify(formattingConfig);
 
@@ -75,10 +75,10 @@ module.exports = {
    * @return {String} Returns a string formatted as JSON
    */
   toJsonString: function toJsonString() {
-    var wrapJsonArray = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
-    var open = arguments.length <= 1 || arguments[1] === undefined ? '{\n\t"data": [\n\t' : arguments[1];
-    var close = arguments.length <= 2 || arguments[2] === undefined ? ',\n\t' : arguments[2];
-    var seperator = arguments.length <= 3 || arguments[3] === undefined ? '\n\t]\n}\n' : arguments[3];
+    var wrapJsonArray = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+    var open = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '{\n\t"data": [\n\t';
+    var close = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : ',\n\t';
+    var seperator = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : '\n\t]\n}\n';
 
     if (wrapJsonArray === true) {
       return outputPlugin.getStreamPassthroughForPipe().pipe(_JSONStream2.default.stringify(open, close, seperator));

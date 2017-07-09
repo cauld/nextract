@@ -5,7 +5,7 @@
  */
 
 var path = require('path'),
-    Nextract = require(path.resolve(__dirname, '../nextract'));
+    Nextract = require(path.resolve(__dirname, '../../nextract'));
 
 var transform = new Nextract();
 

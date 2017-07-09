@@ -142,7 +142,7 @@
                          * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
                          */
                         makeRequest: function makeRequest(requestConfig) {
-                          var responseFormat = arguments.length &lt;= 1 || arguments[1] === undefined ? &#x27;buffer&#x27; : arguments[1];
+                          var responseFormat = arguments.length &gt; 1 &amp;&amp; arguments[1] !== undefined ? arguments[1] : &#x27;buffer&#x27;;
                       
                           var streamFunction = void 0,
                               readStream = void 0;

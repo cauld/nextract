@@ -1,27 +1,55 @@
 {
     "project": {
         "name": "nextract",
-        "description": "",
+        "description": "Nextract is a Extract Transform Load (ETL) platform build on top of Node.js streams",
         "version": "0.0.3",
         "url": ""
     },
     "files": {
+        "build/examples/database/advanced/queryAndSortMultiDbBenchmark.js": {
+            "name": "build/examples/database/advanced/queryAndSortMultiDbBenchmark.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "build/examples/database/filterAndGroup.js": {
+            "name": "build/examples/database/filterAndGroup.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "build/examples/database/parameterizedQuery.js": {
+            "name": "build/examples/database/parameterizedQuery.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "build/examples/database/queries.js": {
+            "name": "build/examples/database/queries.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "build/examples/database/queryCalcAndFilter.js": {
+            "name": "build/examples/database/queryCalcAndFilter.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "build/examples/helpers/exampleUtils.js": {
+            "name": "build/examples/helpers/exampleUtils.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
         "build/examples/csvAndSort.js": {
             "name": "build/examples/csvAndSort.js",
-            "modules": {},
-            "classes": {},
-            "fors": {},
-            "namespaces": {}
-        },
-        "build/examples/exampleUtils.js": {
-            "name": "build/examples/exampleUtils.js",
-            "modules": {},
-            "classes": {},
-            "fors": {},
-            "namespaces": {}
-        },
-        "build/examples/filterAndGroup.js": {
-            "name": "build/examples/filterAndGroup.js",
             "modules": {},
             "classes": {},
             "fors": {},
@@ -36,34 +64,6 @@
         },
         "build/examples/jsonAndSort.js": {
             "name": "build/examples/jsonAndSort.js",
-            "modules": {},
-            "classes": {},
-            "fors": {},
-            "namespaces": {}
-        },
-        "build/examples/parameterizedQuery.js": {
-            "name": "build/examples/parameterizedQuery.js",
-            "modules": {},
-            "classes": {},
-            "fors": {},
-            "namespaces": {}
-        },
-        "build/examples/queries.js": {
-            "name": "build/examples/queries.js",
-            "modules": {},
-            "classes": {},
-            "fors": {},
-            "namespaces": {}
-        },
-        "build/examples/queryAndSortBenchmark.js": {
-            "name": "build/examples/queryAndSortBenchmark.js",
-            "modules": {},
-            "classes": {},
-            "fors": {},
-            "namespaces": {}
-        },
-        "build/examples/queryCalcAndFilter.js": {
-            "name": "build/examples/queryCalcAndFilter.js",
             "modules": {},
             "classes": {},
             "fors": {},
@@ -312,21 +312,45 @@
     "elements": {},
     "classitems": [
         {
+            "file": "build/examples/database/advanced/queryAndSortMultiDbBenchmark.js",
+            "line": 3,
+            "description": "Example: This example shows of working with multiple databases in a single\ntransform, using batched inserts, etc. It also helps with benchmarking large data sets.\nNOTE:\n1) requires setting up the sample MySQL & Postgres databases\n2) requires adding the \"page\" table to MySQL from the Wikipedia SQL export (see README)\n3) requires adding the empty \"page\" table to Postgres using the included page.postgres.sql file",
+            "class": "Nextract.Plugins.Core.Calculator"
+        },
+        {
+            "file": "build/examples/database/filterAndGroup.js",
+            "line": 3,
+            "description": "Example: Filter and group data...",
+            "class": "Nextract.Plugins.Core.Calculator"
+        },
+        {
+            "file": "build/examples/database/parameterizedQuery.js",
+            "line": 3,
+            "description": "Example: Parameterized query",
+            "class": "Nextract.Plugins.Core.Calculator"
+        },
+        {
+            "file": "build/examples/database/queries.js",
+            "line": 3,
+            "description": "Example: Demonstrates multiple query types plus calculator and filter features. Review\nthe employees table before and after running these to see the results.",
+            "class": "Nextract.Plugins.Core.Calculator"
+        },
+        {
+            "file": "build/examples/database/queryCalcAndFilter.js",
+            "line": 3,
+            "description": "Example: Demonstrates querying, filtering, calcs, and profiling \nNOTE: requires setting up the sample MySQL database",
+            "class": "Nextract.Plugins.Core.Calculator"
+        },
+        {
+            "file": "build/examples/helpers/exampleUtils.js",
+            "line": 3,
+            "description": "A handful of helper functions that are used throughout the examples",
+            "class": "Nextract.Plugins.Core.Calculator"
+        },
+        {
             "file": "build/examples/csvAndSort.js",
             "line": 3,
             "description": "Example: CSV input and sort...",
-            "class": "Nextract.Plugins.Core.Calculator"
-        },
-        {
-            "file": "build/examples/exampleUtils.js",
-            "line": 3,
-            "description": "A handful of heler functions that are used throughout the examples",
-            "class": "Nextract.Plugins.Core.Calculator"
-        },
-        {
-            "file": "build/examples/filterAndGroup.js",
-            "line": 3,
-            "description": "Example: Filter and group data...",
             "class": "Nextract.Plugins.Core.Calculator"
         },
         {
@@ -339,30 +363,6 @@
             "file": "build/examples/jsonAndSort.js",
             "line": 3,
             "description": "Example: JSON input and sort...",
-            "class": "Nextract.Plugins.Core.Calculator"
-        },
-        {
-            "file": "build/examples/parameterizedQuery.js",
-            "line": 3,
-            "description": "Example: Parameterized query",
-            "class": "Nextract.Plugins.Core.Calculator"
-        },
-        {
-            "file": "build/examples/queries.js",
-            "line": 3,
-            "description": "Example: Query and sort...",
-            "class": "Nextract.Plugins.Core.Calculator"
-        },
-        {
-            "file": "build/examples/queryAndSortBenchmark.js",
-            "line": 3,
-            "description": "Example: Query and sort...",
-            "class": "Nextract.Plugins.Core.Calculator"
-        },
-        {
-            "file": "build/examples/queryCalcAndFilter.js",
-            "line": 3,
-            "description": "Example: Query and sort...",
             "class": "Nextract.Plugins.Core.Calculator"
         },
         {
@@ -611,7 +611,7 @@
         },
         {
             "file": "build/plugins/core/Database/Database.js",
-            "line": 246,
+            "line": 244,
             "description": "Will insert each stream item into a database table. Uses batched inserts for performance gains.",
             "itemtype": "method",
             "name": "insertQuery",
@@ -644,7 +644,7 @@
         },
         {
             "file": "build/plugins/core/Database/Database.js",
-            "line": 322,
+            "line": 320,
             "description": "Allows you to run an UPDATE query against a database using data obtained from previous steps. Runs\na query for each element in the stream.",
             "itemtype": "method",
             "name": "updateQuery",
@@ -682,7 +682,7 @@
         },
         {
             "file": "build/plugins/core/Database/Database.js",
-            "line": 375,
+            "line": 371,
             "description": "Allows you to run a DELETE query against a database using data obtained from previous steps. Runs\na query for each element in the stream.",
             "itemtype": "method",
             "name": "deleteQuery",
@@ -1625,16 +1625,32 @@
     ],
     "warnings": [
         {
-            "message": "Missing item type\nExample: CSV input and sort...",
-            "line": " build/examples/csvAndSort.js:3"
-        },
-        {
-            "message": "Missing item type\nA handful of heler functions that are used throughout the examples",
-            "line": " build/examples/exampleUtils.js:3"
+            "message": "Missing item type\nExample: This example shows of working with multiple databases in a single\ntransform, using batched inserts, etc. It also helps with benchmarking large data sets.\nNOTE:\n1) requires setting up the sample MySQL & Postgres databases\n2) requires adding the \"page\" table to MySQL from the Wikipedia SQL export (see README)\n3) requires adding the empty \"page\" table to Postgres using the included page.postgres.sql file",
+            "line": " build/examples/database/advanced/queryAndSortMultiDbBenchmark.js:3"
         },
         {
             "message": "Missing item type\nExample: Filter and group data...",
-            "line": " build/examples/filterAndGroup.js:3"
+            "line": " build/examples/database/filterAndGroup.js:3"
+        },
+        {
+            "message": "Missing item type\nExample: Parameterized query",
+            "line": " build/examples/database/parameterizedQuery.js:3"
+        },
+        {
+            "message": "Missing item type\nExample: Demonstrates multiple query types plus calculator and filter features. Review\nthe employees table before and after running these to see the results.",
+            "line": " build/examples/database/queries.js:3"
+        },
+        {
+            "message": "Missing item type\nExample: Demonstrates querying, filtering, calcs, and profiling \nNOTE: requires setting up the sample MySQL database",
+            "line": " build/examples/database/queryCalcAndFilter.js:3"
+        },
+        {
+            "message": "Missing item type\nA handful of helper functions that are used throughout the examples",
+            "line": " build/examples/helpers/exampleUtils.js:3"
+        },
+        {
+            "message": "Missing item type\nExample: CSV input and sort...",
+            "line": " build/examples/csvAndSort.js:3"
         },
         {
             "message": "Missing item type\nExample: Http request and pluck...",
@@ -1643,22 +1659,6 @@
         {
             "message": "Missing item type\nExample: JSON input and sort...",
             "line": " build/examples/jsonAndSort.js:3"
-        },
-        {
-            "message": "Missing item type\nExample: Parameterized query",
-            "line": " build/examples/parameterizedQuery.js:3"
-        },
-        {
-            "message": "Missing item type\nExample: Query and sort...",
-            "line": " build/examples/queries.js:3"
-        },
-        {
-            "message": "Missing item type\nExample: Query and sort...",
-            "line": " build/examples/queryAndSortBenchmark.js:3"
-        },
-        {
-            "message": "Missing item type\nExample: Query and sort...",
-            "line": " build/examples/queryCalcAndFilter.js:3"
         },
         {
             "message": "Missing item type\nWinston logging config\nReferences:\n- https://github.com/winstonjs/winston\n- http://stackoverflow.com/a/23330037\n- http://stackoverflow.com/a/25233851",

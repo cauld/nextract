@@ -129,7 +129,7 @@
                       
                       function checkInput(element, propertyToProcess) {
                         if ((0, _isUndefined3.default)(element[propertyToProcess]) || !(0, _isNumber3.default)(element[propertyToProcess])) {
-                          throw new Error(&quot;GroupBy error, non-numeric value in element:&quot;, element);
+                          throw new Error(&#x27;GroupBy error, non-numeric value in element:&#x27;, element);
                         }
                       }
                       
@@ -305,7 +305,7 @@
                          * @return {Stream} The output is a new stream of just the unique values or elements.
                          */
                         uniqBy: function uniqBy(propertyToProcess) {
-                          var returnElement = arguments.length &lt;= 1 || arguments[1] === undefined ? false : arguments[1];
+                          var returnElement = arguments.length &gt; 1 &amp;&amp; arguments[1] !== undefined ? arguments[1] : false;
                       
                           var valuesToUnique = [];
                       

@@ -5,8 +5,7 @@ npm install grunt -g
 npm install
 
 echo "Add default config files..."
-mkdir src/plugins/config
-mkdir build/plugins/config
+mkdir config
 node utils/add_default_config.js
 
 echo "Setting up internal database..."

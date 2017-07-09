@@ -15,7 +15,7 @@ let groupByPlugin = new pluginBase('GroupBy', 'Core');
 
 function checkInput(element, propertyToProcess) {
   if (_.isUndefined(element[propertyToProcess]) || !_.isNumber(element[propertyToProcess])) {
-    throw new Error("GroupBy error, non-numeric value in element:", element);
+    throw new Error('GroupBy error, non-numeric value in element:', element);
   }
 }
 

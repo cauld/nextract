@@ -10,7 +10,7 @@ var path = require('path'),
 var sampleEmployeesInputFilePath = path.resolve(process.cwd(), 'data/employees.json'),
     sampleEmployeesOutputFilePath = path.resolve(process.cwd(), 'data/employees_output.json');
 
-var transform = new Nextract("jsonAndSort");
+var transform = new Nextract('jsonAndSort');
 
 transform.loadPlugins('Core', ['Input', 'Output', 'Sort', 'Logger']).then(function () {
   return new Promise(function (resolve) {

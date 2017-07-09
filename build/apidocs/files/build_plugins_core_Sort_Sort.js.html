@@ -305,34 +305,32 @@
                       
                           var nextElementString = &#x27;&#x27;; //Placeholder for chunks as we process them back into objects
                           var toObjectStream = function toObjectStream(chunk, encoding, callback) {
-                            var _this = this;
-                      
                             if (!(0, _isUndefined3.default)(chunk) &amp;&amp; !(0, _isNull3.default)(chunk)) {
-                              (function () {
-                                var oStream = _this;
+                              var oStream = this;
                       
-                                nextElementString += chunk.toString(&#x27;utf8&#x27;);
-                                var splitChunkStrings = nextElementString.split(jsonStreamDelimiter); //each JSON object ends with }
-                                nextElementString = &#x27;&#x27;; //reset
+                              nextElementString += chunk.toString(&#x27;utf8&#x27;);
+                              var splitChunkStrings = nextElementString.split(jsonStreamDelimiter); //each JSON object ends with }
+                              nextElementString = &#x27;&#x27;; //reset
                       
-                                splitChunkStrings.map(function (cStr) {
-                                  if (!(0, _isEmpty3.default)(cStr) &amp;&amp; cStr.charAt(cStr.length - 1) === &#x27;}&#x27;) {
-                                    var nextElement = JSON.parse(cStr);
-                                    oStream.push(nextElement);
-                                  } else {
-                                    nextElementString += cStr;
-                                  }
-                                });
-                              })();
+                              splitChunkStrings.map(function (cStr) {
+                                if (!(0, _isEmpty3.default)(cStr) &amp;&amp; cStr.charAt(cStr.length - 1) === &#x27;}&#x27;) {
+                                  var nextElement = JSON.parse(cStr);
+                                  oStream.push(nextElement);
+                                } else {
+                                  nextElementString += cStr;
+                                }
+                              });
                             }
                       
                             callback();
                           };
                       
                           //Create a &quot;Throttle&quot; instance that reads at a set bps
-                          var throttle = new _throttle2.default({ bps: 750000 });
+                          //let throttle = new Throttle({ bps: 750000 });
                           var stream = sortPlugin.runInternalSelectQueryForStream(sortedSelectSql, []);
-                          return stream.pipe(sortPlugin.buildStreamTransform(jsonStream, null, &#x27;map&#x27;)).pipe(throttle).pipe(sortPlugin.buildStreamTransform(toObjectStream, null, &#x27;standard&#x27;)).on(&#x27;end&#x27;, function () {
+                          return stream.pipe(sortPlugin.buildStreamTransform(jsonStream, null, &#x27;map&#x27;))
+                          //.pipe(throttle)
+                          .pipe(sortPlugin.buildStreamTransform(toObjectStream, null, &#x27;standard&#x27;)).on(&#x27;end&#x27;, function () {
                             //Sorting done, we have what we need... drop the temp table
                             sortPlugin.dropTemporaryTableForStream(sortInDbInfo.tableName).then(function () {}).catch(function (err) {
                               sortPlugin.ETL.logger.error(&#x27;Invalid DROP TABLE request:&#x27;, err);

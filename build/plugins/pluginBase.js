@@ -32,7 +32,7 @@ var _isNull2 = require('lodash/isNull');
 
 var _isNull3 = _interopRequireDefault(_isNull2);
 
-var _default = require('./config/default');
+var _default = require('../../config/default');
 
 var _default2 = _interopRequireDefault(_default);
 
@@ -163,17 +163,17 @@ function getRandomTemporaryTableName() {
 }
 
 var PluginBase = function PluginBase() {
-  var pluginName = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
-  var pluginType = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+  var pluginName = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  var pluginType = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
   var self = this;
 
   if (pluginName === null) {
-    throw "A plugin name must be provided to initPlugin!";
+    throw 'A plugin name must be provided to initPlugin!';
   }
 
   if (pluginType === null) {
-    throw "A plugin type (Core or Vendor) must be provided to initPlugin!";
+    throw 'A plugin type (Core or Vendor) must be provided to initPlugin!';
   }
 
   /**
@@ -458,8 +458,8 @@ var PluginBase = function PluginBase() {
    * @return {Function} Returns stream transform wrapped using through2
    */
   this.buildStreamTransform = function (streamFunction) {
-    var streamFlushFunction = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
-    var streamFunctionType = arguments.length <= 2 || arguments[2] === undefined ? 'standard' : arguments[2];
+    var streamFlushFunction = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var streamFunctionType = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'standard';
 
     var streamWrappedFunction = void 0;
 

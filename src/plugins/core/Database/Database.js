@@ -179,17 +179,17 @@ module.exports = {
               if (_.isArray(joinColumnsToReturn) && joinColumnsToReturn.length > 0) {
                 joinColumnsToReturn.map(c => element[c] = null);
               } else {
-                throw new Error("To returned unmatched elements joinColumnsToReturn must be an array of property names!");
+                throw new Error('To returned unmatched elements joinColumnsToReturn must be an array of property names!');
               }
             } else if (joinData.length === 0 && returnedUnmatched === false) {
               //We want to drop this element from the collection for lack of a join.
               element = null;
             } else if (joinData.length > 1) {
               //A throw here will trigger the reject in our catch
-              throw new Error("Too many rows returned from join operation!");
+              throw new Error('Too many rows returned from join operation!');
             } else {
               //Should never get here
-              throw new Error("Unhandled join exception!");
+              throw new Error('Unhandled join exception!');
             }
 
             stream.push(element);

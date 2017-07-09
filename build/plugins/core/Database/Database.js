@@ -146,7 +146,7 @@ module.exports = {
    * @return {Promise} Returns a promise resolved with a read stream to use in conjuction with pipe()
    */
   selectQuery: function selectQuery(dbName, sql) {
-    var sqlReplacements = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+    var sqlReplacements = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
     var dbInstance = getInstance(dbName);
     var stream = dbInstance.raw(sql, sqlReplacements).stream();
@@ -182,8 +182,8 @@ module.exports = {
    * @return {Stream} Returns stream element with added properties from the join query
    */
   joinQuery: function joinQuery(dbName, sqlStatement, joinFilterColumns) {
-    var joinColumnsToReturn = arguments.length <= 3 || arguments[3] === undefined ? [] : arguments[3];
-    var returnedUnmatched = arguments.length <= 4 || arguments[4] === undefined ? true : arguments[4];
+    var joinColumnsToReturn = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [];
+    var returnedUnmatched = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : true;
 
     var dbInstance = getInstance(dbName);
 
@@ -194,47 +194,45 @@ module.exports = {
         this.push(element);
         return callback();
       } else {
-        (function () {
-          var joinValues = [];
-          joinFilterColumns.forEach(function (prop) {
-            joinValues[joinValues.length] = element[prop];
-          });
+        var joinValues = [];
+        joinFilterColumns.forEach(function (prop) {
+          joinValues[joinValues.length] = element[prop];
+        });
 
-          dbInstance.raw(sqlStatement, joinValues).then(function (joinData) {
-            //Join the data sets if possible
-            //NOTE: The result (joinData) will always contain a multidimensional array. If there is no match
-            //the first array element will be an empty array, otherwise it will contain the actual
-            //join results.  The join results will be an array of objects (rows).  There should be only one.
-            if (joinData[0].length === 1) {
-              //Add the join data to the original element
-              element = (0, _merge3.default)(element, joinData[0][0]);
-            } else if (joinData.length === 0 && returnedUnmatched === true) {
-              //They want the original element back even though there is no matching join. Add the missing
-              //properties and set each to null (like an outer join).
-              if ((0, _isArray3.default)(joinColumnsToReturn) && joinColumnsToReturn.length > 0) {
-                joinColumnsToReturn.map(function (c) {
-                  return element[c] = null;
-                });
-              } else {
-                throw new Error("To returned unmatched elements joinColumnsToReturn must be an array of property names!");
-              }
-            } else if (joinData.length === 0 && returnedUnmatched === false) {
-              //We want to drop this element from the collection for lack of a join.
-              element = null;
-            } else if (joinData.length > 1) {
-              //A throw here will trigger the reject in our catch
-              throw new Error("Too many rows returned from join operation!");
+        dbInstance.raw(sqlStatement, joinValues).then(function (joinData) {
+          //Join the data sets if possible
+          //NOTE: The result (joinData) will always contain a multidimensional array. If there is no match
+          //the first array element will be an empty array, otherwise it will contain the actual
+          //join results.  The join results will be an array of objects (rows).  There should be only one.
+          if (joinData[0].length === 1) {
+            //Add the join data to the original element
+            element = (0, _merge3.default)(element, joinData[0][0]);
+          } else if (joinData.length === 0 && returnedUnmatched === true) {
+            //They want the original element back even though there is no matching join. Add the missing
+            //properties and set each to null (like an outer join).
+            if ((0, _isArray3.default)(joinColumnsToReturn) && joinColumnsToReturn.length > 0) {
+              joinColumnsToReturn.map(function (c) {
+                return element[c] = null;
+              });
             } else {
-              //Should never get here
-              throw new Error("Unhandled join exception!");
+              throw new Error('To returned unmatched elements joinColumnsToReturn must be an array of property names!');
             }
+          } else if (joinData.length === 0 && returnedUnmatched === false) {
+            //We want to drop this element from the collection for lack of a join.
+            element = null;
+          } else if (joinData.length > 1) {
+            //A throw here will trigger the reject in our catch
+            throw new Error('Too many rows returned from join operation!');
+          } else {
+            //Should never get here
+            throw new Error('Unhandled join exception!');
+          }
 
-            stream.push(element);
-            return callback();
-          }).catch(function (err) {
-            databasePlugin.ETL.logger.error('Invalid join/lookup request:', err);
-          });
-        })();
+          stream.push(element);
+          return callback();
+        }).catch(function (err) {
+          databasePlugin.ETL.logger.error('Invalid join/lookup request:', err);
+        });
       }
     };
 
@@ -257,8 +255,8 @@ module.exports = {
    * @param {Integer} queueSize (optional) Number of async queues used to manage batch inserts (defaults to 10)
    */
   insertQuery: function insertQuery(dbName, tableName) {
-    var batchSize = arguments.length <= 2 || arguments[2] === undefined ? 1000 : arguments[2];
-    var queueSize = arguments.length <= 3 || arguments[3] === undefined ? 10 : arguments[3];
+    var batchSize = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1000;
+    var queueSize = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 10;
 
     var dbInstance = getInstance(dbName);
     var elementsToInsert = [];
@@ -341,29 +339,27 @@ module.exports = {
    * @return {stream.Transform} Read/write stream transform to use in conjuction with pipe()
    */
   updateQuery: function updateQuery(dbName, tableName, columnsToUpdate) {
-    var matchCriteria = arguments.length <= 3 || arguments[3] === undefined ? [] : arguments[3];
+    var matchCriteria = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [];
 
     var dbInstance = getInstance(dbName);
 
     function processStreamUpdate(element, encoding, callback) {
       if (!(0, _isUndefined3.default)(element)) {
-        (function () {
-          var whereObj = buildSqlForMatchCriteria(element, matchCriteria);
+        var whereObj = buildSqlForMatchCriteria(element, matchCriteria);
 
-          var updateObj = {};
-          if ((0, _isArray3.default)(columnsToUpdate) && !(0, _isEmpty3.default)(columnsToUpdate)) {
-            columnsToUpdate.forEach(function (column) {
-              updateObj[column] = element[column];
-            });
-          }
-
-          dbInstance(tableName).whereRaw(whereObj.sql, whereObj.sqlParams).update(updateObj).then(function () {
-            return callback(null, element);
-          }).catch(function (err) {
-            databasePlugin.logger.error(err);
-            throw new Error(err);
+        var updateObj = {};
+        if ((0, _isArray3.default)(columnsToUpdate) && !(0, _isEmpty3.default)(columnsToUpdate)) {
+          columnsToUpdate.forEach(function (column) {
+            updateObj[column] = element[column];
           });
-        })();
+        }
+
+        dbInstance(tableName).whereRaw(whereObj.sql, whereObj.sqlParams).update(updateObj).then(function () {
+          return callback(null, element);
+        }).catch(function (err) {
+          databasePlugin.logger.error(err);
+          throw new Error(err);
+        });
       } else {
         return callback(null, null);
       }
@@ -392,7 +388,7 @@ module.exports = {
    * parameterized query. The expected format is  [{ tableColumn: '', comparator: '', collectionField: '' }].
    */
   deleteQuery: function deleteQuery(dbName, tableName) {
-    var matchCriteria = arguments.length <= 2 || arguments[2] === undefined ? [] : arguments[2];
+    var matchCriteria = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
 
     var dbInstance = getInstance(dbName);
 

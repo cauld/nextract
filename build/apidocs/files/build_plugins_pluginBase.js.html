@@ -124,7 +124,7 @@
                       
                       var _isNull3 = _interopRequireDefault(_isNull2);
                       
-                      var _default = require(&#x27;./config/default&#x27;);
+                      var _default = require(&#x27;../../config/default&#x27;);
                       
                       var _default2 = _interopRequireDefault(_default);
                       
@@ -255,17 +255,17 @@
                       }
                       
                       var PluginBase = function PluginBase() {
-                        var pluginName = arguments.length &lt;= 0 || arguments[0] === undefined ? null : arguments[0];
-                        var pluginType = arguments.length &lt;= 1 || arguments[1] === undefined ? null : arguments[1];
+                        var pluginName = arguments.length &gt; 0 &amp;&amp; arguments[0] !== undefined ? arguments[0] : null;
+                        var pluginType = arguments.length &gt; 1 &amp;&amp; arguments[1] !== undefined ? arguments[1] : null;
                       
                         var self = this;
                       
                         if (pluginName === null) {
-                          throw &quot;A plugin name must be provided to initPlugin!&quot;;
+                          throw &#x27;A plugin name must be provided to initPlugin!&#x27;;
                         }
                       
                         if (pluginType === null) {
-                          throw &quot;A plugin type (Core or Vendor) must be provided to initPlugin!&quot;;
+                          throw &#x27;A plugin type (Core or Vendor) must be provided to initPlugin!&#x27;;
                         }
                       
                         /**
@@ -550,8 +550,8 @@
                          * @return {Function} Returns stream transform wrapped using through2
                          */
                         this.buildStreamTransform = function (streamFunction) {
-                          var streamFlushFunction = arguments.length &lt;= 1 || arguments[1] === undefined ? null : arguments[1];
-                          var streamFunctionType = arguments.length &lt;= 2 || arguments[2] === undefined ? &#x27;standard&#x27; : arguments[2];
+                          var streamFlushFunction = arguments.length &gt; 1 &amp;&amp; arguments[1] !== undefined ? arguments[1] : null;
+                          var streamFunctionType = arguments.length &gt; 2 &amp;&amp; arguments[2] !== undefined ? arguments[2] : &#x27;standard&#x27;;
                       
                           var streamWrappedFunction = void 0;
                       
