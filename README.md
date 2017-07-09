@@ -9,7 +9,7 @@ Nextract is a [Extract Transform Load (ETL)](https://en.wikipedia.org/wiki/Extra
  - Core plugins with many common ETL operations included (i.e.) sorting, i/o, querying, filtering, basic mathematical operations, etc.
  - Easily extendable 3rd party plugin system (plugins are just node modules).
 
- ## Performance
+## Performance
  Nextract is currently limited by the resources of a single machine. Therefore, it works best with small to medium size data sets at this point... a few hundred thousand records (more if your transforms don't require buffering/blocking steps like sorts). There is a good benchmarking script included with the examples (nextract/build/examples/database/advanced/queryAndSortMultiDbBenchmark.js). This example selects 200,000 records from MySQL, filters them, sorts them, performs some basic calculations, and batch inserts them into a Postgres database to demonstrate working with multiple databases in a single transform. On a MacBook Air (1.7GHz Intel Core i7) running macOS (10.12+) with 8GB 1600 MHz DDR3 memory this runs in roughly 3 minutes. Smaller sets are much faster.
 
 ## Setup
@@ -20,7 +20,7 @@ Nextract is a [Extract Transform Load (ETL)](https://en.wikipedia.org/wiki/Extra
  2. Open a terminal and run **./setup.sh**.  This will install all the necessary npm packages and generate a default configuration file.
  3. Open the default configuration file (nextract/config/default.json) and customize by adding your database connection params, setting a log file path, overriding system default, etc. The default config contains 2 sample databases entries that can be used to run the included example transformations (assuming you setup the tables and adjust the connection settings for your local env).
 
- ####Examples/Database
+####Examples/Database
  1. There are a good many example transforms included in the `/build/examples` directory. Run any of them by getting into the same directory as the script you want to run and executing `node ./{SCRIPT_NAME}.js`.
  2. Examples in the top level `/build/examples` directory use sample data files included with the project (csv, json, etc). These can be run without setting up any databases.
  3. Database examples are in the `/build/examples/database` directory. All of the examples in this directory use MySQL. You just need to create a MySQL database and create an `employees` table using the `/Users/cauld/Projects/nextract/build/examples/data/employees.mysql.sql` file.
