@@ -14,13 +14,13 @@ Nextract is a [Extract Transform Load (ETL)](https://en.wikipedia.org/wiki/Extra
 
 ## Setup
 
-####OS X & Linux
+#### OS X & Linux
 
  1. Install Node (preferably 8.1+)
  2. Open a terminal and run **./setup.sh**.  This will install all the necessary npm packages and generate a default configuration file.
  3. Open the default configuration file (nextract/config/default.json) and customize by adding your database connection params, setting a log file path, overriding system default, etc. The default config contains 2 sample databases entries that can be used to run the included example transformations (assuming you setup the tables and adjust the connection settings for your local env).
 
-####Examples/Database
+#### Examples/Database
  1. There are a good many example transforms included in the `/build/examples` directory. Run any of them by getting into the same directory as the script you want to run and executing `node ./{SCRIPT_NAME}.js`.
  2. Examples in the top level `/build/examples` directory use sample data files included with the project (csv, json, etc). These can be run without setting up any databases.
  3. Database examples are in the `/build/examples/database` directory. All of the examples in this directory use MySQL. You just need to create a MySQL database and create an `employees` table using the `/Users/cauld/Projects/nextract/build/examples/data/employees.mysql.sql` file.
