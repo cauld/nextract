@@ -24,14 +24,14 @@ Nextract is a [Extract Transform Load (ETL)](https://en.wikipedia.org/wiki/Extra
 
  - Oracle is supported, but not enabled by default as it requires some additional system setup. Follow the directions outlined [here](https://www.npmjs.com/package/oracle) to install and configure the oracle npm package.
 
-#### Examples
+## Examples
 
  1. There are a good many example transforms included in the `build/examples` directory. Run any of them by getting into the same directory as the script you want to run and executing `node ./{SCRIPT_NAME}.js`.
  2. Examples in the top level `build/examples` directory use sample data files included with the project (csv, json, etc). These can be run without setting up any databases.
  3. Database examples are in the `build/examples/database` directory. All of the examples in this directory use MySQL. You just need to create a MySQL database and create an `employees` table using the `build/examples/data/employees.mysql.sql` file.
  4. The benchmark example mentioned above in the "Performance" section is found under the `build/examples/database/advanced` directory. This example uses both MySQL and Postgres. To get a lot of sample data in the database for testing it uses a sqldump of page data from Wikipedia that contains about 42m+ records. You'll need to download the file from here - https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-page.sql.gz. Import this into MySQL and it will create the `page` table for you. The example selects from this MySQL table and outputs into a Postgres database to simulate working with multiple databases. So you'll need to setup Postgres in addition to MySQL. You just need create one empty table in Postgres named `page` using the provided `build/examples/data/page.postgres.sql` file.
 
- ## Example Transform
+## Example Transform
 
     /**
      * Example: JSON input and sort...
