@@ -10,7 +10,7 @@ Nextract is a [Extract Transform Load (ETL)](https://en.wikipedia.org/wiki/Extra
  - Easily extendable 3rd party plugin system (plugins are just node modules).
 
 ## Performance
- Nextract is currently limited by the resources of a single machine. Therefore, it works best with small to medium size data sets at this point... a few hundred thousand records (more if your transforms don't require buffering/blocking steps like sorts). There is a good benchmarking script included with the examples (nextract/build/examples/database/advanced/queryAndSortMultiDbBenchmark.js). This example selects 200,000 records from MySQL, filters them, sorts them, performs some basic calculations, and batch inserts them into a Postgres database to demonstrate working with multiple databases in a single transform. On a MacBook Air (1.7GHz Intel Core i7) running macOS (10.12+) with 8GB 1600 MHz DDR3 memory this runs in roughly 3 minutes. Smaller sets are much faster.
+ Nextract is currently limited by the resources of a single machine. Therefore, it works best with small to medium size data sets at this point... a few hundred thousand records (more if your transforms don't require buffering/blocking steps like sorts). There is a good benchmarking script included with the examples (build/examples/database/advanced/queryAndSortMultiDbBenchmark.js). This example selects 200,000 records from MySQL, filters them, sorts them, performs some basic calculations, and batch inserts them into a Postgres database to demonstrate working with multiple databases in a single transform. On a MacBook Air (1.7GHz Intel Core i7) running macOS (10.12+) with 8GB 1600 MHz DDR3 memory this runs in roughly 3 minutes. Smaller sets are much faster.
 
 ## Setup
 
