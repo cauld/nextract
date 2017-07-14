@@ -7,11 +7,14 @@
 var path = require('path'),
     Nextract = require(path.resolve(__dirname, '../nextract'));
 
+//Define out input and output files
 var sampleEmployeesInputFilePath = path.resolve(process.cwd(), 'data/employees.json'),
     sampleEmployeesOutputFilePath = path.resolve(process.cwd(), 'data/employees_output.json');
 
+//Tranforms always start with instance of the Nextract base class and a tranform name
 var transform = new Nextract('jsonAndSort');
 
+//We load the core plugin and then an additional plugins our transform requires
 transform.loadPlugins('Core', ['Input', 'Output', 'Sort', 'Logger']).then(function () {
   return new Promise(function (resolve) {
     //STEP 1: Read data in from a JSON file (we specify the object path we care about)
@@ -31,6 +34,7 @@ transform.loadPlugins('Core', ['Input', 'Output', 'Sort', 'Logger']).then(functi
   .pipe(transform.Plugins.Core.Output.toJsonString(true))
   //STEP 4: Write out the new file
   .pipe(transform.Plugins.Core.Output.toFile(sampleEmployeesOutputFilePath)).on('finish', function () {
+    //Just logging some information back to the console
     transform.Plugins.Core.Logger.info('Transform finished!');
     transform.Plugins.Core.Logger.info(sampleEmployeesOutputFilePath, 'has been written');
   }).on('end', function () {
