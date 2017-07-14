@@ -2,7 +2,7 @@
   "name": "nextract",
   "private": true,
   "version": "0.0.3",
-  "url": "http://nextract.com",
+  "url": "https://github.com/cauld/nextract/",
   "license": "MIT",
   "description": "Nextract is a Extract Transform Load (ETL) platform build on top of Node.js streams",
   "keywords": [],
