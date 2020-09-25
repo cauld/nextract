@@ -41,7 +41,8 @@ function buildNewConnection(dbName) {
       host: dbpluginConfig.host,
       user: dbpluginConfig.user,
       password: dbpluginConfig.password,
-      database: dbpluginConfig.database
+      database: dbpluginConfig.database,
+      port: dbpluginConfig.port
     };
   }
 
