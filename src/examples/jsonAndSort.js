@@ -9,7 +9,7 @@ const path     = require('path'),
 const sampleEmployeesInputFilePath = path.resolve(process.cwd(), 'data/employees.json'),
       sampleEmployeesOutputFilePath = path.resolve(process.cwd(), 'data/employees_output.json');
 
-//Tranforms always start with instance of the Nextract base class and a tranform name
+//Transforms always start with instance of the Nextract base class and a tranform name
 const transform = new Nextract('jsonAndSort');
 
 //We load the core plugin and then an additional plugins our transform requires
