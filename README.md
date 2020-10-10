@@ -16,7 +16,8 @@ Nextract is a [Extract Transform Load (ETL)](https://en.wikipedia.org/wiki/Extra
 
 #### OS X & Linux
 
- 1. Install Node (preferably 8.1+)
+ 1. Install the latest Node LTS release (currently 12.18.x)
+ 2. For improved Postres performance we use [pg-native](https://www.npmjs.com/package/pg-native). This requires node-gyp and build tools to compile the bindings. You can remove this dependancy from package.json if you'd prefer to avoid this and use the pure JavaScript pg (already included).
  2. Open a terminal and run **./setup.sh**.  This will install all the necessary npm packages and generate a default configuration file.
  3. Open the default configuration file (config/default.json) and customize by adding your database connection params, setting a log file path, overriding system default, etc. The default config contains 2 sample databases entries that can be used to run the included example transformations (assuming you setup the tables and adjust the connection settings for your local env).
 

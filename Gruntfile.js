@@ -36,8 +36,7 @@ module.exports = function(grunt) {
     //See: https://babeljs.io/
     babel: {
       options: {
-        plugins: ['lodash'],
-        presets: ['es2015']
+        plugins: ['lodash']
       },
       dist: {
         files: [{
