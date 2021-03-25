@@ -32,6 +32,7 @@ Nextract is a [Extract Transform Load (ETL)](https://en.wikipedia.org/wiki/Extra
  4. The benchmark example mentioned above in the "Performance" section is found under the `build/examples/database/advanced` directory. This example uses both MySQL and Postgres. To get a lot of sample data in the database for testing it uses a sqldump of page data from Wikipedia that contains about 42m+ records. You'll need to download the file from here - https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-page.sql.gz. Import this into MySQL and it will create the `page` table for you. The example selects from this MySQL table and outputs into a Postgres database to simulate working with multiple databases. So you'll need to setup Postgres in addition to MySQL. You just need create one empty table in Postgres named `page` using the provided `build/examples/data/page.postgres.sql` file.
 
 ## Example Transform
+```javascript
 
     /**
      * Example: JSON input and sort...
@@ -83,7 +84,7 @@ Nextract is a [Extract Transform Load (ETL)](https://en.wikipedia.org/wiki/Extra
       .catch((err) => {
         transform.Plugins.Core.Logger.error('Transform failed: ', err);
       });
-
+```
 ## Development
  The source code for this project lives under the `src` directory. Grunt is used to build the project and generate API docs when the source is updated. When developing, simply run `grunt watch` from the project's root directory. As the source is updated Grunt will automatically generate new builds in the `build` directory.
 
