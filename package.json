@@ -20,7 +20,7 @@
     "easy-profiler": "^2.0.0",
     "generic-pool": "^3.1.7",
     "jsonfile": "^3.0.1",
-    "knex": "^0.13.0",
+    "knex": "^2.4.0",
     "lodash": "^4.17.19",
     "mariasql": "^0.2.6",
     "mssql": "^4.0.4",
