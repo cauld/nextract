@@ -33,6 +33,7 @@ Nextract is a [Extract Transform Load (ETL)](https://en.wikipedia.org/wiki/Extra
 
 ## Example Transform
 
+```javascript
     /**
      * Example: JSON input and sort...
      */
@@ -83,6 +84,7 @@ Nextract is a [Extract Transform Load (ETL)](https://en.wikipedia.org/wiki/Extra
       .catch((err) => {
         transform.Plugins.Core.Logger.error('Transform failed: ', err);
       });
+```
 
 ## Development
  The source code for this project lives under the `src` directory. Grunt is used to build the project and generate API docs when the source is updated. When developing, simply run `grunt watch` from the project's root directory. As the source is updated Grunt will automatically generate new builds in the `build` directory.
